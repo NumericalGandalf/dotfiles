@@ -18,10 +18,10 @@ floating_modifier $mod
 
 set $mode_i3 "i3 (c) reload, (r) restart, (q) kill, (e) exit"
 mode $mode_i3 {
-    bindsym c exec --no-startup-id i3-msg reload
-    bindsym r exec --no-startup-id i3-msg restart 
-    bindsym q exec --no-startup-id i3-msg kill
-    bindsym e exec --no-startup-id i3-msg exit
+    bindsym c exec --no-startup-id i3-msg reload, mode "default"
+    bindsym r exec --no-startup-id i3-msg restart, mode "default"
+    bindsym q exec --no-startup-id i3-msg kill, mode "default"
+    bindsym e exec --no-startup-id i3-msg exit, mode "default"
 
     bindsym Return mode "default"
     bindsym Escape mode "default"
@@ -129,6 +129,8 @@ bindsym $mod+Shift+d [class="discord" instance="discord"] scratchpad show, move 
 exec --no-startup-id spotify 
 for_window [class="Spotify" instance="spotify"] floating enable, resize set 1280 px 720 px, move scratchpad
 bindsym $mod+Shift+s [class="Spotify" instance="spotify"] scratchpad show, move position center
+
+for_window [class="Ryujinx"] floating enalbe, resize set 1280 px 720 px
 
 set $mode_resize "Resize (h) shrink width, (l) grow width, (k) shrink height, (j) grow height"
 mode $mode_resize {
