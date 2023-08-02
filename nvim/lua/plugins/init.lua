@@ -1,0 +1,5 @@
+require("plugins.colorscheme")
+require("plugins.telescope")
+require("plugins.lualine")
+require("plugins.treesitter")
+require("plugins.lsp_config")
