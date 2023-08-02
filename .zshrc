@@ -8,7 +8,6 @@ COMPLETION_WAITING_DOTS="true"
 plugins=(git)
 
 source $ZSH/oh-my-zsh.sh
-
-export PATH="$PATH:$HOME/.bin"
+source ~/.profile
 
 alias ll="ls -laFh -I. -I.."
