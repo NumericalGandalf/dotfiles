@@ -1,1 +1,0 @@
-# BinaryGandalf Neovim Configuration Files
