@@ -1,5 +1,6 @@
 set $mod Mod1
 set $mod_mode Mod4
+floating_modifier $mod
 
 font pango:monospace 8
 
@@ -13,21 +14,10 @@ bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT
 bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle && $refresh_i3status
 bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle && $refresh_i3status
 
-floating_modifier $mod
-
-
-set $mode_i3 "i3 (c) reload, (r) restart, (q) kill, (e) exit"
-mode $mode_i3 {
-    bindsym c exec --no-startup-id i3-msg reload, mode "default"
-    bindsym r exec --no-startup-id i3-msg restart, mode "default"
-    bindsym q exec --no-startup-id i3-msg kill, mode "default"
-    bindsym e exec --no-startup-id i3-msg exit, mode "default"
-
-    bindsym Return mode "default"
-    bindsym Escape mode "default"
-    bindsym $mod_mode+BackSpace mode "default"
-}
-bindsym $mod_mode+BackSpace mode $mode_i3
+bindsym $mod+Ctrl+c exec --no-startup-id i3-msg reload
+bindsym $mod+Ctrl+r exec --no-startup-id i3-msg restart
+bindsym $mod+Ctrl+e exec --no-startup-id i3-msg exit
+bindsym $mod+Ctrl+q exec --no-startup-id i3-msg kill
 
 bindsym $mod+Return exec i3-sensible-terminal
 bindsym $mod+d exec --no-startup-id dmenu_run -i -b
@@ -76,15 +66,15 @@ set $ws8 "8"
 set $ws9 "9"
 set $ws0 "0"
 
-workspace $ws1 output DP-0 
-workspace $ws2 output DP-0 
+workspace $ws1 output DP-1 
+workspace $ws2 output DP-1 
 workspace $ws3 output DP-2  
 workspace $ws4 output DP-2
-workspace $ws5 output DP-0 
-workspace $ws6 output DP-0 
+workspace $ws5 output DP-1 
+workspace $ws6 output DP-1 
 workspace $ws7 output DP-2  
 workspace $ws8 output DP-2
-workspace $ws9 output DP-0 
+workspace $ws9 output DP-1 
 workspace $ws0 output DP-2  
 
 bindsym $mod+1 workspace number $ws1
@@ -130,7 +120,8 @@ exec --no-startup-id spotify
 for_window [class="Spotify" instance="spotify"] floating enable, resize set 1280 px 720 px, move scratchpad
 bindsym $mod+Shift+s [class="Spotify" instance="spotify"] scratchpad show, move position center
 
-for_window [class="Ryujinx"] floating enalbe, resize set 1280 px 720 px
+# Since window title is static, config must be adjusted every new release
+for_window [title="Ryujinx 1.1.0-ldn3.1.3"] floating enable, resize set 1280 px 720 px
 
 set $mode_resize "Resize (h) shrink width, (l) grow width, (k) shrink height, (j) grow height"
 mode $mode_resize {
