@@ -1,12 +1,12 @@
-BINX="$HOME/bin"
-if [[ ":$PATH:" != *":$BINX:"* ]]; then
-    export PATH="$PATH:$BINX"
+#!/usr/bin/sh
+
+local_bin="$HOME/.local/bin"
+if [[ ":$PATH:" != *":$local_bin:"* ]]; then
+    export PATH="$PATH:$local_bin"
 fi
 
 export TERMINAL="alacritty"
 
-alias ll="ls -laFh -I. -I.."
-
 if [[ -z $DISPLAY ]] && [[ $(tty) = /dev/tty1 ]]; then
-    startx &
+    exec startx &
 fi

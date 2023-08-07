@@ -1,0 +1,9 @@
+#!/usr/bin/bash
+
+(
+    IFS=:
+    default_wm="i3"
+    for p in $PATH ; do
+	    [ -x $p/$default_wm ] && exec $p/$WM
+    done
+)
