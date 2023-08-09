@@ -1,12 +1,17 @@
 require("mason").setup()
 require("mason-lspconfig").setup({
-    ensure_installed = { "lua_ls" }
+    ensure_installed = { "lua_ls", "bashls" }
 })
 
 local cmp = require('cmp')
 local lspconfig = require("lspconfig")
 
 cmp.setup({
+    snippet = {
+        expand = function(args)
+            require('luasnip').lsp_expand(args.body)
+        end,
+    },
     window = {
         completion = cmp.config.window.bordered(),
         documentation = cmp.config.window.bordered(),
@@ -20,8 +25,8 @@ cmp.setup({
     }),
     sources = cmp.config.sources({
         { name = 'nvim_lsp' },
-    }, {
-        { name = 'buffer' },
+        { name = "luasnip" },
+        { name = 'buffer' }
     })
 })
 
@@ -35,56 +40,54 @@ cmp.setup.cmdline({ '/', '?' }, {
 cmp.setup.cmdline(':', {
     mapping = cmp.mapping.preset.cmdline(),
     sources = cmp.config.sources({
-        { name = 'path' }
-    }, {
+        { name = 'path' },
         { name = 'cmdline' }
     })
 })
 
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
-local on_attach = function(_, _)
-    local telescope = require('telescope.builtin')
 
-    vim.keymap.set('n', '<leader>vd', vim.diagnostic.open_float, {})
-    vim.keymap.set('n', '[d', vim.diagnostic.goto_next)
-    vim.keymap.set('n', ']d', vim.diagnostic.goto_prev)
+vim.api.nvim_create_autocmd("LspAttach", {
+    group = vim.api.nvim_create_augroup("UserLspConfig", {}),
+    callback = function(ev)
+        vim.bo[ev.buf].omnifunc = "v:lua.vim.lsp.omnifunc"
 
-    vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, {})
-    vim.keymap.set('n', 'gd', vim.lsp.buf.definition, {})
-    vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, {})
-    vim.keymap.set('n', 'gr', telescope.lsp_references, {})
-    vim.keymap.set('n', '<leader>gT', vim.lsp.buf.type_definition, {})
+        local opts = { buffer = ev.buf }
+        local telescope = require('telescope.builtin')
 
-    vim.keymap.set('n', 'K', vim.lsp.buf.hover, {})
-    vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, {})
+        vim.keymap.set('n', '<leader>vd', vim.diagnostic.open_float, opts)
+        vim.keymap.set('n', '[d', vim.diagnostic.goto_next)
+        vim.keymap.set('n', ']d', vim.diagnostic.goto_prev)
 
-    vim.keymap.set({ 'n', 'v' }, '<leader>ca', vim.lsp.buf.code_action, {})
-    vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, {})
-    vim.keymap.set('n', 'gs', telescope.lsp_document_symbols, {})
-    vim.keymap.set('n', 'gS', telescope.lsp_workspace_symbols, {})
+        vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
+        vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
+        vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
+        vim.keymap.set('n', 'gr', telescope.lsp_references, opts)
+        vim.keymap.set('n', '<leader>gT', vim.lsp.buf.type_definition, opts)
 
-    vim.keymap.set('n', '<leader>cf', function()
-        vim.lsp.buf.format { async = true }
-    end, {})
-end
+        vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
+        vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
+
+        vim.keymap.set({ 'n', 'v' }, '<leader>ca', vim.lsp.buf.code_action, opts)
+        vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, opts)
+        vim.keymap.set('n', 'gs', telescope.lsp_document_symbols, opts)
+        vim.keymap.set('n', 'gS', telescope.lsp_workspace_symbols, opts)
+
+        vim.keymap.set('n', '<leader>cf', function()
+            vim.lsp.buf.format { async = true }
+        end, opts)
+    end,
+})
 
 lspconfig.lua_ls.setup {
     capabilities = capabilities,
-    on_attach = on_attach,
     settings = {
         Lua = {
-            runtime = {
-                version = 'LuaJIT',
-            },
             diagnostics = {
                 globals = { 'vim' },
             },
-            workspace = {
-                library = vim.api.nvim_get_runtime_file("", true),
-            },
-            telemetry = {
-                enable = false,
-            },
-        },
-    },
+        }
+    }
 }
+
+lspconfig.bashls.setup { capabilities = capabilities }
