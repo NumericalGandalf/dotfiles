@@ -1,6 +1,6 @@
 require("mason").setup()
 require("mason-lspconfig").setup({
-    ensure_installed = { "lua_ls", "bashls" }
+    ensure_installed = { "lua_ls", "bashls", "pyright" }
 })
 
 local cmp = require('cmp')
@@ -91,3 +91,4 @@ lspconfig.lua_ls.setup {
 }
 
 lspconfig.bashls.setup { capabilities = capabilities }
+lspconfig.pyright.setup { capabilities = capabilities }
