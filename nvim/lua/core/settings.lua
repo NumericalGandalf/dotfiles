@@ -24,3 +24,4 @@ vim.keymap.set('v', '<C-j>', ":m '>+1<CR>gv=gv")
 vim.keymap.set('v', '<C-k>', ":m '<-2<CR>gv=gv")
 
 vim.keymap.set('n', '<leader>ft', function() vim.cmd(":Ex") end)
+vim.cmd [[autocmd BufWritePre <buffer> lua vim.lsp.buf.format()]]

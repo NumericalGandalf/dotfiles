@@ -1,3 +1,4 @@
+require("plugins.autosave")
 require("plugins.colorscheme")
 require("plugins.telescope")
 require("plugins.lualine")

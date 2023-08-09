@@ -14,6 +14,8 @@ local packer_bootstrap = ensure_packer()
 return require('packer').startup(function(use)
     use 'wbthomason/packer.nvim'
 
+    use 'pocco81/auto-save.nvim'
+
     use {
         'nvim-telescope/telescope.nvim',
         requires = {
