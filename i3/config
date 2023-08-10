@@ -67,16 +67,16 @@ bindsym $mod+8 workspace $ws8
 bindsym $mod+9 workspace $ws9
 bindsym $mod+0 workspace $ws0
 
-bindsym $mod+Ctrl+1 move container workspace $ws1
-bindsym $mod+Ctrl+2 move container workspace $ws2
-bindsym $mod+Ctrl+3 move container workspace $ws3
-bindsym $mod+Ctrl+4 move container workspace $ws4
-bindsym $mod+Ctrl+5 move container workspace $ws5
-bindsym $mod+Ctrl+6 move container workspace $ws6
-bindsym $mod+Ctrl+7 move container workspace $ws7
-bindsym $mod+Ctrl+8 move container workspace $ws8
-bindsym $mod+Ctrl+9 move container workspace $ws9
-bindsym $mod+Ctrl+0 move container workspace $ws0
+bindsym $mod+Ctrl+1 move container workspace $ws1, workspace $ws1
+bindsym $mod+Ctrl+2 move container workspace $ws2, workspace $ws2
+bindsym $mod+Ctrl+3 move container workspace $ws3, workspace $ws3
+bindsym $mod+Ctrl+4 move container workspace $ws4, workspace $ws4
+bindsym $mod+Ctrl+5 move container workspace $ws5, workspace $ws5
+bindsym $mod+Ctrl+6 move container workspace $ws6, workspace $ws6
+bindsym $mod+Ctrl+7 move container workspace $ws7, workspace $ws7
+bindsym $mod+Ctrl+8 move container workspace $ws8, workspace $ws8
+bindsym $mod+Ctrl+9 move container workspace $ws9, workspace $ws9
+bindsym $mod+Ctrl+0 move container workspace $ws0, workspace $ws0
 
 focus_on_window_activation none
 for_window [all] border none
