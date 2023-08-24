@@ -1,10 +1,7 @@
 require("mason").setup()
-require("mason-lspconfig").setup({
-    ensure_installed = { "lua_ls", "bashls", "pyright" }
-})
+require("mason-lspconfig").setup()
 
 local cmp = require('cmp')
-local lspconfig = require("lspconfig")
 
 cmp.setup({
     snippet = {
@@ -19,14 +16,15 @@ cmp.setup({
     mapping = cmp.mapping.preset.insert({
         ['<C-b>'] = cmp.mapping.scroll_docs(-4),
         ['<C-f>'] = cmp.mapping.scroll_docs(4),
-        ['<C-O>'] = cmp.mapping.complete(),
+        -- ['<Tab>'] = cmp.mapping.complete(),
         ['<C-e>'] = cmp.mapping.abort(),
         ['<C-o>'] = cmp.mapping.confirm({ select = true }),
     }),
     sources = cmp.config.sources({
         { name = 'nvim_lsp' },
         { name = "luasnip" },
-        { name = 'buffer' }
+    }, {
+        { name = 'buffer' },
     })
 })
 
@@ -41,11 +39,10 @@ cmp.setup.cmdline(':', {
     mapping = cmp.mapping.preset.cmdline(),
     sources = cmp.config.sources({
         { name = 'path' },
+    }, {
         { name = 'cmdline' }
     })
 })
-
-local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
 vim.api.nvim_create_autocmd("LspAttach", {
     group = vim.api.nvim_create_augroup("UserLspConfig", {}),
@@ -79,7 +76,9 @@ vim.api.nvim_create_autocmd("LspAttach", {
     end,
 })
 
-lspconfig.lua_ls.setup {
+local capabilities = require('cmp_nvim_lsp').default_capabilities()
+
+require("lspconfig")["lua_ls"].setup {
     capabilities = capabilities,
     settings = {
         Lua = {
@@ -90,5 +89,5 @@ lspconfig.lua_ls.setup {
     }
 }
 
-lspconfig.bashls.setup { capabilities = capabilities }
-lspconfig.pyright.setup { capabilities = capabilities }
+require("lspconfig")["bashls"].setup { capabilities = capabilities }
+require("lspconfig")["pyright"].setup { capabilities = capabilities }

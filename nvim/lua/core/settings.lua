@@ -3,7 +3,7 @@ vim.g.mapleader = " "
 vim.opt.termguicolors = true
 
 vim.opt.nu = true
-vim.opt.relativenumber = true
+vim.opt.relativenumber = false
 vim.opt.scrolloff = 15
 
 vim.opt.smartindent = true

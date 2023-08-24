@@ -78,22 +78,21 @@ bindsym $mod+Ctrl+8 move container workspace $ws8, workspace $ws8
 bindsym $mod+Ctrl+9 move container workspace $ws9, workspace $ws9
 bindsym $mod+Ctrl+0 move container workspace $ws0, workspace $ws0
 
-focus_on_window_activation none
 for_window [all] border none
 for_window [window_role="pop-up"] floating enable
 for_window [window_role="task_dialog"] floating enable
 
-assign [class="Alacritty" instance="Alacritty"] $ws1
-assign [class="firefox" instance="Navigator"] $ws3
+assign [class="Alacritty"] $ws1
+assign [class="firefox"] $ws3
 
 for_window [class="dolphin" window_type="normal"] floating enable, move scratchpad
 for_window [class="discord" window_type="normal"] floating enable, move scratchpad
 for_window [class="Spotify" window_type="normal"] floating enable, move scratchpad
 for_window [title="Ryujinx 1.1.0-ldn3.1.3"] floating enable, move position center
 
-bindsym $mod+Shift+e [class="dolphin" instance="dolphin"] scratchpad show, move position center
-bindsym $mod+Shift+d [class="discord" instance="discord"] scratchpad show, move position center
-bindsym $mod+Shift+s [class="Spotify" instance="spotify"] scratchpad show, move position center
+bindsym $mod+Shift+e [class="dolphin"] scratchpad show, move position center
+bindsym $mod+Shift+d [class="discord"] scratchpad show, move position center
+bindsym $mod+Shift+s [class="Spotify"] scratchpad show, move position center
 
 set $mode_default "default"
 set $mode_system "System: (l) lock, (e) logout, (s) suspend, (r) reboot, (p) shutdown"
