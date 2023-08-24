@@ -1,30 +1,8 @@
 #!/usr/bin/bash
 
-if term=$(command -v $TERMINAL) && ! ps -e | grep $TERMINAL; then
-    exec $term > /dev/null 2>&1 &
-fi
-   
-#if browser=$(command -v firefox) && ! ps -e | grep firefox; then
-    #exec $browser > /dev/null 2>&1 &
-#fi
-    
-if ! inxi -Gxx | grep compositor && comp=$(command -v picom) && ! ps -e | grep picom; then
-    exec $comp > /dev/null 2>&1 &
-fi
-
-if expl=$(command -v Explorer) && ! ps -e | grep dolphin; then
-    exec $expl > /dev/null 2>&1 &
-fi
-
-if discordclt=$(command -v Discord) && ! ps -e | grep Discord; then
-    exec $discordclt > /dev/null 2>&1 &
-fi
-
-if spotifyclt=$(command -v spotify) && ! ps -e | grep spotify; then
-    exec $spotifyclt > /dev/null 2>&1 &
-fi
-
-if i3wm=$(command -v i3); then
+if [ $TERMCLT -eq 1 ] && i3wm=$(command -v i3); then
     exec $i3wm > /dev/null 2>&1
+elif [ $TERMCLT -eq 2 ] && plasmawm=$(command -v startplasma-x11); then
+    exec $plasmawm > /dev/null 2>&1
 fi
 

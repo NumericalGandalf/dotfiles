@@ -7,6 +7,6 @@ fi
 export TERMINAL="alacritty"
 
 if [[ -z $DISPLAY ]]; then
-    export TERMCLT=$(tty)
+    export TERMCLT="${$(tty):0-1}"
     exec startx > /dev/null 2>&1 &
 fi
