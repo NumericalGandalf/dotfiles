@@ -134,7 +134,6 @@ bar {
 
 exec --no-startup-id $TERMINAL
 exec --no-startup-id firefox
-exec --no-startup-id picom
 exec --no-startup-id Explorer
 exec --no-startup-id Discord
 exec --no-startup-id spotify
