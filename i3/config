@@ -2,9 +2,8 @@ set $mod Mod1
 set $mod_mode Mod4
 floating_modifier $mod_mode
 
-font pango:monospace 8
-set $bg_img ~/Pictures/MythraSirene.png
-exec --no-startup-id feh --bg-fill $bg_img
+font pango:Hack Nerd Font Mono 8
+exec --no-startup-id feh --bg-fill ~/Pictures/MorgothVsFingolfin.jpg ~/Pictures/EowynVsWitchKingOfAngmar.jpg
 
 set $refresh_i3status killall -SIGUSR1 i3status
 bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +5% && $refresh_i3status
@@ -98,8 +97,10 @@ set $mode_default "default"
 set $mode_system "System: (l) lock, (e) logout, (s) suspend, (r) reboot, (p) shutdown"
 set $mode_resize "Resize: (h) shrink width, (l) grow width, (k) shrink height, (j) grow height, (m) normal"
 
+set $lock i3lock --nofork -u -i ~/Pictures/OneRing.png -t
+exec xss-lock --transfer-sleep-lock -- $lock
 mode $mode_system {
-    bindsym l exec --no-startup-id i3lock -t -i $bg_img, mode $mode_default
+    bindsym l exec --no-startup-id $lock, mode $mode_default
     bindsym e exec --no-startup-id i3-msg exit, mode $mode_default
     bindsym s exec --no-startup-id systemctl suspend, mode $mode_default
     bindsym r exec --no-startup-id systemctl reboot -i, mode $mode_default
@@ -137,5 +138,4 @@ exec --no-startup-id firefox
 exec --no-startup-id Explorer
 exec --no-startup-id Discord
 exec --no-startup-id spotify
-exec --no-startup-id i3-msg workspace $ws1
 
