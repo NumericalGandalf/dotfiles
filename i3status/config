@@ -39,6 +39,7 @@ cpu_usage {
 
 cpu_temperature 0 {
     format = " (%degrees°C)"
+    path = /home/gandalf/.local/state/cpu_temp
 }
 
 load {
@@ -48,7 +49,6 @@ load {
 disk "/" {
     format = "FS: %used (%avail)"
     prefix_type = "decimal"
-
 }
 
 memory {
