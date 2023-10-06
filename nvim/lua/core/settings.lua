@@ -3,7 +3,7 @@ vim.g.mapleader = " "
 vim.opt.termguicolors = true
 
 vim.opt.nu = true
-vim.opt.relativenumber = false
+vim.opt.relativenumber = true
 vim.opt.scrolloff = 15
 
 vim.opt.smartindent = true
@@ -19,6 +19,8 @@ vim.opt.backup = false
 
 vim.opt.incsearch = true
 vim.opt.hlsearch = false
+
+vim.opt.fillchars = "eob: "
 
 vim.keymap.set('v', '<C-j>', ":m '>+1<CR>gv=gv")
 vim.keymap.set('v', '<C-k>', ":m '<-2<CR>gv=gv")

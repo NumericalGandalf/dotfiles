@@ -1,4 +1,7 @@
 require('lualine').setup {
+    options = {
+        globalstatus = true,
+    },
     sections = {
         lualine_a = { 'mode' },
         lualine_b = { 'branch', 'diff', 'diagnostics' },
@@ -8,5 +11,6 @@ require('lualine').setup {
         lualine_x = { 'filesize', 'encoding', 'fileformat' },
         lualine_y = { 'location' },
         lualine_z = { { 'filetype', colored = false, icon_only = false, icon = { align = 'left' } } },
-    }
+    },
+    extensions = { "nvim-dap-ui" }
 }

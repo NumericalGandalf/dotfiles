@@ -76,18 +76,37 @@ vim.api.nvim_create_autocmd("LspAttach", {
     end,
 })
 
-local capabilities = require('cmp_nvim_lsp').default_capabilities()
+require("neodev").setup({
+    {
+        library = {
+            enabled = true,
+            runtime = true,
+            types = true,
+            plugins = true,
+        },
+        setup_jsonls = true,
+        override = function(root_dir, options) end,
+        lspconfig = true,
+        pathStrict = true,
+    }
+})
 
-require("lspconfig")["lua_ls"].setup {
+local capabilities = require('cmp_nvim_lsp').default_capabilities()
+local lspconfig = require("lspconfig")
+
+lspconfig["lua_ls"].setup {
     capabilities = capabilities,
     settings = {
         Lua = {
             diagnostics = {
                 globals = { 'vim' },
             },
+            completion = {
+                callSnippet = "Replace"
+            }
         }
     }
 }
 
-require("lspconfig")["bashls"].setup { capabilities = capabilities }
-require("lspconfig")["pyright"].setup { capabilities = capabilities }
+lspconfig["bashls"].setup { capabilities = capabilities }
+lspconfig["pyright"].setup { capabilities = capabilities }

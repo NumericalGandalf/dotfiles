@@ -14,8 +14,6 @@ local packer_bootstrap = ensure_packer()
 return require('packer').startup(function(use)
     use 'wbthomason/packer.nvim'
 
-    use 'pocco81/auto-save.nvim'
-
     use {
         'nvim-telescope/telescope.nvim',
         requires = {
@@ -46,8 +44,15 @@ return require('packer').startup(function(use)
 
         'L3MON4D3/LuaSnip',
         'saadparwaiz1/cmp_luasnip',
+        'folke/neodev.nvim'
     }
 
+    use {
+        'mfussenegger/nvim-dap',
+        "rcarriga/nvim-dap-ui"
+    }
+
+    use 'pocco81/auto-save.nvim'
     use 'folke/tokyonight.nvim'
     use 'nvim-tree/nvim-web-devicons'
 

@@ -17,6 +17,8 @@ vim.api.nvim_create_user_command('SetColorscheme',
                 hide_inactive_statusline = true,
                 dim_inactive = false,
                 lualine_bold = false,
+                on_colors = function(colors) end,
+                on_highlights = function(highlights, colors) end,
             })
         else
             error(string.format("Invalid colorscheme '%s'", colorscheme))
