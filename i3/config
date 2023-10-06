@@ -1,6 +1,6 @@
 set $mod Mod1
 set $mod_mode Mod4
-floating_modifier $mod_mode
+floating_modifier $mod
 
 font pango:Hack Nerd Font Mono 8
 exec --no-startup-id feh --bg-fill ~/Pictures/MorgothVsFingolfin.jpg ~/Pictures/EowynVsWitchKingOfAngmar.jpg
@@ -86,30 +86,27 @@ assign [class="firefox"] $ws3
 
 for_window [class="discord" window_type="normal"] floating enable, move scratchpad
 for_window [class="Spotify" window_type="normal"] floating enable, move scratchpad
-for_window [title="Ryujinx 1.1.0-ldn3.1.3"] floating enable, move position center
 
-bindsym $mod+Shift+e [class="dolphin"] scratchpad show, move position center
 bindsym $mod+Shift+d [class="discord"] scratchpad show, move position center
 bindsym $mod+Shift+s [class="Spotify"] scratchpad show, move position center
 
 exec xss-lock --transfer-sleep-lock -- i3lock --nofork -u -i ~/Pictures/OneRing.png -t
-set $mode_default "default"
 set $mode_system "System: (l) lock, (e) logout, (s) suspend, (r) reboot, (p) shutdown"
 bindsym $mod_mode+Return mode $mode_system
 mode $mode_system {
-    bindsym l exec --no-startup-id loginctl lock-session, mode $mode_default
-    bindsym e exec --no-startup-id i3-msg exit, mode $mode_default
-    bindsym s exec --no-startup-id systemctl suspend, mode $mode_default
-    bindsym r exec --no-startup-id systemctl reboot -i, mode $mode_default
-    bindsym p exec --no-startup-id systemctl poweroff -i, mode $mode_default
+    bindsym l exec --no-startup-id loginctl lock-session, mode "default"
+    bindsym e exec --no-startup-id pkill -u $(whoami), mode "default"
+    bindsym s exec --no-startup-id systemctl suspend, mode "default"
+    bindsym r exec --no-startup-id systemctl reboot -i, mode "default"
+    bindsym p exec --no-startup-id systemctl poweroff -i, mode "default"
 
-    bindsym Return mode $mode_default
-    bindsym Escape mode $mode_default
-    bindsym $mod_mode+Return mode $mode_default
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+    bindsym $mod+Return mode "default"
 }
 
 bar {
-    status_command cpu_temp | i3status
+    status_command i3status
     mode hide
     modifier $mod_mode
     tray_output none
