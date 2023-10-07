@@ -15,6 +15,7 @@ plugins=(
     zsh-autosuggestions 
     web-search 
     sudo
+    zsh-syntax-highlighting
 )
 
 source $ZSH/oh-my-zsh.sh
