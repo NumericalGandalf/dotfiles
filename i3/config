@@ -88,6 +88,7 @@ assign [class="firefox"] $ws3
 for_window [class="discord" window_type="normal"] floating enable, move scratchpad
 for_window [class="Spotify" window_type="normal"] floating enable, move scratchpad
 for_window [class="dolphin" window_type="normal"] floating enable, move position center
+for_window [class="com-wiznet-client-Main"] floating enable, move position center
 
 bindsym $mod+Shift+d [class="discord"] scratchpad show, move position center
 bindsym $mod+Shift+s [class="Spotify"] scratchpad show, move position center

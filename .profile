@@ -7,6 +7,8 @@ fi
 export EDITOR=/usr/bin/nvim
 export TERMINAL="alacritty"
 
+export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
+
 if [[ -z $DISPLAY ]]; then
     export TERMCLT="${$(tty):0-1}"
     exec startx > /dev/null 2>&1
