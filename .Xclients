@@ -4,14 +4,14 @@ if ! inxi -Gxx | grep compositor && comp=$(command -v picom) && ! ps -e | grep p
     exec $comp > /dev/null 2>&1 & 
 fi
 
-if [ $TERMCLT -eq 2 ] && i3wm=$(command -v i3); then
+if [ $TERMCLT -eq 1 ] && i3wm=$(command -v i3); then
     if tempreader=$(command -v cpu_temp_probe) && ! ps -e | grep cpu_temp_probe; then
         exec $tempreader > /dev/null 2>&1 &
     fi
     
     exec $i3wm > /dev/null 2>&1
 
-elif [ $TERMCLT -eq 1 ] && plasmawm=$(command -v startplasma-x11); then
+elif [ $TERMCLT -eq 2 ] && plasmawm=$(command -v startplasma-x11); then
     exec $plasmawm > /dev/null 2>&1
 fi
 

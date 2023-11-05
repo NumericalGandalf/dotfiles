@@ -6,8 +6,9 @@ fi
 
 export EDITOR=/usr/bin/nvim
 export TERMINAL="alacritty"
+export $(dbus-launch)
 
-export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
+export JAVA_HOME=/usr/lib/jvm/java-21-openjdk
 
 if [[ -z $DISPLAY ]]; then
     export TERMCLT="${$(tty):0-1}"
