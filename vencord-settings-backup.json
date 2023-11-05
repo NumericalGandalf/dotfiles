@@ -5,7 +5,7 @@
         "autoUpdateNotification": true,
         "useQuickCss": true,
         "themeLinks": [
-            "https://raw.githubusercontent.com/BinaryGandalf/ClearVision-v6/gandalfs/ClearVision_v6.theme.css"
+            "https://raw.githubusercontent.com/ClearVision/ClearVision-v6/master/ClearVision_v6.theme.css"
         ],
         "enableReactDevtools": true,
         "frameless": false,
@@ -68,7 +68,11 @@
                 "enabled": false
             },
             "BetterFolders": {
-                "enabled": false
+                "enabled": true,
+                "sidebar": true,
+                "closeAllHomeButton": false,
+                "closeAllFolders": false,
+                "forceOpen": false
             },
             "BetterGifAltText": {
                 "enabled": false
@@ -179,7 +183,8 @@
                 "enabled": false
             },
             "IgnoreActivities": {
-                "enabled": true
+                "enabled": true,
+                "ignoredActivities": []
             },
             "ImageZoom": {
                 "enabled": false
@@ -278,13 +283,16 @@
                 "enabled": false
             },
             "NoDevtoolsWarning": {
-                "enabled": false
+                "enabled": true
             },
             "NoF1": {
                 "enabled": true
             },
             "NoPendingCount": {
-                "enabled": false
+                "enabled": true,
+                "hideFriendRequestsCount": true,
+                "hideMessageRequestsCount": true,
+                "hidePremiumOffersCount": true
             },
             "NoProfileThemes": {
                 "enabled": false
@@ -538,7 +546,7 @@
                 "enabled": false
             },
             "WhoReacted": {
-                "enabled": false
+                "enabled": true
             },
             "Wikisearch": {
                 "enabled": true
@@ -550,7 +558,7 @@
                 "enabled": false
             },
             "PreviewMessage": {
-                "enabled": false
+                "enabled": true
             },
             "CopyUserURLs": {
                 "enabled": false
@@ -562,15 +570,27 @@
                 "enabled": false
             },
             "ShowTimeouts": {
-                "enabled": false
+                "enabled": true
             },
             "ThemeAttributes": {
-                "enabled": false
+                "enabled": true
             },
             "PictureInPicture": {
                 "enabled": false
             },
             "Dearrow": {
+                "enabled": false
+            },
+            "NoMosaic": {
+                "enabled": false
+            },
+            "NoTypingAnimation": {
+                "enabled": false
+            },
+            "OnePingPerDM": {
+                "enabled": false
+            },
+            "PermissionFreeWill": {
                 "enabled": false
             }
         },
@@ -584,9 +604,9 @@
             "authenticated": false,
             "url": "https://api.vencord.dev/",
             "settingsSync": false,
-            "settingsSyncVersion": 1696101047205
+            "settingsSyncVersion": 1698237350231
         },
         "enabledThemes": []
     },
-    "quickCss": ""
+    "quickCss": ":root {\n    --background-image: url(https://images7.alphacoders.com/881/881493.jpg)\n}"
 }
