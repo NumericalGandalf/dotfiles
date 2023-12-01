@@ -17,7 +17,6 @@ bindsym $mod+Ctrl+c restart
 
 bindsym $mod+Return exec --no-startup-id i3-sensible-terminal
 bindsym $mod+d exec --no-startup-id i3-dmenu-desktop --dmenu="dmenu -i -b"
-bindsym --release $mod+p exec --no-startup-id takescrot
 
 bindsym $mod+h focus left
 bindsym $mod+j focus down
@@ -108,6 +107,7 @@ set $mode_default_name Default
 set $mode_change exec --no-startup-id notify-send -u low "(I) i3wm" "Switched mode:<i>
 set $mode_change_end </i>"
 
+bindsym --release $mod_meta+Shift+s exec --no-startup-id takescrot
 bindsym $mod_meta+l exec --no-startup-id loginctl lock-session
 bindsym $mod_meta+r exec --no-startup-id systemctl reboot
 bindsym $mod_meta+s exec --no-startup-id systemctl suspend
