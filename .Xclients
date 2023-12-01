@@ -4,6 +4,10 @@ if ! inxi -Gxx | grep compositor && comp=$(command -v picom) && ! ps -e | grep p
     exec $comp > /dev/null 2>&1 & 
 fi
 
+if numlock=$(command -v numlockx); then
+    exec $numlock on > /dev/null 2>&1 &
+fi
+
 if [ $TERMCLT -eq 1 ] && i3wm=$(command -v i3); then
     if tempreader=$(command -v cpu_temp_probe) && ! ps -e | grep cpu_temp_probe; then
         exec $tempreader > /dev/null 2>&1 &

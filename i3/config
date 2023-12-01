@@ -1,5 +1,5 @@
 set $mod Mod1
-set $mod_mode Mod4
+set $mod_meta Mod4
 floating_modifier $mod
 
 font pango:Hack Nerd Font Mono 8
@@ -11,28 +11,29 @@ bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT
 bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle && $refresh_i3status
 bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle && $refresh_i3status
 
-bindsym $mod+Ctrl+c exec --no-startup-id i3-msg reload
-bindsym $mod+Ctrl+r exec --no-startup-id i3-msg restart
-bindsym $mod+Ctrl+e exec --no-startup-id i3-msg exit
-bindsym $mod+Ctrl+q exec --no-startup-id i3-msg kill
+bindsym $mod+Ctrl+e exit
+bindsym $mod+Ctrl+q kill
+bindsym $mod+Ctrl+c restart
 
 bindsym $mod+Return exec --no-startup-id i3-sensible-terminal
-bindsym $mod+d exec --no-startup-id dmenu_run -i -b
-bindsym $mod+e exec --no-startup-id gtk-launch org.kde.dolphin
+bindsym $mod+d exec --no-startup-id i3-dmenu-desktop --dmenu="dmenu -i -b"
+bindsym --release $mod+p exec --no-startup-id takescrot
 
 bindsym $mod+h focus left
 bindsym $mod+j focus down
 bindsym $mod+k focus up
 bindsym $mod+l focus right
-bindsym $mod+f fullscreen toggle
+
+bindsym $mod+c split horizontal
+bindsym $mod+v split vertical
 
 bindsym $mod+Ctrl+h move left
 bindsym $mod+Ctrl+j move down
 bindsym $mod+Ctrl+k move up
 bindsym $mod+Ctrl+l move right
 
-bindsym $mod+Space floating toggle
-bindsym $mod+Ctrl+Space focus mode_toggle
+bindsym $mod+f fullscreen toggle
+bindsym $mod+space floating toggle
 
 set $ws1 "1"
 set $ws2 "2"
@@ -78,8 +79,12 @@ bindsym $mod+Ctrl+8 move container workspace $ws8, workspace $ws8
 bindsym $mod+Ctrl+9 move container workspace $ws9, workspace $ws9
 bindsym $mod+Ctrl+0 move container workspace $ws0, workspace $ws0
 
+smart_gaps on
+gaps inner 4
+
 popup_during_fullscreen smart
 focus_on_window_activation smart
+focus_follows_mouse yes
 
 for_window [all] border none
 for_window [window_role="pop-up"] floating enable
@@ -88,42 +93,37 @@ for_window [window_role="task_dialog"] floating enable
 assign [class="Alacritty"] $ws1
 assign [class="firefox"] $ws3
 
+for_window [class="dolphin" window_type="normal"] floating enable, move scratchpad
 for_window [class="discord" window_type="normal"] floating enable, move scratchpad
 for_window [class="Spotify" window_type="normal"] floating enable, move scratchpad
-for_window [class="dolphin" window_type="normal"] floating enable
-for_window [class="com-wiznet-client-Main"] floating enable
+for_window [class="WizClient"] floating enable
+for_window [class="Takescrot"] floating enable
 
+bindsym $mod+Shift+e [class="dolphin"] scratchpad show, move position center
 bindsym $mod+Shift+d [class="discord"] scratchpad show, move position center
 bindsym $mod+Shift+s [class="Spotify"] scratchpad show, move position center
 
-set $mode_system System
 set $mode_unleashed Unleashed
 set $mode_default_name Default
 set $mode_change exec --no-startup-id notify-send -u low "(I) i3wm" "Switched mode:<i>
 set $mode_change_end </i>"
 
-bindsym $mod_mode+Return mode $mode_system, $mode_change $mode_system $mode_change_end
-mode $mode_system {
-    bindsym l exec --no-startup-id loginctl lock-session, mode "default"
-    bindsym e exec --no-startup-id pkill -u $(whoami), mode "default"
-    bindsym s exec --no-startup-id systemctl suspend, mode "default"
-    bindsym r exec --no-startup-id systemctl reboot -i, mode "default"
-    bindsym p exec --no-startup-id systemctl poweroff -i, mode "default"
-    bindsym $mod_mode+Return mode "default", $mode_change $mode_default_name $mode_change_end 
-    bindsym $mod_mode+BackSpace mode $mode_unleashed, $mode_change $mode_unleashed $mode_change_end
-}
+bindsym $mod_meta+l exec --no-startup-id loginctl lock-session
+bindsym $mod_meta+r exec --no-startup-id systemctl reboot
+bindsym $mod_meta+s exec --no-startup-id systemctl suspend
+bindsym $mod_meta+p exec --no-startup-id systemctl poweroff
 
-bindsym $mod_mode+BackSpace mode $mode_unleashed, $mode_change $mode_unleashed $mode_change_end
+bindsym $mod_meta+Return mode $mode_unleashed, $mode_change $mode_unleashed $mode_change_end
 mode $mode_unleashed {
-    bindsym $mod_mode+BackSpace mode "default", $mode_change $mode_default_name $mode_change_end
-    bindsym $mod_mode+Return mode $mode_system, $mode_change $mode_system $mode_change_end
+    bindsym $mod_meta+Return mode "default", $mode_change $mode_default_name $mode_change_end
+    bindsym $mod_meta+Escape mode "default", $mode_change $mode_default_name $mode_change_end
 }
 
 bar {
     i3bar_command i3bar --transparency
     status_command i3status
     tray_output none
-    modifier $mod_mode
+    modifier $mod_meta
     mode hide
     binding_mode_indicator no
 }
@@ -131,6 +131,7 @@ bar {
 exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork -u -i ~/Pictures/OneRing.png -t
 exec --no-startup-id i3-sensible-terminal
 exec --no-startup-id firefox
+exec --no-startup-id gtk-launch org.kde.dolphin
 exec --no-startup-id gtk-launch discord.desktop
 exec --no-startup-id gtk-launch spotify.desktop
 
