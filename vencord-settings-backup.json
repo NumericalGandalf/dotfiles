@@ -68,11 +68,14 @@
                 "enabled": false
             },
             "BetterFolders": {
-                "enabled": true,
+                "enabled": false,
                 "sidebar": true,
                 "closeAllHomeButton": false,
                 "closeAllFolders": false,
-                "forceOpen": false
+                "forceOpen": false,
+                "keepIcons": false,
+                "sidebarAnim": true,
+                "closeOthers": false
             },
             "BetterGifAltText": {
                 "enabled": false
@@ -113,7 +116,7 @@
                 "attemptToNavigateToHome": false
             },
             "CustomRPC": {
-                "enabled": true,
+                "enabled": false,
                 "type": 0,
                 "timestampMode": 1,
                 "appID": "1147197264020901928",
@@ -205,7 +208,8 @@
                 "missingArt": "lastfmLogo"
             },
             "LoadingQuotes": {
-                "enabled": true
+                "enabled": true,
+                "replaceEvents": true
             },
             "MemberCount": {
                 "enabled": true
@@ -218,7 +222,7 @@
             },
             "MessageLogger": {
                 "enabled": true,
-                "deleteStyle": "text",
+                "deleteStyle": "overlay",
                 "ignoreBots": false,
                 "ignoreSelf": true,
                 "ignoreUsers": "",
@@ -585,7 +589,7 @@
                 "enabled": false
             },
             "NoTypingAnimation": {
-                "enabled": false
+                "enabled": true
             },
             "OnePingPerDM": {
                 "enabled": false
@@ -604,7 +608,7 @@
             "authenticated": false,
             "url": "https://api.vencord.dev/",
             "settingsSync": false,
-            "settingsSyncVersion": 1698237350231
+            "settingsSyncVersion": 1698855464577
         },
         "enabledThemes": []
     },
