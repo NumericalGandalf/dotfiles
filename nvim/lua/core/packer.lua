@@ -54,6 +54,7 @@ return require('packer').startup(function(use)
 
     use 'pocco81/auto-save.nvim'
     use 'folke/tokyonight.nvim'
+    use 'ellisonleao/gruvbox.nvim'
     use 'nvim-tree/nvim-web-devicons'
 
     if packer_bootstrap then
