@@ -25,7 +25,7 @@ vim.api.nvim_create_user_command('SetColorscheme',
                 terminal_colors = true,
                 undercurl = true,
                 underline = true,
-                bold = false,
+                bold = true,
                 italic = {
                     strings = true,
                     emphasis = true,
