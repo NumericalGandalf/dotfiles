@@ -2,6 +2,24 @@ vim.api.nvim_create_user_command('SetColorscheme',
     function(opts)
         local colorscheme = opts.fargs[1]
         if colorscheme == "tokyonight" then
+            ;
+        elseif colorscheme == "gruvbox" then
+            ;
+        else
+            error(string.format("Invalid colorscheme '%s'", colorscheme))
+            return
+        end
+        vim.api.nvim_command(string.format("colorscheme %s", colorscheme))
+    end,
+    { nargs = 1, complete = function() return { "tokyonight", "gruvbox" } end }
+)
+
+return {
+    {
+        'folke/tokyonight.nvim',
+        lazy = false,
+        enabled = false,
+        config = function()
             require("tokyonight").setup({
                 style = "night",
                 transparent = true,
@@ -20,7 +38,14 @@ vim.api.nvim_create_user_command('SetColorscheme',
                 on_colors = function(colors) end,
                 on_highlights = function(highlights, colors) end,
             })
-        elseif colorscheme == "gruvbox" then
+            vim.cmd.SetColorscheme("tokyonight")
+        end
+    },
+    {
+        'ellisonleao/gruvbox.nvim',
+        lazy = false,
+        enabled = true,
+        config = function()
             require("gruvbox").setup({
                 terminal_colors = true,
                 undercurl = true,
@@ -45,14 +70,7 @@ vim.api.nvim_create_user_command('SetColorscheme',
                 dim_inactive = false,
                 transparent_mode = false,
             })
-        else
-            error(string.format("Invalid colorscheme '%s'", colorscheme))
-            return
+            vim.cmd.SetColorscheme("gruvbox")
         end
-
-        vim.api.nvim_command(string.format("colorscheme %s", colorscheme))
-    end,
-    { nargs = 1, complete = function() return { "tokyonight", "gruvbox" } end }
-)
-
-vim.cmd.SetColorscheme("gruvbox")
+    }
+}

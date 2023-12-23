@@ -1,2 +1,3 @@
-require("settings")
-require("lazyplug")
+require("gandalf.settings")
+require("gandalf.utils")
+require("gandalf.lazy")

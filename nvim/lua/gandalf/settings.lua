@@ -27,4 +27,3 @@ vim.keymap.set('v', '<C-k>', ":m '<-2<CR>gv=gv")
 
 vim.g.netrw_winsize = 20
 vim.keymap.set('n', '<leader>ft', function() vim.cmd(":Lexplore") end)
-vim.cmd [[autocmd BufWritePre <buffer> lua vim.lsp.buf.format()]]
