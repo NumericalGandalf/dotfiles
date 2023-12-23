@@ -6,6 +6,7 @@ vim.opt.number = true
 vim.opt.relativenumber = true
 vim.opt.scrolloff = 15
 
+vim.opt.autoindent = true
 vim.opt.smartindent = true
 vim.opt.wrap = false
 

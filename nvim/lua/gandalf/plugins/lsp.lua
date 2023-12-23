@@ -46,9 +46,19 @@ return {
                     vim.keymap.set('n', 'gS', telescope.lsp_workspace_symbols, opts)
                 end,
             })
+            vim.api.nvim_create_autocmd("InsertLeave", {
+                callback = function()
+                    vim.lsp.buf.format({ timeout_ms = 5000, async = false })
+                end
+            })
+            vim.api.nvim_create_autocmd("TextChanged", {
+                callback = function()
+                    vim.lsp.buf.format({ timeout_ms = 5000, async = false })
+                end
+            })
             local capabilities = require('cmp_nvim_lsp').default_capabilities()
             local lspconfig = require("lspconfig")
-            lspconfig["lua_ls"].setup {
+            lspconfig["lua_ls"].setup({
                 capabilities = capabilities,
                 settings = {
                     Lua = {
@@ -60,9 +70,9 @@ return {
                         }
                     }
                 }
-            }
-            lspconfig["bashls"].setup { capabilities = capabilities }
-            lspconfig["pyright"].setup { capabilities = capabilities }
+            })
+            lspconfig["bashls"].setup({ capabilities = capabilities })
+            lspconfig["pyright"].setup({ capabilities = capabilities })
         end
     },
     {

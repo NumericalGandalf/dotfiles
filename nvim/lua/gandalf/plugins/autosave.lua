@@ -2,11 +2,6 @@ return {
     'pocco81/auto-save.nvim',
     event = 'BufEnter',
     config = function()
-        vim.api.nvim_create_autocmd("BufWritePre", {
-            callback = function()
-                vim.lsp.buf.format { async = false }
-            end
-        })
         require("auto-save").setup({
             enabled = true,
             execution_message = {
@@ -26,7 +21,7 @@ return {
                 return false
             end,
             write_all_buffers = false,
-            debounce_delay = 135,
+            debounce_delay = 5000,
             callbacks = {
                 enabling = nil,
                 disabling = nil,
