@@ -56,23 +56,6 @@ return {
                     vim.lsp.buf.format({ timeout_ms = 5000, async = false })
                 end
             })
-            local capabilities = require('cmp_nvim_lsp').default_capabilities()
-            local lspconfig = require("lspconfig")
-            lspconfig["lua_ls"].setup({
-                capabilities = capabilities,
-                settings = {
-                    Lua = {
-                        diagnostics = {
-                            globals = { 'vim' },
-                        },
-                        completion = {
-                            callSnippet = "Replace"
-                        }
-                    }
-                }
-            })
-            lspconfig["bashls"].setup({ capabilities = capabilities })
-            lspconfig["pyright"].setup({ capabilities = capabilities })
         end
     },
     {

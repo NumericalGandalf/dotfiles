@@ -11,38 +11,6 @@ return {
             vim.keymap.set('n', '<F12>', function() dap.step_out() end)
             vim.keymap.set('n', '<F9>', function() dap.toggle_breakpoint() end)
             vim.keymap.set('n', '<F4>', function() dap.repl.toggle() end)
-            dap.adapters.python = function(cb, config)
-                if config.request == 'attach' then
-                    local port = (config.connect or config).port
-                    local host = (config.connect or config).host or '127.0.0.1'
-                    cb({
-                        type = 'server',
-                        port = assert(port, '`connect.port` is required for a python `attach` configuration'),
-                        host = host,
-                        options = {
-                            source_filetype = 'python',
-                        },
-                    })
-                else
-                    cb({
-                        type = 'executable',
-                        command = '/usr/bin/python',
-                        args = { '-m', 'debugpy.adapter' },
-                        options = {
-                            source_filetype = 'python',
-                        },
-                    })
-                end
-            end
-            dap.configurations.python = {
-                {
-                    type = "python",
-                    request = "launch",
-                    name = "Launch Entry (main.py)",
-                    program = vim.fn.getcwd() .. "/src/main.py",
-                    pythonPath = "/usr/bin/python"
-                }
-            }
         end
     },
     {
@@ -51,17 +19,11 @@ return {
         config = function()
             local dap = require("dap")
             local dapui = require("dapui")
-            vim.keymap.set({ 'n', 'v' }, '<Leader>dh', function() require('dapui').float_element() end)
-            vim.keymap.set({ 'n', 'v' }, '<Leader>dv', function() require('dapui').eval() end)
-            vim.keymap.set('n', '<Leader>df', function()
-                local widgets = require('dap.ui.widgets')
-                widgets.centered_float(widgets.frames)
-            end)
-            vim.keymap.set('n', '<Leader>ds', function()
-                local widgets = require('dap.ui.widgets')
-                widgets.centered_float(widgets.scopes)
-            end)
-
+            local widgets = require("dap.ui.widgets")
+            vim.keymap.set({ 'n', 'v' }, '<Leader>dh', function() dapui.float_element() end)
+            vim.keymap.set({ 'n', 'v' }, '<Leader>dv', function() dapui.eval() end)
+            vim.keymap.set('n', '<Leader>df', function() widgets.centered_float(widgets.frames) end)
+            vim.keymap.set('n', '<Leader>ds', function() widgets.centered_float(widgets.scopes) end)
             dapui.setup({
                 controls = {
                     element = "repl",
