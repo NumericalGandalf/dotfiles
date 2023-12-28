@@ -130,7 +130,7 @@ bar {
 
 exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork -u -i ~/Pictures/OneRing.png -t
 exec --no-startup-id i3-sensible-terminal
-exec --no-startup-id firefox
+exec --no-startup-id gtk-launch firefox
 exec --no-startup-id gtk-launch org.kde.dolphin
 exec --no-startup-id gtk-launch discord.desktop
 exec --no-startup-id gtk-launch spotify.desktop

@@ -1,5 +1,8 @@
 vim.g.mapleader = " "
 
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+
 vim.opt.termguicolors = true
 
 vim.opt.number = true
@@ -25,6 +28,3 @@ vim.opt.fillchars = "eob: "
 
 vim.keymap.set('v', '<C-j>', ":m '>+1<CR>gv=gv")
 vim.keymap.set('v', '<C-k>', ":m '<-2<CR>gv=gv")
-
-vim.g.netrw_winsize = 20
-vim.keymap.set('n', '<leader>ft', function() vim.cmd(":Lexplore") end)
