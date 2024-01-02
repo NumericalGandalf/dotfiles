@@ -31,16 +31,20 @@ return {
 					end, opts)
 					vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
 					vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
-					vim.keymap.set("n", "gdp", function()
+					vim.keymap.set("n", "gpd", function()
 						vim.cmd(":Lspsaga peek_definition")
 					end, opts)
 					vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
-					vim.keymap.set("n", "gr", function()
+					vim.keymap.set("n", "gr", telescope.lsp_references, opts)
+					vim.keymap.set("n", "gpr", function()
 						vim.cmd(":Lspsaga finder def+ref+imp")
 					end, opts)
 					vim.keymap.set("n", "gt", vim.lsp.buf.type_definition, opts)
-					vim.keymap.set("n", "gTp", function()
+					vim.keymap.set("n", "gpt", function()
 						vim.cmd(":Lspsaga peek_type_definition")
+					end, opts)
+					vim.keymap.set("n", "gh", function()
+						vim.cmd(":ClangdSwitchSourceHeader")
 					end, opts)
 					-- vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
 					vim.keymap.set("n", "K", function()
@@ -61,9 +65,6 @@ return {
 			require("lspsaga").setup({
 				lightbulb = {
 					virtual_text = false,
-				},
-				hover = {
-					open_cmd = "!firefox",
 				},
 			})
 			local lspconfig = require("lspconfig")
@@ -98,6 +99,9 @@ return {
 						globPattern = "*@(.sh|.inc|.bash|.command)",
 					},
 				},
+			})
+			lspconfig.clangd.setup({
+				capabilities = capabilities,
 			})
 		end,
 	},
@@ -169,6 +173,7 @@ return {
 				sources = cmp.config.sources({
 					{ name = "nvim_lsp" },
 					{ name = "luasnip" },
+				}, {
 					{ name = "buffer" },
 				}),
 			})
