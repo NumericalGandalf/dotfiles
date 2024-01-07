@@ -33,7 +33,7 @@ cpu_usage {
 
 cpu_temperature 0 {
     format = " (%degrees°C)"
-    path = /home/gandalf/.local/state/cpu_temp
+    path = /sys/class/hwmon/hwmon0/temp1_input
 }
 
 load {

@@ -13,8 +13,5 @@ if numlock=$(command -v numlockx); then
 fi
 
 if [ $TERMCLT -eq 1 ] && i3wm=$(command -v i3); then
-	if tempreader=$(command -v cpu_temp_probe) && ! ps -e | grep cpu_temp_probe; then
-		exec $tempreader >/dev/null 2>&1 &
-	fi
 	exec $i3wm >/dev/null 2>&1
 fi
