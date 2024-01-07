@@ -16,7 +16,7 @@ bindsym $mod+Ctrl+q kill
 bindsym $mod+Ctrl+c restart
 
 bindsym $mod+Return exec --no-startup-id i3-sensible-terminal
-bindsym $mod+d exec --no-startup-id i3-dmenu-desktop --dmenu="dmenu -i -b"
+bindsym $mod+d exec --no-startup-id i3-dmenu-desktop --dmenu="dmenu -i"
 
 bindsym $mod+h focus left
 bindsym $mod+j focus down
@@ -78,27 +78,20 @@ bindsym $mod+Ctrl+8 move container workspace $ws8, workspace $ws8
 bindsym $mod+Ctrl+9 move container workspace $ws9, workspace $ws9
 bindsym $mod+Ctrl+0 move container workspace $ws0, workspace $ws0
 
-smart_gaps on
-gaps inner 4
-
 popup_during_fullscreen smart
 focus_on_window_activation smart
 focus_follows_mouse yes
 
-for_window [all] border none
 for_window [window_role="pop-up"] floating enable
 for_window [window_role="task_dialog"] floating enable
 
 assign [class="Alacritty"] $ws1
 assign [class="firefox"] $ws3
 
-for_window [class="dolphin" window_type="normal"] floating enable, move scratchpad
-for_window [class="discord" window_type="normal"] floating enable, move scratchpad
-for_window [class="Spotify" window_type="normal"] floating enable, move scratchpad
-for_window [class="WizClient"] floating enable
+for_window [class="firefox"] fullscreen enable
+for_window [class="Alacritty"] fullscreen enable
 for_window [class="Takescrot"] floating enable
 
-bindsym $mod+Shift+e [class="dolphin"] scratchpad show, move position center
 bindsym $mod+Shift+d [class="discord"] scratchpad show, move position center
 bindsym $mod+Shift+s [class="Spotify"] scratchpad show, move position center
 
@@ -120,17 +113,16 @@ mode $mode_unleashed {
 }
 
 bar {
-    i3bar_command i3bar --transparency
+    i3bar_command i3bar
     status_command i3status
-    tray_output none
+    position top
     modifier $mod_meta
-    mode hide
+    mode dock
+    hidden_state hide
     binding_mode_indicator no
+    tray_output DP-2
 }
 
 exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork -u -i ~/Pictures/OneRing.png -t
 exec --no-startup-id i3-sensible-terminal 
 exec --no-startup-id gtk-launch browser
-exec --no-startup-id gtk-launch org.kde.dolphin
-exec --no-startup-id gtk-launch discord.desktop
-exec --no-startup-id gtk-launch spotify.desktop

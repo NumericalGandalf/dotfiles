@@ -24,7 +24,7 @@ export GOPATH="$HOME/go"
 if [[ -z $DISPLAY ]]; then
 	TERMCLT="$(tty | rev | cut -c 1)"
 	export TERMCLT
-	if [ "$TERMCLT" -lt 3 ]; then
+	if [ "$TERMCLT" -lt 2 ]; then
 		exec startx >/dev/null 2>&1
 	fi
 else
