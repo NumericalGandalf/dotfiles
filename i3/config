@@ -90,7 +90,6 @@ assign [class="firefox"] $ws3
 
 for_window [class="firefox"] fullscreen enable
 for_window [class="Alacritty"] fullscreen enable
-for_window [class="Takescrot"] floating enable
 
 bindsym $mod+Shift+d [class="discord"] scratchpad show, move position center
 bindsym $mod+Shift+s [class="Spotify"] scratchpad show, move position center
