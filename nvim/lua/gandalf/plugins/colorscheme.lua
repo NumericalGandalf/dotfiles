@@ -3,19 +3,19 @@ return {
 		"ellisonleao/gruvbox.nvim",
 		lazy = false,
 		priority = 99,
-		enabled = true,
+		enabled = false,
 		config = function()
 			require("gruvbox").setup({
 				terminal_colors = true,
 				undercurl = true,
 				underline = true,
-				bold = true,
+				bold = false,
 				italic = {
-					strings = true,
-					emphasis = true,
+					strings = false,
+					emphasis = false,
 					comments = true,
 					operators = false,
-					folds = true,
+					folds = false,
 				},
 				strikethrough = true,
 				invert_selection = false,
@@ -29,7 +29,6 @@ return {
 				dim_inactive = false,
 				transparent_mode = true,
 			})
-			vim.opt.fillchars = "eob: "
 			vim.cmd(":colorscheme gruvbox")
 		end,
 	},
@@ -46,14 +45,14 @@ return {
 				styles = {
 					comments = { italic = true },
 					keywords = {},
-					functions = { bold = true },
+					functions = {},
 					variables = {},
 					sidebars = "transparent",
 					floats = "transparent",
 				},
 				hide_inactive_statusline = true,
 				dim_inactive = false,
-				lualine_bold = true,
+				lualine_bold = false,
 			})
 			vim.cmd(":colorscheme tokyonight")
 		end,

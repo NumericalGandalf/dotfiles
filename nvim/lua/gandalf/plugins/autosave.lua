@@ -2,14 +2,14 @@ return {
 	"pocco81/auto-save.nvim",
 	event = "BufEnter",
 	config = function()
-		require("auto-save").setup({
-			enabled = true,
+		local autosave = require("auto-save")
+		autosave.setup({
 			execution_message = {
 				message = function()
-					return ("AutoSave: saved buffer at " .. vim.fn.strftime("%H:%M:%S"))
+					return "auto-save: saved buffer " .. vim.fn.bufnr("%") .. " at " .. vim.fn.strftime("%H:%M:%S")
 				end,
 				dim = 0.2,
-				cleaning_interval = 1000,
+				cleaning_interval = 500,
 			},
 			trigger_events = { "InsertLeave", "TextChanged" },
 			condition = function(buf)
@@ -22,7 +22,7 @@ return {
 				return false
 			end,
 			write_all_buffers = false,
-			debounce_delay = 5000,
+			debounce_delay = 500,
 			callbacks = {
 				enabling = nil,
 				disabling = nil,
@@ -31,5 +31,7 @@ return {
 				after_saving = nil,
 			},
 		})
+		autosave.off()
+		vim.keymap.set("n", "<leader>s", autosave.toggle)
 	end,
 }
