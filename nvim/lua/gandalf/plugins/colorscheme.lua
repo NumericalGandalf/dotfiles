@@ -27,7 +27,7 @@ return {
 				palette_overrides = {},
 				overrides = {},
 				dim_inactive = false,
-				transparent_mode = false,
+				transparent_mode = true,
 			})
 			vim.opt.fillchars = "eob: "
 			vim.cmd(":colorscheme gruvbox")
@@ -37,15 +37,15 @@ return {
 		"folke/tokyonight.nvim",
 		lazy = false,
 		priority = 99,
-		enabled = false,
+		enabled = true,
 		config = function()
 			require("tokyonight").setup({
-				style = "moon",
+				style = "night",
 				transparent = true,
 				terminal_colors = true,
 				styles = {
 					comments = { italic = true },
-					keywords = { italic = false },
+					keywords = {},
 					functions = { bold = true },
 					variables = {},
 					sidebars = "transparent",
