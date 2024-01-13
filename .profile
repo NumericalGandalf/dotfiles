@@ -15,7 +15,7 @@ fi
 
 export $(dbus-launch)
 export EDITOR=nvim
-export TERMINAL=alacritty
+export TERMINAL=kitty
 export BROWSER=firefox
 
 export JAVA_HOME=/usr/lib/jvm/java-21-openjdk

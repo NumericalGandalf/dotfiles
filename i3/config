@@ -3,7 +3,6 @@ set $mod_meta Mod4
 floating_modifier $mod
 
 font pango:Hack Nerd Font Mono 8
-exec --no-startup-id feh --bg-fill ~/Pictures/MorgothVsFingolfin.jpg ~/Pictures/EowynVsWitchKingOfAngmar.jpg
 
 set $refresh_i3status killall -SIGUSR1 i3status
 bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +5% && $refresh_i3status
@@ -77,17 +76,17 @@ bindsym $mod+Ctrl+9 move container workspace $ws9, workspace $ws9
 workspace_auto_back_and_forth yes
 popup_during_fullscreen smart
 focus_on_window_activation smart
-focus_follows_mouse yes
+focus_follows_mouse no
+smart_borders on
 
 for_window [window_role="pop-up"] floating enable
 for_window [window_role="task_dialog"] floating enable
 
-assign [class="Alacritty" window_type="normal"] $ws1
+assign [class="kitty" window_type="normal"] $ws1
 assign [class="firefox" window_type="normal"] $ws3
-assign [class="Spotify" window_type="normal"] $ws8
 
-for_window [class="firefox"] fullscreen enable
-for_window [class="Alacritty"] fullscreen enable
+for_window [class="Spotify" window_type="normal"] floating enable, move scratchpad
+bindsym $mod+Shift+s [class="Spotify"] scratchpad show, move position center
 
 set $mode_unleashed Unleashed
 set $mode_default_name Default
@@ -110,13 +109,11 @@ bar {
     i3bar_command i3bar
     status_command i3status
     position top
-    modifier $mod_meta
-    mode dock
-    hidden_state hide
     binding_mode_indicator no
     tray_output DP-2
 }
 
+exec --no-startup-id feh --bg-fill ~/Pictures/MythraSirene.png
 exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork -u -i ~/Pictures/OneRing.png -t
 exec --no-startup-id i3-sensible-terminal 
 exec --no-startup-id gtk-launch spotify
