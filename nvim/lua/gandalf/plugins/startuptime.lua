@@ -1,4 +1,5 @@
-return {
-	"dstein64/vim-startuptime",
-	cmd = "StartupTime",
-}
+local M = { "dstein64/vim-startuptime" }
+
+M.cmd = "StartupTime"
+
+return M

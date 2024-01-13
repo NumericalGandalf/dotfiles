@@ -1,2 +1,2 @@
-require("gandalf.settings")
-require("gandalf.lazy")
+require("gandalf.prefs").setup()
+require("gandalf.lazy").setup()

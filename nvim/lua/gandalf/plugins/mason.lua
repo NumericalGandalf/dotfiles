@@ -1,8 +1,11 @@
-return {
-	"williamboman/mason.nvim",
-	build = ":MasonUpdate",
-	event = "VimEnter",
-	config = function()
-		require("mason").setup()
-	end,
-}
+local M = { "williamboman/mason.nvim" }
+
+M.build = ":MasonUPdate"
+
+M.event = "VimEnter"
+
+function M.config()
+	require("mason").setup()
+end
+
+return M
