@@ -1,5 +1,7 @@
 local M = { "folke/tokyonight.nvim" }
 
+M.cond = false
+
 M.lazy = false
 
 M.priority = 61
