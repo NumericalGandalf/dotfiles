@@ -1,8 +1,8 @@
 local M = { "folke/which-key.nvim" }
 
-M.event = "VimEnter"
+M.cond = false
 
-M.enabled = require("gandalf.prefs").enablings.whichkey
+M.event = "VimEnter"
 
 function M.config()
 	require("which-key").setup()

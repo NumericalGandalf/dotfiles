@@ -7,11 +7,22 @@ M.dependencies = {
 	"3rd/image.nvim",
 }
 
+M.cond = false
+
 M.lazy = false
 
-M.enabled = require("gandalf.prefs").enablings.neotree
+local toggle_tree = "<leader>ft"
+
+if not M.cond then
+	vim.keymap.set("n", toggle_tree, function()
+		vim.cmd(":Lexplore")
+	end)
+end
 
 function M.config()
+	vim.g.loaded_netrw = 1
+	vim.g.loaded_netrwPlugin = 1
+
 	require("neo-tree").setup({
 		popup_border_style = "rounded",
 		window = {
@@ -27,7 +38,8 @@ function M.config()
 			},
 		},
 	})
-	vim.keymap.set({ "n", "v" }, "<leader>ft", function()
+
+	vim.keymap.set("n", toggle_tree, function()
 		vim.cmd(":Neotree toggle")
 	end)
 end

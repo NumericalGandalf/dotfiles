@@ -1,5 +1,4 @@
-local A = { "neovim/nvim-lspconfig" }
-local B = { "nvimdev/lspsaga.nvim" }
+local M = { "neovim/nvim-lspconfig" }
 
 local lsp_actions = {}
 
@@ -76,7 +75,7 @@ local function on_lsp_attach(ev)
 	vim.keymap.set("n", "gS", telescope.lsp_document_symbols, opts)
 	vim.keymap.set("n", "gs", telescope.lsp_workspace_symbols, opts)
 
-	if B.enabled then
+	if require("gandalf.plugins.lspsaga").cond then
 		attach_saga_extras(opts)
 	end
 
@@ -85,50 +84,37 @@ local function on_lsp_attach(ev)
 	end, opts)
 end
 
-A.dependencies = {
+M.dependencies = {
 	"williamboman/mason-lspconfig.nvim",
+	"folke/neodev.nvim",
+	"folke/neoconf.nvim",
 	"hrsh7th/cmp-nvim-lsp",
 }
 
-A.event = "BufEnter"
+M.event = "BufEnter"
 
-function A.config()
-	if B.enabled then
-		vim.cmd(":Lazy load lspsaga")
+function M.config()
+	if require("gandalf.plugins.lspsaga").cond then
+		require("lspsaga")
 		set_lsp_actions_wsaga()
 	else
 		set_lsp_actions_nosaga()
 	end
 
 	vim.api.nvim_create_autocmd("LspAttach", {
-		group = require("gandalf.prefs").gandalf_augroup,
+		group = require("gandalf.settings").gandalf_augroup,
 		callback = on_lsp_attach,
 	})
 
 	require("mason-lspconfig").setup()
+	require("neodev").setup()
+	require("neoconf").setup()
+
 	local lspconfig = require("lspconfig")
 	local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
 	lspconfig.lua_ls.setup({
 		capabilities = capabilities,
-		settings = {
-			Lua = {
-				runtime = {
-					version = "LuaJIT",
-				},
-				diagnostics = {
-					globals = {
-						"vim",
-					},
-				},
-				completion = {
-					callSnippet = "Replace",
-				},
-				format = {
-					enable = false,
-				},
-			},
-		},
 	})
 
 	lspconfig.pyright.setup({
@@ -136,29 +122,16 @@ function A.config()
 	})
 
 	lspconfig.bashls.setup({
-		filetypes = {
-			"sh",
-			"zsh",
-		},
 		capabilities = capabilities,
 	})
 
 	lspconfig.clangd.setup({
 		capabilities = capabilities,
 	})
-end
 
-B.enabled = require("gandalf.prefs").enablings.lspsaga
-
-function B.config()
-	require("lspsaga").setup({
-		ui = {
-			code_action = "A",
-		},
-		lightbulb = {
-			virtual_text = false,
-		},
+	lspconfig.jsonls.setup({
+		capabilities = capabilities,
 	})
 end
 
-return { A, B }
+return M

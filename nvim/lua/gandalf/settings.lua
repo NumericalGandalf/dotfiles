@@ -1,21 +1,6 @@
 local M = {}
 
-M.enablings = {
-	autopairs = false,
-	autosave = false,
-	fidget = false,
-	neotree = false,
-	lspsaga = false,
-	dapui = false,
-	whichkey = false,
-}
-
-M.col_enablings = {
-	tokyonight = true,
-	gruvbox = false,
-}
-
-local function set_prefs()
+local function settings()
 	vim.g.mapleader = " "
 
 	vim.opt.termguicolors = true
@@ -42,16 +27,8 @@ local function set_prefs()
 	vim.keymap.set("v", "<C-j>", ":m '>+1<CR>gv=gv")
 	vim.keymap.set("v", "<C-k>", ":m '<-2<CR>gv=gv")
 
-	if M.enablings.neotree then
-		vim.g.loaded_netrw = 1
-		vim.g.loaded_netrwPlugin = 1
-	else
-		vim.g.netrw_banner = 0
-		vim.g.netrw_winsize = 20
-		vim.keymap.set("n", "<leader>ft", function()
-			vim.cmd(":Lexplore")
-		end)
-	end
+    vim.g.netrw_banner = 0
+    vim.g.netrw_winsize = 20
 
 	vim.fn.sign_define("DiagnosticSignError", {
 		text = "E",
@@ -75,8 +52,7 @@ function M.setup()
 	M.gandalf_augroup = vim.api.nvim_create_augroup("gandalf_augroup", {
 		clear = true,
 	})
-	set_prefs()
-	M.initial_col = "default"
+	settings()
 end
 
 return M
