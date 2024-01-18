@@ -17,16 +17,15 @@ export EDITOR=nvim
 export TERMINAL=kitty
 export BROWSER=firefox
 
-export JAVA_HOME=/usr/lib/jvm/java-21-openjdk
+export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
 export GOPATH="$HOME/go"
 
-TERMCLT_MAX=2
 if [[ -z $DISPLAY ]]; then
-	TERMCLT="$(tty | rev | cut -c 1)"
-	if [[ $TERMCLT -lt $TERMCLT_MAX ]]; then
+	export TERMCLT="$(tty | rev | cut -c 1)"
+	if [[ $TERMCLT -lt 2 ]]; then
 		exec startx >/dev/null 2>&1
 	fi
 else
-	USE_P10K=1
+	export USE_P10K=1
 	export XDG_SESSION_TYPE=x11
 fi
