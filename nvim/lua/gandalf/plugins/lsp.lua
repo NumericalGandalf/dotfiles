@@ -106,9 +106,9 @@ function M.config()
 		callback = on_lsp_attach,
 	})
 
-	require("mason-lspconfig").setup()
-	require("neodev").setup()
 	require("neoconf").setup()
+	require("neodev").setup()
+	require("mason-lspconfig").setup()
 
 	local lspconfig = require("lspconfig")
 	local capabilities = require("cmp_nvim_lsp").default_capabilities()

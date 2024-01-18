@@ -97,7 +97,7 @@ bindsym --release $mod_meta+Shift+s exec --no-startup-id takescrot
 bindsym $mod_meta+l exec --no-startup-id loginctl lock-session
 bindsym $mod_meta+r exec --no-startup-id systemctl reboot
 bindsym $mod_meta+s exec --no-startup-id systemctl suspend
-bindsym $mod_meta+p exec --no-startup-id systemctl poweroff
+bindsym $mod_meta+p exec --no-startup-id shutdown -h now
 
 bindsym $mod_meta+Return mode $mode_unleashed, $mode_change $mode_unleashed $mode_change_end
 mode $mode_unleashed {

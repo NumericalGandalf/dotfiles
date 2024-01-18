@@ -21,6 +21,8 @@ function M.config()
 			sh = { "shfmt" },
 			c = { "clang_format" },
 			cpp = { "clang_format" },
+			json = { "jq" },
+			jsonc = { "jq" },
 		},
 	})
 

@@ -1,11 +1,15 @@
 #!/usr/bin/bash
 
-if ! inxi -Gxx | grep compositor && comp=$(command -v picom) && ! ps -e | grep picom; then
-	exec $comp >/dev/null 2>&1 &
-fi
-
 if ibus=$(command -v ibus-daemon); then
 	exec $ibus -drxR >/dev/null 2>&1 &
+fi
+
+if dbus=$(command -v dbus-launch); then
+	exec $dbus --exit-with-x11 2>&1 &
+fi
+
+if ! inxi -Gxx | grep compositor && comp=$(command -v picom) && ! ps -e | grep picom; then
+	exec $comp >/dev/null 2>&1 &
 fi
 
 if numlock=$(command -v numlockx); then

@@ -13,7 +13,6 @@ then
 	export PATH="$PATH:$go_bin"
 fi
 
-export $(dbus-launch)
 export EDITOR=nvim
 export TERMINAL=kitty
 export BROWSER=firefox
@@ -21,12 +20,13 @@ export BROWSER=firefox
 export JAVA_HOME=/usr/lib/jvm/java-21-openjdk
 export GOPATH="$HOME/go"
 
+TERMCLT_MAX=2
 if [[ -z $DISPLAY ]]; then
 	TERMCLT="$(tty | rev | cut -c 1)"
-	export TERMCLT
-	if [ "$TERMCLT" -lt 2 ]; then
+	if [[ $TERMCLT -lt $TERMCLT_MAX ]]; then
 		exec startx >/dev/null 2>&1
 	fi
 else
+	USE_P10K=1
 	export XDG_SESSION_TYPE=x11
 fi
