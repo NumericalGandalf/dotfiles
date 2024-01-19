@@ -34,11 +34,27 @@ function M.config()
 	})
 	telescope.load_extension("fzf")
 
-	vim.keymap.set("n", "<leader>ff", builtin.find_files, {})
-	vim.keymap.set("n", "<leader>fs", builtin.grep_string, {})
-	vim.keymap.set("n", "<leader>fg", builtin.live_grep, {})
-	vim.keymap.set("n", "<leader>fb", builtin.buffers, {})
-	vim.keymap.set("n", "<leader>fh", builtin.help_tags, {})
+	vim.keymap.set("n", "<leader>fb", builtin.buffers)
+	vim.keymap.set("n", "<leader>ft", builtin.filetypes)
+	vim.keymap.set("n", "<leader>ff", function()
+		builtin.find_files({
+			hidden = true,
+			follow = true,
+			no_ignore = true,
+			no_ignore_parent = true,
+		})
+	end)
+
+	vim.keymap.set("n", "<leader>fg", builtin.live_grep)
+	vim.keymap.set("n", "<leader>fs", builtin.grep_string)
+	vim.keymap.set("n", "<leader>fc", builtin.git_commits)
+
+	vim.keymap.set("n", "<leader>fu", builtin.commands)
+	vim.keymap.set("n", "<leader>fa", builtin.autocommands)
+	vim.keymap.set("n", "<leader>fo", builtin.vim_options)
+
+	vim.keymap.set("n", "<leader>fh", builtin.help_tags)
+	vim.keymap.set("n", "<leader>fm", builtin.man_pages)
 end
 
 return M

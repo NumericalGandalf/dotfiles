@@ -1,6 +1,6 @@
 local M = { "rcarriga/nvim-dap-ui" }
 
-M.cond = true
+M.cond = false
 
 function M.config()
 	local dapui = require("dapui")

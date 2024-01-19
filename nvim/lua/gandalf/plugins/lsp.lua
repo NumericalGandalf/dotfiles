@@ -1,5 +1,16 @@
 local M = { "neovim/nvim-lspconfig" }
 
+M.dependencies = {
+	"folke/neoconf.nvim",
+	"folke/neodev.nvim",
+	"williamboman/mason-lspconfig.nvim",
+	"hrsh7th/cmp-nvim-lsp",
+	"stevearc/conform.nvim",
+	"mfussenegger/nvim-lint",
+}
+
+M.event = "VeryLazy"
+
 local lsp_actions = {}
 
 local function set_lsp_actions_nosaga()
@@ -84,15 +95,6 @@ local function on_lsp_attach(ev)
 	end, opts)
 end
 
-M.dependencies = {
-	"williamboman/mason-lspconfig.nvim",
-	"folke/neodev.nvim",
-	"folke/neoconf.nvim",
-	"hrsh7th/cmp-nvim-lsp",
-}
-
-M.event = "BufEnter"
-
 function M.config()
 	if require("gandalf.plugins.lspsaga").cond then
 		require("lspsaga")
@@ -102,13 +104,9 @@ function M.config()
 	end
 
 	vim.api.nvim_create_autocmd("LspAttach", {
-		group = require("gandalf.settings").gandalf_augroup,
+		group = require("gandalf.settings").gandalfs,
 		callback = on_lsp_attach,
 	})
-
-	require("neoconf").setup()
-	require("neodev").setup()
-	require("mason-lspconfig").setup()
 
 	local lspconfig = require("lspconfig")
 	local capabilities = require("cmp_nvim_lsp").default_capabilities()
@@ -122,6 +120,7 @@ function M.config()
 	})
 
 	lspconfig.bashls.setup({
+		filetypes = { "sh", "zsh" },
 		capabilities = capabilities,
 	})
 

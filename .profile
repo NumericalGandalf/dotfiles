@@ -15,7 +15,7 @@ fi
 
 export EDITOR=nvim
 export TERMINAL=kitty
-export BROWSER=firefox
+export BROWSER=brave-browser
 
 export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
 export GOPATH="$HOME/go"

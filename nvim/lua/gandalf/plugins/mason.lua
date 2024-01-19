@@ -2,7 +2,7 @@ local M = { "williamboman/mason.nvim" }
 
 M.build = ":MasonUPdate"
 
-M.event = "VimEnter"
+M.event = "VeryLazy"
 
 function M.config()
 	require("mason").setup()

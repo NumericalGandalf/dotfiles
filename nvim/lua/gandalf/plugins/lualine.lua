@@ -4,6 +4,8 @@ M.dependencies = {
 	"nvim-tree/nvim-web-devicons",
 }
 
+M.cond = false
+
 M.lazy = false
 
 function M.config()

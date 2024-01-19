@@ -1,7 +1,5 @@
 local M = { "mfussenegger/nvim-lint" }
 
-M.event = "BufEnter"
-
 function M.config()
 	local lint = require("lint")
 	lint.linters_by_ft = {

@@ -1,10 +1,10 @@
 local M = {}
 
-local function settings()
+local function set_configs()
 	vim.g.mapleader = " "
+	vim.opt.mouse = ""
 
 	vim.opt.termguicolors = true
-	M.colorscheme = "default"
 
 	vim.opt.number = true
 	vim.opt.relativenumber = true
@@ -25,11 +25,9 @@ local function settings()
 	vim.opt.incsearch = true
 	vim.opt.hlsearch = false
 
-	vim.keymap.set("v", "<C-j>", ":m '>+1<CR>gv=gv")
-	vim.keymap.set("v", "<C-k>", ":m '<-2<CR>gv=gv")
+	vim.opt.laststatus = 3
 
 	vim.g.netrw_banner = 0
-	vim.g.netrw_winsize = 20
 
 	vim.fn.sign_define("DiagnosticSignError", {
 		text = "E",
@@ -49,17 +47,20 @@ local function settings()
 	})
 end
 
+local function set_keymaps()
+	vim.keymap.set("v", "<C-j>", ":m '>+1<CR>gv=gv")
+	vim.keymap.set("v", "<C-k>", ":m '<-2<CR>gv=gv")
+end
+
 function M.setup()
-	M.gandalf_augroup = vim.api.nvim_create_augroup("gandalf_augroup", {
+	M.gandalfs = vim.api.nvim_create_augroup("Gandalfs", {
 		clear = true,
 	})
 
-	settings()
+	set_configs()
+	set_keymaps()
 
-	vim.api.nvim_create_user_command("ColDefault", function()
-		vim.cmd(":colorscheme default")
-		vim.cmd(":highlight Normal guibg=None")
-	end, { nargs = 0 })
+	vim.cmd(":colorscheme default")
 end
 
 return M

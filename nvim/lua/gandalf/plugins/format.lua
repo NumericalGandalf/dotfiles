@@ -1,7 +1,5 @@
 local M = { "stevearc/conform.nvim" }
 
-M.event = "BufEnter"
-
 M.manual = false
 M.timeout = 2500
 
@@ -27,7 +25,7 @@ function M.config()
 	})
 
 	vim.api.nvim_create_autocmd("BufWritePre", {
-		group = require("gandalf.settings").gandalf_augroup,
+		group = require("gandalf.settings").gandalfs,
 		callback = function()
 			if not M.manual then
 				print("x")
