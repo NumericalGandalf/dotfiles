@@ -85,7 +85,7 @@ for_window [window_role="pop-up"] floating enable
 for_window [window_role="task_dialog"] floating enable
 
 assign [class="kitty" window_type="normal"] $ws1
-assign [class="firefox" window_type="normal"] $ws3
+assign [class="Vivaldi-stable" window_type="normal"] $ws3
 
 for_window [class="Spotify" window_type="normal"] floating enable, move scratchpad
 bindsym $mod+Shift+s [class="Spotify"] scratchpad show, move position center
@@ -99,7 +99,7 @@ bindsym --release $mod_meta+Shift+s exec --no-startup-id takescrot
 bindsym $mod_meta+l exec --no-startup-id loginctl lock-session
 bindsym $mod_meta+r exec --no-startup-id systemctl reboot
 bindsym $mod_meta+s exec --no-startup-id systemctl suspend
-bindsym $mod_meta+p exec --no-startup-id shutdown -h now
+bindsym $mod_meta+p exec --no-startup-id systemctl poweroff -f 
 
 bindsym $mod_meta+Return mode $mode_unleashed, $mode_change $mode_unleashed $mode_change_end
 mode $mode_unleashed {
@@ -115,7 +115,7 @@ bar {
     tray_output DP-2
 }
 
-exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork -u -t
+exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork -t
 exec --no-startup-id i3-sensible-terminal 
-exec --no-startup-id gtk-launch spotify
-exec --no-startup-id browser
+exec --no-startup-id vivaldi
+exec --no-startup-id spotify

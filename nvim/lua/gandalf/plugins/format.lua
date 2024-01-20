@@ -28,7 +28,6 @@ function M.config()
 		group = require("gandalf.settings").gandalfs,
 		callback = function()
 			if not M.manual then
-				print("x")
 				M.invoke()
 			end
 		end,

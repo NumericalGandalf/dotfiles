@@ -9,7 +9,7 @@ M.dependencies = {
 	"mfussenegger/nvim-lint",
 }
 
-M.event = "VeryLazy"
+M.event = "BufEnter"
 
 local lsp_actions = {}
 

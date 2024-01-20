@@ -20,7 +20,7 @@ M.lazy_opts = {
 		lazy = true,
 	},
 	checker = {
-		enabled = true,
+		enabled = false,
 	},
 	change_detection = {
 		enabled = false,

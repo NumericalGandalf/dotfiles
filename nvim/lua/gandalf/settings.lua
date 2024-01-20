@@ -1,6 +1,6 @@
 local M = {}
 
-local function set_configs()
+local function settings()
 	vim.g.mapleader = " "
 	vim.opt.mouse = ""
 
@@ -26,7 +26,6 @@ local function set_configs()
 	vim.opt.hlsearch = false
 
 	vim.opt.laststatus = 3
-
 	vim.g.netrw_banner = 0
 
 	vim.fn.sign_define("DiagnosticSignError", {
@@ -47,7 +46,7 @@ local function set_configs()
 	})
 end
 
-local function set_keymaps()
+local function keymaps()
 	vim.keymap.set("v", "<C-j>", ":m '>+1<CR>gv=gv")
 	vim.keymap.set("v", "<C-k>", ":m '<-2<CR>gv=gv")
 end
@@ -57,8 +56,8 @@ function M.setup()
 		clear = true,
 	})
 
-	set_configs()
-	set_keymaps()
+	settings()
+	keymaps()
 
 	vim.cmd(":colorscheme default")
 end

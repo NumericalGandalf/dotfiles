@@ -1,6 +1,6 @@
 local M = { "williamboman/mason.nvim" }
 
-M.build = ":MasonUPdate"
+M.build = ":MasonUpdate"
 
 M.event = "VeryLazy"
 

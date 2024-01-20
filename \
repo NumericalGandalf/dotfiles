@@ -1,26 +1,18 @@
 local M = { "nvim-lualine/lualine.nvim" }
 
+M.dependencies = {
+	"nvim-tree/nvim-web-devicons",
+}
+
 M.cond = true
 
 M.lazy = false
-
-local function bufsize()
-	local s = vim.fn.getfsize(vim.fn.expand("%"))
-	if s > 0 then
-		return tostring(s) .. "B"
-	end
-	return "null"
-end
 
 function M.config()
 	require("lualine").setup({
 		options = {
 			globalstatus = true,
 			component_separators = {
-				left = "",
-				right = "",
-			},
-			section_separators = {
 				left = "",
 				right = "",
 			},
@@ -32,9 +24,10 @@ function M.config()
 			lualine_b = {
 				{
 					"branch",
-					icon = "",
+					icon = "",
 				},
 				"diff",
+				"diagnostics",
 			},
 			lualine_c = {
 				{
@@ -42,20 +35,9 @@ function M.config()
 					file_status = true,
 					path = 1,
 				},
-				{
-					"diagnostics",
-					update_in_insert = true,
-					symbols = {
-						error = "E",
-						warn = "W",
-						info = "I",
-						hint = "H",
-					},
-				},
 			},
 			lualine_x = {
-				bufsize,
-			},
+            "encoding", "fileformat" },
 			lualine_y = {
 				"location",
 				"progress",
@@ -77,4 +59,5 @@ function M.config()
 	})
 end
 
+M.config()
 return M
