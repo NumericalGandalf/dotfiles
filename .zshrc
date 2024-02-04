@@ -1,16 +1,16 @@
-#!/usr/bin/zsh
+#!/usr/bin/bash
 
 ohmyzsh() {
   export ZSH="$HOME/.oh-my-zsh"
   ZSH_THEME="linuxonly"
   plugins=(
-    git 
-    kubectl 
-    emoji 
-    encode64 
-    jsontools 
-    zsh-autosuggestions 
-    web-search 
+    git
+    kubectl
+    emoji
+    encode64
+    jsontools
+    zsh-autosuggestions
+    web-search
     zsh-syntax-highlighting
   )
 

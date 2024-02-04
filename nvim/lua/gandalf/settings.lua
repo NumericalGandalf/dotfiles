@@ -60,6 +60,12 @@ function M.setup()
   settings()
   keymaps()
 
+  vim.filetype.add({
+    filename = {
+      [".zshrc"] = "sh",
+    },
+  })
+
   vim.cmd(":colorscheme default")
 end
 
