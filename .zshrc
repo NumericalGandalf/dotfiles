@@ -15,4 +15,4 @@ plugins=(
 
 source $ZSH/oh-my-zsh.sh
 
-export PATH=$PATH:/home/gandalf/.spicetify
+pathappend $HOME/.spicetify
