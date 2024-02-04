@@ -41,7 +41,7 @@ display() {
 		elif [[ $termclt -eq 3 ]]; then
 			session=$(command -v gnome-session)
 		fi
-		startx $session
+		exec startx $session
 	fi
 }
 
