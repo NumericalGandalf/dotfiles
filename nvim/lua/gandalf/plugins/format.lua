@@ -22,6 +22,11 @@ function M.config()
       json = { "jq" },
       jsonc = { "jq" },
     },
+    formatters = {
+      shfmt = {
+        prepend_args = { "-i", "2" },
+      },
+    },
   })
 
   vim.api.nvim_create_autocmd("BufWritePre", {
