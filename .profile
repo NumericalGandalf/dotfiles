@@ -35,14 +35,13 @@ display() {
 	fi
 
 	if [[ $wayland -eq 0 ]]; then
-		session=i3
+		session=$(command -v i3)
 		if [[ $termclt -eq 2 ]]; then
-			session=kde
-		else
-			[[ $termclt -eq 3 ]]
-			session=gnome
+			session=$(command -v startplasma-x11)
+		elif [[ $termclt -eq 3 ]]; then
+			session=$(command -v gnome-session)
 		fi
-		xinit $session
+		startx $session
 	fi
 }
 
