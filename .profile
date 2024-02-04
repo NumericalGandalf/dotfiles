@@ -1,21 +1,11 @@
 #!/usr/bin/bash
 
-if
-	local_bin="$HOME/.local/bin"
-	[[ ":$PATH:" != *":$local_bin:"* ]]
-then
-	export PATH="$PATH:$local_bin"
-fi
-if
-	go_bin="$HOME/go/bin"
-	[[ ":$PATH:" != *":$go_bin:"* ]]
-then
-	export PATH="$PATH:$go_bin"
-fi
+export PATH="$PATH:$local_bin"
+export PATH="$PATH:$go_bin"
 
 export EDITOR=nvim
 export TERMINAL=kitty
-export BROWSER=chromium-browser
+export BROWSER=vivaldi
 
 export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
 export GOPATH="$HOME/go"
@@ -26,6 +16,5 @@ if [[ -z $DISPLAY ]]; then
 		exec startx
 	fi
 else
-	export USE_P10K=1
 	export XDG_SESSION_TYPE=x11
 fi
