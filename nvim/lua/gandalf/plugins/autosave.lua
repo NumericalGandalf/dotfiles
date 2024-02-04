@@ -5,24 +5,23 @@ M.cond = false
 M.event = "BufEnter"
 
 function M.config()
-	local format = require("gandalf.plugins.format")
-	local autosave = require("autosave")
-	local actions = require("autosave.action")
+  local autosave = require("autosave")
+  local actions = require("autosave.action")
 
-	autosave.setup({
-		enable = false,
-		prompt_style = "notify",
-		debounce_delay = format.timeout,
-	})
+  autosave.setup({
+    enable = false,
+    prompt_style = "notify",
+    debounce_delay = 2500,
+  })
 
-	function autosave.hook_after_enable()
-		vim.notify("Autsave: enabled")
-	end
-	function autosave.hook_after_disable()
-		vim.notify("Autsave: disabled")
-	end
+  function autosave.hook_after_enable()
+    vim.notify("Autsave: enabled")
+  end
+  function autosave.hook_after_disable()
+    vim.notify("Autsave: disabled")
+  end
 
-	vim.keymap.set("n", "<leader>s", actions.toggle)
+  vim.keymap.set("n", "<leader>s", actions.toggle)
 end
 
 return M

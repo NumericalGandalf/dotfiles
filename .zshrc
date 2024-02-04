@@ -1,8 +1,9 @@
-source ~/.profile
+#!/usr/bin/zsh
 
-export ZSH="$HOME/.oh-my-zsh"
-ZSH_THEME="linuxonly"
-plugins=(
+ohmyzsh() {
+  export ZSH="$HOME/.oh-my-zsh"
+  ZSH_THEME="linuxonly"
+  plugins=(
     git 
     kubectl 
     emoji 
@@ -11,8 +12,15 @@ plugins=(
     zsh-autosuggestions 
     web-search 
     zsh-syntax-highlighting
-)
+  )
 
-source $ZSH/oh-my-zsh.sh
+  source $ZSH/oh-my-zsh.sh
+}
 
-pathappend $HOME/.spicetify
+zshmain() {
+  source ~/.profile
+  ohmyzsh
+  pathappend $HOME/.spicetify
+}
+
+zshmain

@@ -5,7 +5,7 @@ M.build = ":MasonUpdate"
 M.event = "VeryLazy"
 
 function M.config()
-	require("mason").setup()
+  require("mason").setup()
 end
 
 return M
