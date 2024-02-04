@@ -1,21 +1,16 @@
 #!/usr/bin/bash
 
-if ibus=$(command -v ibus-daemon); then
-	exec $ibus -drxR >/dev/null 2>&1 &
-fi
+exec dbus-launch --exit-with-x11 &
+exec ibus-daemon -drxR &
 
-if dbus=$(command -v dbus-launch); then
-	exec $dbus --exit-with-x11 2>&1 &
-fi
+exec picom &
 
-if ! inxi -Gxx | grep compositor && comp=$(command -v picom) && ! ps -e | grep picom; then
-	exec $comp >/dev/null 2>&1 &
-fi
+exec numlockx on &
 
-if numlock=$(command -v numlockx); then
-	exec $numlock on >/dev/null 2>&1 &
-fi
-
-if [ $TERMCLT -eq 1 ] && i3wm=$(command -v i3); then
-	exec $i3wm >/dev/null 2>&1
+if [[ $TERMCLT -eq 1 ]]; then
+	exec i3
+elif [[ $TERMCLT -eq 2 ]]; then
+	exec startplasma-x11
+elif [[ $TERMCLT -eq 3 ]]; then
+	exec gnome-session
 fi
