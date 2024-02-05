@@ -36,7 +36,7 @@
 
     sort = false
 
-    font = Hack Nerd Font Mono 9
+    font = Source Code Pro 9
 
     line_height = 0
 

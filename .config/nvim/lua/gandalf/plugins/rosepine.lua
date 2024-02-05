@@ -2,7 +2,7 @@ local M = { "rose-pine/neovim" }
 
 M.name = "rose-pine"
 
-M.cond = false
+M.cond = true
 
 M.lazy = false
 
@@ -15,7 +15,7 @@ function M.config()
     },
   })
 
-  -- vim.cmd(":colorscheme rose-pine")
+  vim.cmd(":colorscheme rose-pine")
 end
 
 return M

@@ -13,12 +13,13 @@ local function settings()
   vim.opt.autoindent = true
   vim.opt.smartindent = true
   vim.opt.wrap = false
+  vim.opt.expandtab = true 
 
-  local tabsize = 2
   vim.opt.expandtab = true
   vim.opt.tabstop = tabsize
   vim.opt.softtabstop = tabsize
   vim.opt.shiftwidth = tabsize
+
 
   vim.opt.swapfile = false
   vim.opt.backup = false
