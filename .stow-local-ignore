@@ -20,4 +20,4 @@ _darcs
 ^/COPYING
 
 \.editorconfig
-\vencord-settings-backup.json
+vencord-settings-backup.json
