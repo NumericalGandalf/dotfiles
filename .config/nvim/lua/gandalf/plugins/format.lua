@@ -17,15 +17,11 @@ function M.config()
       lua = { "stylua" },
       python = { "isort", "black" },
       sh = { "shfmt" },
+      zsh = { "shfmt" },
       c = { "clang_format" },
       cpp = { "clang_format" },
       json = { "jq" },
       jsonc = { "jq" },
-    },
-    formatters = {
-      shfmt = {
-        prepend_args = { "-i", "2" },
-      },
     },
   })
 

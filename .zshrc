@@ -1,6 +1,6 @@
 #!/usr/bin/zsh
 
-pathappend() {
+function pathappend() {
   for ARG in "$@"; do
     if [ -d "$ARG" ] && [[ ":$PATH:" != *":$ARG:"* ]]; then
       PATH="${PATH:+"$PATH:"}$ARG"
@@ -8,13 +8,15 @@ pathappend() {
   done
 }
 
-defaults() {
+function defaults() {
   export EDITOR=nvim
   export TERMINAL=kitty
   export BROWSER=chromium
+
+  export HISTIGNORE="*sudo -S*:$HISTIGNORE"
 }
 
-ohmyzsh() {
+function ohmyzsh() {
   export ZSH="$HOME/.oh-my-zsh"
   ZSH_THEME="linuxonly"
   plugins=(
@@ -32,7 +34,7 @@ ohmyzsh() {
   source $ZSH/oh-my-zsh.sh
 }
 
-zrcmain() {
+function zrcmain() {
   pathappend $HOME/.local/bin $HOME/.spicetify
   defaults
   ohmyzsh

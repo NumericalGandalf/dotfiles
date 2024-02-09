@@ -1,53 +1,30 @@
 set $mod Mod1
 floating_modifier $mod
 
-font pango:Source Code Pro 8
-
-set $refresh_i3status killall -SIGUSR1 i3status
-bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +5% && $refresh_i3status
-bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -5% && $refresh_i3status
-bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle && $refresh_i3status
-bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle && $refresh_i3status
-
 bindsym $mod+e exit
 bindsym $mod+q kill
 bindsym $mod+c restart 
 bindsym $mod+x reload 
-
-bindsym $mod+o exec --no-startup-id loginctl lock-session
-bindsym $mod+r exec --no-startup-id systemctl reboot
-bindsym $mod+s exec --no-startup-id systemctl suspend
-bindsym $mod+p exec --no-startup-id systemctl poweroff
-
-bindsym $mod+Return exec --no-startup-id i3-sensible-terminal
-bindsym $mod+d exec --no-startup-id dmenu_run -fn "Source Code Pro-10"
-bindsym $mod+m exec --no-startup-id mousetoggle
 
 bindsym $mod+h focus left
 bindsym $mod+j focus down
 bindsym $mod+k focus up
 bindsym $mod+l focus right
 
-bindsym $mod+b split horizontal
-bindsym $mod+v split vertical
-
 bindsym $mod+Ctrl+h move left
 bindsym $mod+Ctrl+j move down
 bindsym $mod+Ctrl+k move up
 bindsym $mod+Ctrl+l move right
 
-bindsym mod+f fullscreen toggle
-bindsym $mod+space floating toggle
-
-set $ws1 "1"
-set $ws2 "2"
-set $ws3 "3"
-set $ws4 "4"
-set $ws5 "5"
-set $ws6 "6"
-set $ws7 "7"
-set $ws8 "8"
-set $ws9 "9"
+set $ws1 1
+set $ws2 2
+set $ws3 3
+set $ws4 4
+set $ws5 5
+set $ws6 6
+set $ws7 7
+set $ws8 8
+set $ws9 9
 
 workspace $ws1 output DP-0 
 workspace $ws2 output DP-0 
@@ -79,40 +56,54 @@ bindsym $mod+Ctrl+7 move container workspace $ws7, workspace $ws7
 bindsym $mod+Ctrl+8 move container workspace $ws8, workspace $ws8
 bindsym $mod+Ctrl+9 move container workspace $ws9, workspace $ws9
 
+bindsym $mod+f fullscreen toggle
+bindsym $mod+a floating toggle
+bindsym $mod+v split toggle
+bindsym $mod+b layout toggle default tabbed
+
 workspace_auto_back_and_forth no
-focus_follows_mouse yes
-tiling_drag modifier titlebar
 smart_borders on
 popup_during_fullscreen smart
 focus_on_window_activation smart
+tiling_drag modifier
+
+bindsym $mod+o exec --no-startup-id loginctl lock-session
+bindsym $mod+r exec --no-startup-id systemctl reboot
+bindsym $mod+s exec --no-startup-id systemctl suspend
+bindsym $mod+p exec --no-startup-id systemctl poweroff
+bindsym $mod+u exec --no-startup-id systemctl hibernate
+
+bindsym $mod+t exec --no-startup-id kitty 
+bindsym $mod+w exec --no-startup-id chromium
+bindsym $mod+d exec --no-startup-id dmenu_run -i -b -p "Run" -fn "Source Code Pro-10"
+
+font pango:Source Code Pro 8
+
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +5%
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -5%
+bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle
+bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle
 
 for_window [window_role="pop-up"] floating enable
 for_window [window_role="task_dialog"] floating enable
 
-assign [class="kitty" window_type="normal"] $ws1
-assign [class="Chromium" window_type="normal"] $ws3
-
 for_window [class="Spotify" window_type="normal"] floating enable, move scratchpad
 bindsym $mod+Shift+s [class="Spotify"] scratchpad show, move position center
 
-set $notify exec --no-startup-id notify-send -u low
-bindsym $mod+Escape mode $mode_unleashed, $notify "(I) i3wm" "Switched mode:<i> Unleashed </i>" 
-mode $mode_unleashed {
-  bindsym $mod+Escape mode "default", $notify "(I) i3wm" "Switched mode:<i> Default </i>"
+bindsym $mod+Escape mode "Free"
+mode "Free" {
+  bindsym $mod+Escape mode "default"
 }
 
 bar {
   i3bar_command i3bar
   status_command i3status
-  position top
-  binding_mode_indicator no
-  tray_output DP-2
+  position bottom
+  binding_mode_indicator yes
+  tray_output primary
 }
 
-exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork -i ~/pics/Arch1l.png -t
-exec --no-startup-id feh --bg-scale ~/pics/Arch1.png
 exec --no-startup-id ibus-daemon -drxR
 exec --no-startup-id dunst
-exec --no-startup-id picom --fade-in-step=1 --fade-out-step=1 --fade-delta=0
-exec --no-startup-id i3-sensible-terminal 
-exec --no-startup-id chromium
+exec --no-startup-id xss-lock --transfer-sleep-lock -- xsecurelock 
+exec --no-startup-id picom

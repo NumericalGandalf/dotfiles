@@ -4,10 +4,23 @@ M.cond = true
 
 M.lazy = false
 
+local function theme()
+  local auto = require("lualine.themes.auto")
+  if vim.g.colors_name == "default" then
+    for _, group in ipairs({ "normal", "insert", "replace", "visual", "command" }) do
+      auto[group].b.bg = "NvimDarkGrey3"
+      auto[group].c.bg = "NvimDarkGrey2"
+      auto[group].c.fg = auto.normal.b.fg
+    end
+  end
+  return auto
+end
+
 function M.config()
   require("lualine").setup({
     options = {
       globalstatus = true,
+      theme = theme(),
       component_separators = {
         left = "",
         right = "",

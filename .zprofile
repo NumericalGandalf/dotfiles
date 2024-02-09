@@ -1,31 +1,28 @@
 #!/usr/bin/zsh
 
-display() {
-  if [[ "$(tty | rev | cut -c 1)" -gt 3 ]]; then
-    return 0
-  fi
-
-  xorg=1
-
-  if [[ $xorg ]]; then
-    export XDG_SESSION_TYPE=x11
-  else
-    export XDG_SESSION_TYPE=wayland
+function display() {
+  termclt="$(tty | rev | cut -c 1)"
+  if [[ $termclt -gt 3 ]]; then
+    return
   fi
 
   if [[ -n $DISPLAY || -n $WAYLAND_DISPLAY ]]; then
-    return 0
+    return
   fi
 
+  xorg=1
   if [[ $xorg ]]; then
-    exec startx 
+    session=i3
+    if [[ $termclt -eq 2 ]]; then
+      session=awesome
+    fi
+    if target=$(command -v $session); then
+      exec startx $target
+    fi
   fi
-
-  export XDG_SESSION_TYPE=tty
 }
 
-zmain() {
-  neofetch
+function zmain() {
   display
 }
 

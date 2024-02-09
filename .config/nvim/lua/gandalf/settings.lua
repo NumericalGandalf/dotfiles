@@ -13,13 +13,7 @@ local function settings()
   vim.opt.autoindent = true
   vim.opt.smartindent = true
   vim.opt.wrap = false
-  vim.opt.expandtab = true 
-
   vim.opt.expandtab = true
-  vim.opt.tabstop = tabsize
-  vim.opt.softtabstop = tabsize
-  vim.opt.shiftwidth = tabsize
-
 
   vim.opt.swapfile = false
   vim.opt.backup = false
@@ -48,26 +42,15 @@ local function settings()
   })
 end
 
-local function keymaps()
-  vim.keymap.set("v", "<C-j>", ":m '>+1<CR>gv=gv")
-  vim.keymap.set("v", "<C-k>", ":m '<-2<CR>gv=gv")
-end
-
 function M.setup()
   M.gandalfs = vim.api.nvim_create_augroup("Gandalfs", {
     clear = true,
   })
 
   settings()
-  keymaps()
-
-  vim.filetype.add({
-    filename = {
-      [".zshrc"] = "sh",
-    },
-  })
 
   vim.cmd(":colorscheme default")
+  vim.cmd(":hi Normal guibg=None")
 end
 
 return M

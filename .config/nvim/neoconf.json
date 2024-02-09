@@ -11,5 +11,10 @@
         "enabled": true
       }
     }
+  },
+  "lspconfig": {
+    "bashls": {
+      "bashIde.globPattern": "*@(.sh|.inc|.bash|.zsh|.command)"
+    }
   }
 }
