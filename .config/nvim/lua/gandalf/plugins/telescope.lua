@@ -19,7 +19,7 @@ function M.config()
     defaults = {
       mappings = {
         i = {
-          ["<esc>"] = actions.close,
+          ["<C-g>"] = actions.close,
         },
       },
     },

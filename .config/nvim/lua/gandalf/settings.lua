@@ -24,6 +24,8 @@ local function settings()
   vim.opt.laststatus = 3
   vim.g.netrw_banner = 0
 
+  vim.opt.wildoptions = "fuzzy,pum,tagfile"
+
   vim.fn.sign_define("DiagnosticSignError", {
     text = "E",
     texthl = "DiagnosticSignError",
@@ -43,14 +45,7 @@ local function settings()
 end
 
 function M.setup()
-  M.gandalfs = vim.api.nvim_create_augroup("Gandalfs", {
-    clear = true,
-  })
-
   settings()
-
-  vim.cmd(":colorscheme default")
-  vim.cmd(":hi Normal guibg=None")
 end
 
 return M

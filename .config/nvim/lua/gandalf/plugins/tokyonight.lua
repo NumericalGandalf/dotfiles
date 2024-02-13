@@ -23,8 +23,6 @@ function M.config()
     dim_inactive = false,
     lualine_bold = false,
   })
-
-  -- vim.cmd(":colorscheme tokyonight")
 end
 
 return M

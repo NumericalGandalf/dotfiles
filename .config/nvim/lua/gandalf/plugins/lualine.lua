@@ -8,8 +8,8 @@ local function theme()
   local auto = require("lualine.themes.auto")
   if vim.g.colors_name == "default" then
     for _, group in ipairs({ "normal", "insert", "replace", "visual", "command" }) do
-      auto[group].b.bg = "NvimDarkGrey3"
-      auto[group].c.bg = "NvimDarkGrey2"
+      auto[group].b.bg = "NvimDarkGrey4"
+      auto[group].c.bg = "NvimDarkGrey3"
       auto[group].c.fg = auto.normal.b.fg
     end
   end

@@ -52,7 +52,7 @@ function M.config()
   end
 
   vim.api.nvim_create_autocmd("LspAttach", {
-    group = require("gandalf.settings").gandalfs,
+    group = require("gandalf").gandalfs,
     callback = function(ev)
       local opts = { buffer = ev.buf }
       vim.bo[opts.buffer].omnifunc = "v:lua.vim.lsp.omnifunc"

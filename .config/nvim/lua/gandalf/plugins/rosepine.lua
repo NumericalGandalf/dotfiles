@@ -15,8 +15,6 @@ function M.config()
       transparency = true,
     },
   })
-
-  -- vim.cmd(":colorscheme rose-pine")
 end
 
 return M

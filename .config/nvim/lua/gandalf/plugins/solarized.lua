@@ -50,8 +50,6 @@ function M.config()
     theme = "default",
     autocmd = true,
   })
-
-  -- vim.cmd(":colorscheme solarized")
 end
 
 return M

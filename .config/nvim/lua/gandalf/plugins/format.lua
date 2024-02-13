@@ -26,7 +26,7 @@ function M.config()
   })
 
   vim.api.nvim_create_autocmd("BufWritePre", {
-    group = require("gandalf.settings").gandalfs,
+    group = require("gandalf").gandalfs,
     callback = function()
       if not M.manual then
         M.invoke()
