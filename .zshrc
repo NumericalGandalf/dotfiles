@@ -49,12 +49,13 @@ function keybinds() {
   bindkey -r "^[F"
   bindkey -r "^[B"
 
-  bindkey -r "^J"
   zle -N go-dir
-  bindkey "^Ju" go-dir
   zle -N go-dir-editor
-  bindkey "^Jn" go-dir-editor
   zle -N f-man
+
+  bindkey -r "^J"
+  bindkey "^Ju" go-dir
+  bindkey "^Jn" go-dir-editor
   bindkey "^Jm" f-man
 }
 

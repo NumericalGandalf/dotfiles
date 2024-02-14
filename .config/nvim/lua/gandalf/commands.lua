@@ -7,7 +7,7 @@ local function gitentry(e)
   return string.sub(e, 1, string.len("./.git")) == "./.git"
 end
 
-local function cmd_T(opts)
+local function command_T(opts)
   local dir = "."
   if opts.nargs == 1 then
     dir = opts.args
@@ -15,7 +15,7 @@ local function cmd_T(opts)
   vim.cmd("!$TERMINAL " .. dir .. " &")
 end
 
-local function cmd_T_cmp()
+local function command_T_complete()
   local dirs = {}
   require("plenary.scandir").scan_dir(".", {
     only_dirs = true,
@@ -31,11 +31,11 @@ local function cmd_T_cmp()
   return dirs
 end
 
-local function cmd_W(opts)
+local function command_W(opts)
   vim.cmd("!$BROWSER " .. opts.args .. " &")
 end
 
-local function cmd_W_cmp()
+local function command_W_complete()
   local files = {}
   require("plenary.scandir").scan_dir(".", {
     add_dirs = false,
@@ -52,13 +52,13 @@ local function cmd_W_cmp()
 end
 
 local function user_commands()
-  vim.api.nvim_create_user_command("T", cmd_T, {
-    complete = cmd_T_cmp,
+  vim.api.nvim_create_user_command("T", command_T, {
+    complete = command_T_complete,
     nargs = "?",
   })
 
-  vim.api.nvim_create_user_command("W", cmd_W, {
-    complete = cmd_W_cmp,
+  vim.api.nvim_create_user_command("W", command_W, {
+    complete = command_W_complete,
     nargs = "+",
   })
 end

@@ -9,8 +9,9 @@ function pathappend() {
 }
 
 function variables() {
-  export EDITOR=nvim
   export TERMINAL=kitty
+  export EDITOR=nvim
+  export PAGER=less
   export BROWSER=chromium
 
   export HISTIGNORE="*sudo -S*:$HISTIGNORE"
