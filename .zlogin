@@ -22,8 +22,8 @@ function display() {
   fi
 }
 
-function zmain() {
+function zlmain() {
   display
 }
 
-zmain
+zlmain

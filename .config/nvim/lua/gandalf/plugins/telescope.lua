@@ -40,8 +40,6 @@ function M.config()
     builtin.find_files({
       hidden = true,
       follow = true,
-      no_ignore = true,
-      no_ignore_parent = true,
     })
   end)
 

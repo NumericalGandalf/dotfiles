@@ -1,21 +1,5 @@
 #!/usr/bin/zsh
 
-function pathappend() {
-  for arg in "$@"; do
-    if [ -d "$arg" ] && [[ ":$PATH:" != *":$arg:"* ]]; then
-      PATH="${PATH:+"$PATH:"}$arg"
-    fi
-  done
-}
-
-function defaults() {
-  export EDITOR=nvim
-  export TERMINAL=kitty
-  export BROWSER=chromium
-
-  export HISTIGNORE="*sudo -S*:$HISTIGNORE"
-}
-
 function ohmyzsh() {
   export ZSH="$HOME/.oh-my-zsh"
   ZSH_THEME="linuxonly"
@@ -33,6 +17,10 @@ function ohmyzsh() {
   source $ZSH/oh-my-zsh.sh
 }
 
+function shorts() {
+  alias ll="ls -lah"
+}
+
 function go-dir() {
   if target=$(fd -H . -t d $HOME | fzf -i --preview "ls -lah {}"); then
     cd $target
@@ -48,9 +36,13 @@ function go-dir-editor() {
   fi
 }
 
-function shorts() {
-  alias ll="ls -lah"
+function f-man() {
+  if target=$(man -k . | cut -d " " -f 1 | uniq | fzf -i); then
+    man $target
+  fi
+}
 
+function keybinds() {
   bindkey "^O" autosuggest-accept
   bindkey "^F" forward-word
   bindkey "^B" backward-word
@@ -62,13 +54,14 @@ function shorts() {
   bindkey "^Ju" go-dir
   zle -N go-dir-editor
   bindkey "^Jn" go-dir-editor
+  zle -N f-man
+  bindkey "^Jm" f-man
 }
 
 function zrcmain() {
-  pathappend $HOME/.local/bin $HOME/.spicetify
-  defaults
   ohmyzsh
   shorts
+  keybinds
 }
 
 zrcmain
