@@ -6,7 +6,7 @@ M.lazy = false
 
 local function theme()
   local auto = require("lualine.themes.auto")
-  if vim.g.colors_name == "default" then
+  if vim.g.colors_name == "dalf" then
     for _, group in ipairs({ "normal", "insert", "replace", "visual", "command" }) do
       auto[group].b.bg = "NvimDarkGrey4"
       auto[group].c.bg = "NvimDarkGrey3"
@@ -14,6 +14,22 @@ local function theme()
     end
   end
   return auto
+end
+
+local function bufnu()
+  return "[" .. vim.api.nvim_get_current_buf() .. "]"
+end
+
+local function progress()
+  local cur = vim.fn.line(".")
+  local total = vim.fn.line("$")
+  local prog = "Top"
+  if cur == total then
+    prog = "Bot"
+  elseif cur ~= 1 then
+    prog = string.format("%2d%%%%", math.floor(cur / total * 100))
+  end
+  return "(" .. prog .. ")"
 end
 
 function M.config()
@@ -41,6 +57,7 @@ function M.config()
           file_status = true,
           path = 1,
         },
+        bufnu,
         {
           "diagnostics",
           update_in_insert = true,
@@ -58,10 +75,9 @@ function M.config()
           icon = "Git:",
         },
         "diff",
+        progress,
       },
-      lualine_y = {
-        "progress",
-      },
+      lualine_y = {},
       lualine_z = {},
     },
     extensions = {
@@ -69,5 +85,5 @@ function M.config()
     },
   })
 end
-
+M.config()
 return M

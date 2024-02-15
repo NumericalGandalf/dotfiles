@@ -32,7 +32,7 @@ function M.config()
   })
 
   vim.keymap.set("n", "<leader>ft", function()
-    vim.cmd(":Neotree toggle")
+    vim.cmd("Neotree toggle")
   end)
 end
 

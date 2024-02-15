@@ -105,3 +105,4 @@ bar {
 exec --no-startup-id dunst
 exec --no-startup-id picom
 exec --no-startup-id xss-lock --transfer-sleep-lock -- xsecurelock 
+exec --no-startup-id setxkbmap -option caps:escape

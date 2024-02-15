@@ -5,8 +5,7 @@ function M.setup()
     clear = true,
   })
 
-  vim.cmd(":colorscheme default")
-  vim.cmd(":hi Normal guibg=None")
+  vim.api.nvim_command("colorscheme dalf")
 
   require("gandalf.settings").setup()
   require("gandalf.lazy").setup()

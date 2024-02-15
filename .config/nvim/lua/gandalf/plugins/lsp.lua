@@ -36,7 +36,7 @@ local function attach_generic(opts)
   vim.keymap.set("n", "<leader>vD", vim.diagnostic.setloclist, opts)
 
   vim.keymap.set("n", "gh", function()
-    vim.cmd(":ClangdSwitchSourceHeader")
+    vim.api.nvim_command("ClangdSwitchSourceHeader")
   end, opts)
 end
 
