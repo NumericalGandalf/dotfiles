@@ -85,5 +85,5 @@ function M.config()
     },
   })
 end
-M.config()
+
 return M
