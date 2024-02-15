@@ -19,6 +19,9 @@ M.lazy_opts = {
   defaults = {
     lazy = true,
   },
+  ui = {
+    border = "rounded",
+  },
   checker = {
     enabled = false,
   },

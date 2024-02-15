@@ -1,7 +1,6 @@
 local M = { "neovim/nvim-lspconfig" }
 
 M.dependencies = {
-  "folke/neoconf.nvim",
   "folke/neodev.nvim",
   "williamboman/mason-lspconfig.nvim",
   "hrsh7th/cmp-nvim-lsp",
@@ -15,23 +14,16 @@ local function attach_generic(opts)
   local telescope = require("telescope.builtin")
 
   vim.keymap.set("n", "gr", telescope.lsp_references, opts)
-  vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
+  vim.keymap.set("n", "gi", telescope.lsp_implementations, opts)
   vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
+  vim.keymap.set("n", "gd", telescope.lsp_definitions, opts)
+  vim.keymap.set("n", "gt", telescope.lsp_type_definitions, opts)
 
-  vim.keymap.set("n", "<leader>vd", vim.diagnostic.setqflist, opts)
-  vim.keymap.set("n", "<leader>vD", vim.diagnostic.setloclist, opts)
+  vim.keymap.set("n", "gc", telescope.lsp_outgoing_calls, opts)
+  vim.keymap.set("n", "gC", telescope.lsp_incoming_calls, opts)
 
   vim.keymap.set("n", "gS", telescope.lsp_document_symbols, opts)
   vim.keymap.set("n", "gs", telescope.lsp_workspace_symbols, opts)
-
-  vim.keymap.set("n", "gh", function()
-    vim.cmd(":ClangdSwitchSourceHeader")
-  end, opts)
-end
-
-local function attach_dynamic(opts)
-  vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
-  vim.keymap.set("n", "gt", vim.lsp.buf.type_definition, opts)
 
   vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
   vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
@@ -39,17 +31,18 @@ local function attach_dynamic(opts)
 
   vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, opts)
   vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
+
+  vim.keymap.set("n", "<leader>vd", vim.diagnostic.setqflist, opts)
+  vim.keymap.set("n", "<leader>vD", vim.diagnostic.setloclist, opts)
+
+  vim.keymap.set("n", "gh", function()
+    vim.cmd(":ClangdSwitchSourceHeader")
+  end, opts)
 end
 
 function M.config()
-  require("neoconf").setup()
   require("neodev").setup()
-
-  local saga = require("gandalf.plugins.lspsaga")
-  if saga.cond then
-    require("lspsaga")
-    attach_dynamic = saga.attach_dynamic
-  end
+  require("mason-lspconfig").setup()
 
   vim.api.nvim_create_autocmd("LspAttach", {
     group = require("gandalf").gandalfs,
@@ -57,21 +50,49 @@ function M.config()
       local opts = { buffer = ev.buf }
       vim.bo[opts.buffer].omnifunc = "v:lua.vim.lsp.omnifunc"
       attach_generic(opts)
-      attach_dynamic(opts)
     end,
   })
 
   local lspconfig = require("lspconfig")
-  local capabilities = require("cmp_nvim_lsp").default_capabilities()
+  require("lspconfig.ui.windows").default_options = {
+    border = "rounded",
+  }
 
-  for _, server in ipairs({ "lua_ls", "pyright", "clangd", "jsonls" }) do
-    lspconfig[server].setup({
-      capabilities = capabilities,
-    })
-  end
+  local capabilities = require("cmp_nvim_lsp").default_capabilities()
+  local handlers = {
+    ["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" }),
+    ["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" }),
+  }
+
+  lspconfig.lua_ls.setup({
+    capabilities = capabilities,
+    handlers = handlers,
+  })
+
+  lspconfig.clangd.setup({
+    capabilities = capabilities,
+    handlers = handlers,
+  })
 
   lspconfig.bashls.setup({
-    filetypes = { "sh", "bash", "zsh" },
+    capabilities = capabilities,
+    handlers = handlers,
+    filetypes = { "sh", "zsh" },
+    settings = {
+      bashIde = {
+        globPattern = "*@(.sh|.inc|.bash|.zsh.|command)",
+      },
+    },
+  })
+
+  lspconfig.pyright.setup({
+    capabilities = capabilities,
+    handlers = handlers,
+  })
+
+  lspconfig.jsonls.setup({
+    capabilities = capabilities,
+    handlers = handlers,
   })
 end
 

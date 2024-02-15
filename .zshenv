@@ -21,3 +21,5 @@ function zenvmain() {
   pathappend $HOME/.local/bin $HOME/.spicetify
   variables
 }
+
+zenvmain
