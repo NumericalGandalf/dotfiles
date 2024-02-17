@@ -2,16 +2,10 @@
 
 function ohmyzsh() {
   export ZSH="$HOME/.oh-my-zsh"
-  ZSH_THEME="linuxonly"
+  ZSH_THEME="gentoo"
   plugins=(
     git
-    kubectl
-    emoji
-    encode64
-    history
-    jsontools
     zsh-autosuggestions
-    web-search
     zsh-syntax-highlighting
   )
   source $ZSH/oh-my-zsh.sh
@@ -22,24 +16,16 @@ function shorts() {
 }
 
 function go-dir() {
-  if target=$(fd -H . -t d $HOME | fzf -i --preview "ls -lah {}"); then
-    cd $target
-    zle accept-line
-    return 0
-  fi
-  return 1
+  target=$(fd -H . -t d $HOME | fzf -i --preview "ls -lah {}") &&
+    cd $target && zle reset-prompt
 }
 
 function go-dir-editor() {
-  if go-dir; then
-    $EDITOR .
-  fi
+  go-dir && $EDITOR .
 }
 
 function f-man() {
-  if target=$(man -k . | cut -d " " -f 1 | uniq | fzf -i); then
-    man $target
-  fi
+  target=$(man -k . | cut -d " " -f 1 | uniq | fzf -i) && man $target
 }
 
 function keybinds() {
