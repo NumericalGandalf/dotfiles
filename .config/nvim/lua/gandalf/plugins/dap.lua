@@ -1,6 +1,8 @@
-local A = { "mfussenegger/nvim-dap" }
+local M = { "mfussenegger/nvim-dap" }
 
-A.config = function()
+M.event = "VeryLazy"
+
+M.config = function()
   local dap = require("dap")
 
   vim.keymap.set("n", "<leader>dc", function()
@@ -34,10 +36,7 @@ A.config = function()
       local host = (config.connect or config).host or "127.0.0.1"
       cb({
         type = "server",
-        port = assert(
-          port,
-          "`connect.port` is required for a python `attach` configuration"
-        ),
+        port = assert(port, "`connect.port` is required for a python `attach` configuration"),
         host = host,
         options = {
           source_filetype = "python",
@@ -81,4 +80,4 @@ A.config = function()
   end
 end
 
-return A
+return M

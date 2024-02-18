@@ -29,17 +29,18 @@ function f-man() {
 }
 
 function keybinds() {
+  bindkey -r "^[F"
+  bindkey -r "^[B"
+  bindkey -r "^J"
+
   bindkey "^O" autosuggest-accept
   bindkey "^F" forward-word
   bindkey "^B" backward-word
-  bindkey -r "^[F"
-  bindkey -r "^[B"
 
   zle -N go-dir
   zle -N go-dir-editor
   zle -N f-man
 
-  bindkey -r "^J"
   bindkey "^Ju" go-dir
   bindkey "^Jn" go-dir-editor
   bindkey "^Jm" f-man

@@ -2,20 +2,18 @@ local M = { "nvim-treesitter/nvim-treesitter" }
 
 M.build = ":TSUpdate"
 
-M.event = "BufEnter"
+M.lazy = false
 
 function M.config()
   require("nvim-treesitter.configs").setup({
-    ensure_installed = {},
-    sync_install = false,
     auto_install = true,
-    ignore_install = {},
     highlight = {
       enable = true,
-      disable = {},
       additional_vim_regex_highlighting = false,
     },
   })
+
+  vim.treesitter.language.register("bash", "zsh")
 end
 
 return M

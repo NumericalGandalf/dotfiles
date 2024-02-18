@@ -8,7 +8,7 @@ M.dependencies = {
   },
 }
 
-M.event = "VimEnter"
+M.event = "VeryLazy"
 
 function M.config()
   local telescope = require("telescope")

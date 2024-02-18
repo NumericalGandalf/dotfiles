@@ -8,7 +8,7 @@ M.dependencies = {
   "mfussenegger/nvim-lint",
 }
 
-M.event = "BufEnter"
+M.lazy = false
 
 local function attach_generic(opts)
   local telescope = require("telescope.builtin")
