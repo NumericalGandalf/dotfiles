@@ -15,11 +15,12 @@ function M.config()
   require("conform").setup({
     formatters_by_ft = {
       lua = { "stylua" },
-      python = { "isort", "black" },
-      sh = { "shfmt" },
-      zsh = { "shfmt" },
       c = { "clang_format" },
       cpp = { "clang_format" },
+      vim = { "vint" },
+      sh = { "shfmt" },
+      zsh = { "shfmt" },
+      python = { "isort", "black" },
       json = { "jq" },
       jsonc = { "jq" },
     },
