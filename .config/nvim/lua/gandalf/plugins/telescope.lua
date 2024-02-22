@@ -20,21 +20,38 @@ function M.config()
       mappings = {
         i = {
           ["<C-g>"] = actions.close,
+          ["<C-f>"] = actions.preview_scrolling_down,
+          ["<C-b>"] = actions.preview_scrolling_up,
+          ["<C-u>"] = function()
+            vim.api.nvim_command("%delete")
+          end,
         },
       },
     },
     pickers = {
       find_files = {
-        find_command = { "fd", "-t", "f", "--strip-cwd-prefix" },
+        find_command = {
+          "fd",
+          "--strip-cwd-prefix",
+          "--hidden",
+          "--type",
+          "file",
+        },
         hidden = true,
         follow = true,
       },
+      live_grep = {
+        additional_args = function()
+          return {
+            "--hidden",
+            "--follow",
+            "--smart-case",
+            "-g!.git/",
+          }
+        end,
+      },
       grep_string = {
         only_sort_text = true,
-      },
-      planets = {
-        show_pluto = true,
-        show_moon = true,
       },
     },
     extensions = {
@@ -49,14 +66,16 @@ function M.config()
 
   telescope.load_extension("fzf")
 
-  vim.keymap.set("n", "<leader>ff", builtin.find_files)
-  vim.keymap.set("n", "<leader>fb", builtin.buffers)
+  local opts = { noremap = true }
 
-  vim.keymap.set("n", "<leader>fg", builtin.live_grep)
-  vim.keymap.set("n", "<leader>fG", builtin.current_buffer_fuzzy_find)
-  vim.keymap.set("n", "<leader>fs", builtin.grep_string)
+  vim.keymap.set("n", "<leader>ff", builtin.find_files, opts)
+  vim.keymap.set("n", "<leader>fb", builtin.buffers, opts)
 
-  vim.keymap.set("n", "<leader>fc", builtin.git_status)
+  vim.keymap.set("n", "<leader>fg", builtin.live_grep, opts)
+  vim.keymap.set("n", "<leader>fG", builtin.current_buffer_fuzzy_find, opts)
+  vim.keymap.set("n", "<leader>fs", builtin.grep_string, opts)
+
+  vim.keymap.set("n", "<leader>fc", builtin.git_status, opts)
 end
 
 return M

@@ -1,15 +1,6 @@
 local M = { "stevearc/conform.nvim" }
 
-M.manual = false
-M.timeout = 2500
-
-function M.invoke()
-  require("conform").format({
-    lsp_fallback = false,
-    async = false,
-    timeout_ms = M.timeout,
-  })
-end
+M.event = "BufWritePre"
 
 function M.config()
   require("conform").setup({
@@ -24,15 +15,11 @@ function M.config()
       json = { "jq" },
       jsonc = { "jq" },
     },
-  })
-
-  vim.api.nvim_create_autocmd("BufWritePre", {
-    group = require("gandalf").gandalfs,
-    callback = function()
-      if not M.manual then
-        M.invoke()
-      end
-    end,
+    format_on_save = {
+      timeout_ms = 1000,
+      async = false,
+      lsp_fallback = false,
+    },
   })
 end
 

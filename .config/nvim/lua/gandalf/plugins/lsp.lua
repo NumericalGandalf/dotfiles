@@ -4,30 +4,26 @@ M.dependencies = {
   "folke/neodev.nvim",
   "williamboman/mason-lspconfig.nvim",
   "hrsh7th/cmp-nvim-lsp",
-  "stevearc/conform.nvim",
-  "mfussenegger/nvim-lint",
 }
 
 M.lazy = false
 
 local function extend_features_tbl(features)
-  features = features or {}
-  return {
-    definitions = features.definitions or true,
-    declarations = features.declarations or false,
-    refrences = features.refrences or true,
-    type_definitions = features.type_definitions or true,
-    implementations = features.implementations or false,
-    call_hierarchy = features.call_hierarchy or false,
-  }
+  return vim.tbl_deep_extend("keep", features or {}, {
+    definitions = true,
+    declarations = false,
+    refrences = true,
+    type_definitions = true,
+    implementations = false,
+    call_hierarchy = false,
+  })
 end
 
 local function extend_opts_tbl(opts)
-  opts = opts or {}
-  return {
-    buffer = opts.buffer or vim.api.nvim_get_current_buf(),
+  return vim.tbl_deep_extend("keep", opts or {}, {
+    buffer = vim.api.nvim_get_current_buf(),
     noremap = true,
-  }
+  })
 end
 
 local function on_attach(features, opts)

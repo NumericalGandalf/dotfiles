@@ -26,6 +26,7 @@ local function settings()
   vim.opt.laststatus = 3
   vim.g.netrw_banner = 0
 
+  vim.opt.splitright = true
   vim.opt.wildoptions = "fuzzy,pum,tagfile"
 
   vim.fn.sign_define("DiagnosticSignError", {
