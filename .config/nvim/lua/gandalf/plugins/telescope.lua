@@ -19,7 +19,6 @@ function M.config()
     defaults = {
       mappings = {
         i = {
-          ["<C-g>"] = actions.close,
           ["<C-f>"] = actions.preview_scrolling_down,
           ["<C-b>"] = actions.preview_scrolling_up,
           ["<C-u>"] = function()
@@ -68,6 +67,7 @@ function M.config()
 
   local opts = { noremap = true }
 
+  vim.keymap.set("n", "<leader>fh", builtin.help_tags, opts)
   vim.keymap.set("n", "<leader>ff", builtin.find_files, opts)
   vim.keymap.set("n", "<leader>fb", builtin.buffers, opts)
 

@@ -1,6 +1,6 @@
 #!/usr/bin/zsh
 
-function display() {
+function {
   [[ -n "$DISPLAY" ]] && return
 
   case "$XDG_VTNR" in
@@ -11,9 +11,3 @@ function display() {
 
   exec xinit $session
 }
-
-function zpmain() {
-  display
-}
-
-zpmain

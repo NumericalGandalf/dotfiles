@@ -1,9 +1,10 @@
 set $mod Mod1
 floating_modifier $mod
 
-bindsym $mod+e exit
-bindsym $mod+q kill
-bindsym $mod+c restart 
+bindsym $mod+Shift+e exit
+bindsym $mod+Shift+q kill
+bindsym $mod+Shift+c restart 
+bindsym $mod+Shift+x reload 
 
 set $left h
 set $down j
@@ -60,27 +61,29 @@ bindsym $mod+Shift+7 move container workspace $ws7, workspace $ws7
 bindsym $mod+Shift+8 move container workspace $ws8, workspace $ws8
 bindsym $mod+Shift+9 move container workspace $ws9, workspace $ws9
 
-bindsym $mod+f fullscreen toggle
-bindsym $mod+a floating toggle
-bindsym $mod+b layout toggle splith tabbed
+bindsym $mod+Shift+f fullscreen toggle
+bindsym $mod+Shift+a floating toggle
+bindsym $mod+Shift+v split toggle
+bindsym $mod+Shift+b layout toggle splith tabbed
 
 workspace_auto_back_and_forth no
 smart_borders on
 popup_during_fullscreen smart
 focus_on_window_activation smart
+focus_follows_mouse no
 tiling_drag modifier
 
-bindsym $mod+o exec --no-startup-id loginctl lock-session
-bindsym $mod+r exec --no-startup-id systemctl reboot
-bindsym $mod+s exec --no-startup-id systemctl suspend
-bindsym $mod+p exec --no-startup-id systemctl poweroff
-bindsym $mod+u exec --no-startup-id systemctl hibernate
+bindsym $mod+Shift+o exec --no-startup-id loginctl lock-session
+bindsym $mod+Shift+r exec --no-startup-id systemctl reboot
+bindsym $mod+Shift+s exec --no-startup-id systemctl suspend
+bindsym $mod+Shift+p exec --no-startup-id systemctl poweroff
+bindsym $mod+Shift+u exec --no-startup-id systemctl hibernate
 
-bindsym $mod+t exec --no-startup-id $TERMINAL
-bindsym $mod+w exec --no-startup-id $BROWSER
-bindsym $mod+d exec --no-startup-id dmenu_run -i -b -p "Run" -fn "Source Code Pro-10"
+bindsym $mod+Shift+t exec --no-startup-id $TERMINAL
+bindsym $mod+Shift+w exec --no-startup-id $BROWSER
+bindsym $mod+Shift+d exec --no-startup-id dmenu_run -i -b -p "Run" -fn "Hack Nerd Font Mono-10"
 
-font pango:Source Code Pro 8
+font pango:Hack Nerd Font Mono 8
 
 bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +5%
 bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -5%
@@ -90,10 +93,7 @@ bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOU
 for_window [window_role="pop-up"] floating enable
 for_window [window_role="task_dialog"] floating enable
 
-for_window [class="Spotify" window_type="normal"] floating enable, move scratchpad
-bindsym $mod+Shift+s [class="Spotify"] scratchpad show, move position center
-
-bindsym $mod+g mode "Resize"
+bindsym $mod+Shift+g mode "Resize"
 mode "Resize" {
   bindsym $right resize shrink right 10 px or 10 ppt
   bindsym $down resize shrink down 10 px or 10 ppt
@@ -105,12 +105,12 @@ mode "Resize" {
   bindsym Shift+$up resize grow up 10 px or 10 ppt
   bindsym Shift+$left resize grow left 10 px or 10 ppt
 
-  bindsym $mod+g mode "default"
+  bindsym $mod+Shift+g mode "default"
 }
 
-bindsym $mod+Escape mode "Free"
+bindsym $mod+Shift+Escape mode "Free"
 mode "Free" {
- bindsym $mod+Escape mode "default"
+ bindsym $mod+Shift+Escape mode "default"
 }
 
 bar {
@@ -120,7 +120,3 @@ bar {
   binding_mode_indicator yes
   tray_output primary
 }
-
-exec --no-startup-id dunst
-exec --no-startup-id picom
-exec --no-startup-id xss-lock --transfer-sleep-lock -- xsecurelock 

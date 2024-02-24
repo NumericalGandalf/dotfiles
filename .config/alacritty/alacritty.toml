@@ -1,0 +1,18 @@
+live_config_reload = true
+
+[window]
+opacity = 0.85
+
+[font]
+normal = { family = "Hack Nerd Font Mono", style = "Regular" }
+size = 11
+
+[colors]
+[colors.primary]
+background = "#1a1b26"
+
+[cursor]
+style = "Beam"
+
+[mouse]
+hide_when_typing = true

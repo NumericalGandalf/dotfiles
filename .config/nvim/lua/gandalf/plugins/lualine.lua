@@ -2,8 +2,6 @@ local M = { "nvim-lualine/lualine.nvim" }
 
 M.dependencies = { "nvim-tree/nvim-web-devicons" }
 
-M.cond = true
-
 M.lazy = false
 
 local function position()

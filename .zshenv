@@ -8,18 +8,15 @@ function pathappend() {
   done
 }
 
-function variables() {
-  export TERMINAL=kitty
+function {
+  pathappend $HOME/.local/bin $HOME/.spicetify
+}
+
+function {
+  export TERMINAL=alacritty
   export EDITOR=nvim
   export PAGER=less
   export BROWSER=chromium
 
   export HISTIGNORE="*sudo -S*:$HISTIGNORE"
 }
-
-function zenvmain() {
-  pathappend $HOME/.local/bin $HOME/.spicetify
-  variables
-}
-
-zenvmain

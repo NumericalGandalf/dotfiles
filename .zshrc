@@ -1,6 +1,6 @@
 #!/usr/bin/zsh
 
-function ohmyzsh() {
+function {
   export ZSH="$HOME/.oh-my-zsh"
   ZSH_THEME="linuxonly"
   plugins=(
@@ -11,31 +11,27 @@ function ohmyzsh() {
   source $ZSH/oh-my-zsh.sh
 }
 
-function shorts() {
+function {
   alias ll="ls -lah"
   alias fd="fd -H"
   alias rg="rg --hidden -L -S -g '!.git/'"
 }
 
 function go-dir() {
-  old=$(pwd) && cd $HOME && target=$(
+  local old=$(pwd) && cd $HOME && local target=$(
     fd --strip-cwd-prefix -t d . | fzf -i --preview "ls -lah {}"
   ) && cd $target && zle reset-prompt && $EDITOR . || cd $old
 }
 
 function f-man() {
-  target=$(man -k . | cut -d " " -f 1-2 |
+  local target=$(man -k . | cut -d " " -f 1-2 |
     fzf -i --preview "echo {1} | xargs whatis") || return
-  page=$(echo $target | cut -d " " -f 2 |
+  local page=$(echo $target | cut -d " " -f 2 |
     awk -F'[)(]' '{print $2}')
   man $(echo $target | cut -d " " -f 1).$page
 }
 
-function re-rc() {
-  source $HOME/.zshrc && zle reset-prompt
-}
-
-function keybinds() {
+function {
   bindkey -r "^[F"
   bindkey -r "^[B"
   bindkey -r "^J"
@@ -51,13 +47,4 @@ function keybinds() {
 
   bindkey "^Jn" go-dir
   bindkey "^Jm" f-man
-  bindkey "^Jr" re-rc
 }
-
-function zrcmain() {
-  ohmyzsh
-  shorts
-  keybinds
-}
-
-zrcmain

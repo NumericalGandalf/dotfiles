@@ -12,6 +12,74 @@ M.dependencies = {
 
 M.event = { "CmdlineEnter", "InsertEnter" }
 
+local function mapping()
+  local cmp = require("cmp")
+  return {
+    ["<C-b>"] = {
+      i = cmp.mapping.scroll_docs(-4),
+    },
+    ["<C-f>"] = {
+      i = cmp.mapping.scroll_docs(4),
+    },
+    ["<C-l>"] = {
+      i = function()
+        if cmp.visible() then
+          cmp.abort()
+        else
+          cmp.complete()
+        end
+      end,
+    },
+    ["<C-p>"] = {
+      i = cmp.mapping.select_prev_item({
+        behavior = cmp.SelectBehavior.Select,
+      }),
+    },
+    ["<C-n>"] = {
+      i = cmp.mapping.select_next_item({
+        behavior = cmp.SelectBehavior.Select,
+      }),
+    },
+    ["<C-o>"] = {
+      i = cmp.mapping.confirm({
+        select = true,
+        behavior = cmp.ConfirmBehavior.Replace,
+      }),
+    },
+  }
+end
+
+local function cmdline_mapping()
+  local cmp = require("cmp")
+  return {
+    ["<C-l>"] = {
+      c = function()
+        if cmp.visible() then
+          cmp.abort()
+        else
+          cmp.complete()
+        end
+      end,
+    },
+    ["<C-p>"] = {
+      c = cmp.mapping.select_prev_item({
+        behavior = cmp.SelectBehavior.Select,
+      }),
+    },
+    ["<C-n>"] = {
+      c = cmp.mapping.select_next_item({
+        behavior = cmp.SelectBehavior.Select,
+      }),
+    },
+    ["<C-o>"] = {
+      c = cmp.mapping.confirm({
+        select = true,
+        behavior = cmp.ConfirmBehavior.Replace,
+      }),
+    },
+  }
+end
+
 function M.config()
   local cmp = require("cmp")
 
@@ -25,12 +93,7 @@ function M.config()
       completion = cmp.config.window.bordered(),
       documentation = cmp.config.window.bordered(),
     },
-    mapping = cmp.mapping.preset.insert({
-      ["<C-b>"] = cmp.mapping.scroll_docs(-4),
-      ["<C-f>"] = cmp.mapping.scroll_docs(4),
-      ["<C-e>"] = cmp.mapping.abort(),
-      ["<C-o>"] = cmp.mapping.confirm({ select = true }),
-    }),
+    mapping = mapping(),
     sources = cmp.config.sources({
       { name = "nvim_lsp" },
       { name = "luasnip" },
@@ -40,14 +103,14 @@ function M.config()
   })
 
   cmp.setup.cmdline({ "/", "?" }, {
-    mapping = cmp.mapping.preset.cmdline(),
+    mapping = cmdline_mapping(),
     sources = {
       { name = "buffer" },
     },
   })
 
   cmp.setup.cmdline(":", {
-    mapping = cmp.mapping.preset.cmdline(),
+    mapping = cmdline_mapping(),
     sources = cmp.config.sources({
       { name = "path" },
     }, {
