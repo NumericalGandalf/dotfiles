@@ -8,15 +8,11 @@ function pathappend() {
   done
 }
 
-function {
-  pathappend $HOME/.local/bin $HOME/.spicetify
-}
+pathappend $HOME/.local/bin $HOME/.spicetify
 
-function {
-  export TERMINAL=alacritty
-  export EDITOR=nvim
-  export PAGER=less
-  export BROWSER=chromium
+export TERMINAL=alacritty
+export EDITOR=nvim
+export PAGER=less
+export BROWSER=chromium
 
-  export HISTIGNORE="*sudo -S*:$HISTIGNORE"
-}
+export HISTIGNORE="*sudo -S*:$HISTIGNORE"
