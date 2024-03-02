@@ -10,15 +10,11 @@ append_path() {
 append_path $HOME/.local/bin
 
 export TERMINAL=alacritty
-export EDITOR=vim
+export EDITOR=nvim
 export PAGER=less
 export BROWSER=chromium
 
 export HISTIGNORE="*sudo -S*:$HISTIGNORE"
-
-alias ll="ls -lah --color=auto"
-alias fd="fd -H"
-alias rg="rg --hidden -L -S -g '!.git/'"
 
 display() {
   case "$XDG_VTNR" in
