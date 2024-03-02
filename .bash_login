@@ -1,0 +1,25 @@
+#!/usr/bin/sh
+
+for path in "$HOME/.local/bin $HOME/.spicetify"; do
+  if [ -d "$path" ] && [[ ":$PATH:" != *":$path:"* ]]; then
+    export PATH="${PATH:+"$PATH:"}$path"
+  fi
+done
+
+export TERMINAL=alacritty
+export EDITOR=nvim
+export PAGER=less
+export BROWSER=chromium
+
+export HISTIGNORE="*sudo -S*:$HISTIGNORE"
+
+[[ -n "$DISPLAY" ]] && exit
+
+case "$XDG_VTNR" in
+1) session=i3 ;;
+2) session=awesome ;;
+3) session=dwm ;;
+*) exit ;;
+esac
+
+exec xinit $session

@@ -9,10 +9,6 @@ plugins=(
 )
 source $ZSH/oh-my-zsh.sh
 
-alias ll="ls -lah"
-alias fd="fd -H"
-alias rg="rg --hidden -L -S -g '!.git/'"
-
 bindkey -r "^[F"
 bindkey -r "^[B"
 bindkey -r "^J"

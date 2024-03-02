@@ -1,4 +1,5 @@
 local M = {}
+require("gandalf.keymaps").setup()
 
 local function keymaps()
   local opts = { noremap = true }

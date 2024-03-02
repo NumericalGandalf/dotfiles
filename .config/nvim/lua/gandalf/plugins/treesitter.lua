@@ -12,8 +12,6 @@ function M.config()
       additional_vim_regex_highlighting = false,
     },
   })
-
-  vim.treesitter.language.register("bash", "zsh")
 end
 
 return M
