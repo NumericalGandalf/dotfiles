@@ -10,7 +10,7 @@ append_path() {
 append_path $HOME/.local/bin
 
 export TERMINAL=alacritty
-export EDITOR=nvim
+export EDITOR=vim
 export PAGER=less
 export BROWSER=chromium
 
