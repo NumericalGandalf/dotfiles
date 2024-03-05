@@ -1,3 +1,4 @@
-lazy-lock.json
-.config/emacs/elpa
-.config/emacs/auto-save-list
+.config/nvim/lazy-lock.json
+.config/emacs/custom.el
+.config/emacs/elpa/
+.config/emacs/auto-save-list/
