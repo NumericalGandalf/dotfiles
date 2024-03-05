@@ -14,6 +14,8 @@
 
 (setq custom-file (expand-file-name "custom.el"))
 
+(setq make-backup-files nil)
+
 (set-face-attribute 'default nil :font "Hack Nerd Font Mono-11")
 
 (require 'package)
