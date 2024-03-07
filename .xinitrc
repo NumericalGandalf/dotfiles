@@ -6,7 +6,7 @@
 
 command -v dunst && dunst &
 
-# command -v picom && picom &
+command -v picom && picom &
 
 command -v xss-lock xsecurelock &&
   xss-lock --transfer-sleep-lock -- xsecurelock &

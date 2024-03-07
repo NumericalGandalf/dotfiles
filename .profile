@@ -11,6 +11,7 @@ append_path $HOME/.local/bin
 
 export TERMINAL=alacritty
 export EDITOR=vim
+export ALTERNATE_EDITOR=emacs
 export PAGER=less
 export BROWSER=chromium
 

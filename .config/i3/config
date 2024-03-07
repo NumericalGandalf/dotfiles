@@ -101,17 +101,17 @@ mode "System" {
   bindsym Ctrl+g mode "default"
 }
 
-set $emacs emacsclient -c -a 'emacs'
-bindsym $mod+Shift+e mode "Emacs"
-mode "Emacs" {
-  bindsym e exec --no-startup-id $emacs, mode "default"
+bindsym $mod+Shift+e mode "Flow"
+mode "Flow" {
   bindsym t exec --no-startup-id $TERMINAL, mode "default"
   bindsym w exec --no-startup-id $BROWSER, mode "default"
+  bindsym e exec --no-startup-id emacsclient -c, mode "default"
+  bindsym Shift+e exec --no-startup-id emacs, mode "default"
 
   bindsym Ctrl+g mode "default"
 }
 
-bindsym $mod+Shift+f mode "Resize"
+bindsym $mod+Shift+r mode "Resize"
 mode "Resize" {
   bindsym $right resize shrink right 10 px or 10 ppt
   bindsym $down resize shrink down 10 px or 10 ppt
