@@ -101,7 +101,7 @@ mode "System" {
   bindsym Ctrl+g mode "default"
 }
 
-bindsym $mod+Shift+e mode "Flow"
+bindsym $mod+Shift+f mode "Flow"
 mode "Flow" {
   bindsym t exec --no-startup-id $TERMINAL, mode "default"
   bindsym w exec --no-startup-id $BROWSER, mode "default"

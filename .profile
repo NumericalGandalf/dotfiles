@@ -13,6 +13,7 @@ export TERMINAL=alacritty
 export EDITOR=vim
 export ALTERNATE_EDITOR=emacs
 export PAGER=less
+export CC=gcc
 export BROWSER=chromium
 
 export HISTIGNORE="*sudo -S*:$HISTIGNORE"

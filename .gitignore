@@ -1,5 +1,6 @@
 .config/nvim/lazy-lock.json
-.config/emacs/void.el
 .config/emacs/elpa/
 .config/emacs/auto-save-list/
+.config/emacs/recentf
+.config/emacs/.cache/
 .config/emacs/transient/

@@ -1,7 +1,8 @@
-(setq inhibit-startup-message t)
 (menu-bar-mode -1)
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
+
+(setq inhibit-startup-message t)
 
 (setq scroll-step 1
   scroll-margin 15)
@@ -11,30 +12,26 @@
 (setq display-line-numbers-type 'relative
   display-line-numbers-width-start t)
 
-(setq custom-file (expand-file-name "void.el")
-  make-backup-files nil)
-
-(set-face-attribute 'default nil :font "Hack Nerd Font Mono-11")
-
 (setq help-window-select t) 
 
-(require 'eshell)
-(setq eshell-banner-message "")
+(let ((gandalf/font "Hack Nerd Font Mono-11"))
+  (set-face-attribute 'default nil :font gandalf/font)
+  (add-to-list 'default-frame-alist `(font . ,gandalf/font)))
 
-(require 'em-smart)
-(add-to-list 'eshell-modules-list 'eshell-rebind)
-(add-to-list 'eshell-modules-list 'eshell-smart)
+(setq make-backup-files nil)
+
+(setq custom-file (expand-file-name "void.el" user-emacs-directory))
+(load custom-file)
+
+(load (expand-file-name "gandalf.el" user-emacs-directory))
 
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
-(package-initialize)
 (unless package-archive-contents (package-refresh-contents))
+(package-initialize)
 
 (require 'use-package)
 (setq use-package-always-ensure t)
-
-(add-to-list 'load-path default-directory)
-(require 'gandalf)
 
 (use-package diminish)
 
@@ -70,11 +67,15 @@
 
 (use-package ivy
   :diminish
-  :init
-  (setq ivy-use-virtual-buffers t)
   :config
   (setq ivy-re-builder-alist '((t . ivy--regex-ignore-order)))
   (setq ivy-initial-inputs-alist ())
+  (setq enable-recursive-minibuffers t)
+  (setq ivy-use-virtual-buffers t)
+  (global-set-key (kbd "M-x") 'counsel-M-x)
+  (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+  (global-set-key (kbd "C-x b") 'counsel-switch-buffer)
+  (global-set-key (kbd "C-s") 'swiper)
   (ivy-mode 1))
 
 (use-package counsel
@@ -85,7 +86,7 @@
   ([remap describe-variable] . counsel-describe-variable)
   ([remap describe-symbol] . counsel-describe-symbol)
   :config
-  (counsel-mode))
+  (counsel-mode 1))
 
 (use-package ivy-rich
   :after counsel
@@ -93,19 +94,36 @@
   (ivy-rich-mode 1))
 
 (use-package helpful
-  :after ivy-rich
+  :after counsel
   :bind
   ([remap describe-command] . helpful-command)
   ([remap describe-key] . helpful-key)
   :custom
   (counsel-describe-function-function #'helpful-callable)
-  (counsel-describe-variable-function #'helpful-variable)
+  (counsel-describe-variable-function #'helpful-variable))
 
 (use-package general
-  :after evil
+  :after (evil-collection counsel)
   :config
-  (general-create-definer gandalf/leader
-    :keymaps '(normal insert visual emacs)
-    :global-prefix "C-SPC")
-  (gandalf/leader
-    "t" '(lambda () (gandalf/test))))
+  (general-evil-setup)
+  (general-nvmap
+    :prefix "SPC"))
+
+(use-package lsp-mode
+  :after which-key
+  :init
+  (setq lsp-keymap-prefix "SPC l")
+  :hook
+  ((bash-ts-mode . lsp-deferred)
+    (lsp-mode . lsp-enable-which-key-integration))
+  :config
+  (lsp-enable-which-key-integration t))
+
+(use-package lsp-ui
+  :after lsp-mode)
+
+(use-package lsp-treemacs
+  :after lsp-mode)
+
+(use-package lsp-ivy
+  :after (ivy lsp-mode))
