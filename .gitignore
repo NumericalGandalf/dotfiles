@@ -1,6 +1,8 @@
 .config/nvim/lazy-lock.json
+.config/emacs/.lsp-session-v1
+.config/emacs/recentf
 .config/emacs/elpa/
 .config/emacs/auto-save-list/
-.config/emacs/recentf
 .config/emacs/.cache/
 .config/emacs/transient/
+.config/emacs/tree-sitter/

@@ -7,12 +7,13 @@
 (setq scroll-step 1
   scroll-margin 15)
 
+(require 'display-line-numbers)
 (global-display-line-numbers-mode 1)
 (column-number-mode 1)
 (setq display-line-numbers-type 'relative
   display-line-numbers-width-start t)
 
-(setq help-window-select t) 
+(setq help-window-select t)
 
 (let ((gandalf/font "Hack Nerd Font Mono-11"))
   (set-face-attribute 'default nil :font gandalf/font)
@@ -24,6 +25,11 @@
 (load custom-file)
 
 (load (expand-file-name "gandalf.el" user-emacs-directory))
+
+(add-to-list 'major-mode-remap-alist '(c-mode . c-ts-mode))
+(add-to-list 'major-mode-remap-alist '(c++-mode . c++-ts-mode))
+(add-to-list 'major-mode-remap-alist '(c-or-c++-mode . c-or-c++-ts-mode))
+(add-to-list 'major-mode-remap-alist '(sh-mode . bash-ts-mode))
 
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
@@ -53,11 +59,6 @@
   :config
   (evil-collection-init))
 
-(use-package editorconfig
-  :diminish
-  :config
-  (editorconfig-mode 1))
-
 (use-package which-key
   :diminish
   :init
@@ -68,7 +69,7 @@
 (use-package ivy
   :diminish
   :config
-  (setq ivy-re-builder-alist '((t . ivy--regex-ignore-order)))
+  (setq ivy-re-builders-alist '((t . ivy--regex-ignore-order)))
   (setq ivy-initial-inputs-alist ())
   (setq enable-recursive-minibuffers t)
   (setq ivy-use-virtual-buffers t)
@@ -102,20 +103,15 @@
   (counsel-describe-function-function #'helpful-callable)
   (counsel-describe-variable-function #'helpful-variable))
 
-(use-package general
-  :after (evil-collection counsel)
-  :config
-  (general-evil-setup)
-  (general-nvmap
-    :prefix "SPC"))
-
 (use-package lsp-mode
   :after which-key
+  :diminish lsp-mode
   :init
-  (setq lsp-keymap-prefix "SPC l")
+  (setq lsp-keymap-prefix nil)
   :hook
-  ((bash-ts-mode . lsp-deferred)
-    (lsp-mode . lsp-enable-which-key-integration))
+  ((c-ts-mode . lsp-deferred)
+    (c++-ts-mode . lsp-deferred)
+    (bash-ts-mode . lsp-deferred))
   :config
   (lsp-enable-which-key-integration t))
 
@@ -127,3 +123,34 @@
 
 (use-package lsp-ivy
   :after (ivy lsp-mode))
+
+(use-package flycheck
+  :after lsp-mode
+  :diminish
+  :config
+  (global-flycheck-mode 0))
+
+(use-package company
+  :after lsp-mode
+  :diminish
+  :hook (lsp-mode . company-mode)
+  :config
+  (setq company-minimum-prefix-length 1)
+  (setq company-idle-delay 0.0))
+
+(use-package company-box
+  :after company-box
+  :hook (company-mode . company-box-mode))
+
+(use-package general
+  :after (evil-collection lsp-mode)
+  :config
+  (general-evil-setup)
+  (general-nvmap
+    :prefix "SPC"
+    "l" lsp-command-map))
+
+(use-package editorconfig
+  :diminish
+  :config
+  (editorconfig-mode 1))
