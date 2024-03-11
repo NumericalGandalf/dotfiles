@@ -7,6 +7,8 @@
 (setq scroll-step 1
   scroll-margin 15)
 
+(setq mode-line-percent-position '(6 "%q"))
+
 (require 'display-line-numbers)
 (global-display-line-numbers-mode 1)
 (column-number-mode 1)
@@ -21,10 +23,10 @@
 
 (setq make-backup-files nil)
 
-(setq custom-file (expand-file-name "void.el" user-emacs-directory))
+(setq custom-file (expand-file-name "etc/custom.el" user-emacs-directory))
 (load custom-file)
 
-(load (expand-file-name "gandalf.el" user-emacs-directory))
+(load (expand-file-name "etc/gandalf.el" user-emacs-directory))
 
 (add-to-list 'major-mode-remap-alist '(c-mode . c-ts-mode))
 (add-to-list 'major-mode-remap-alist '(c++-mode . c++-ts-mode))
@@ -32,14 +34,22 @@
 (add-to-list 'major-mode-remap-alist '(sh-mode . bash-ts-mode))
 
 (require 'package)
+(setq package-user-dir (expand-file-name "var/elpa/" user-emacs-directory))
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 (unless package-archive-contents (package-refresh-contents))
-(package-initialize)
 
 (require 'use-package)
 (setq use-package-always-ensure t)
 
 (use-package diminish)
+
+(use-package no-littering
+  :config
+  (require 'recentf)
+  (add-to-list 'recentf-exclude
+    (recentf-expand-file-name no-littering-var-directory))
+  (add-to-list 'recentf-exclude
+    (recentf-expand-file-name no-littering-etc-directory)))
 
 (use-package modus-themes
   :config
@@ -107,16 +117,22 @@
   :after which-key
   :diminish lsp-mode
   :init
-  (setq lsp-keymap-prefix nil)
+  (setq lsp-keymap-prefix "C-;")
   :hook
-  ((c-ts-mode . lsp-deferred)
+  ((lsp-mode . lsp-enable-which-key-integration)
+    (lsp-mode . company-mode)
+    (c-ts-mode . lsp-deferred)
     (c++-ts-mode . lsp-deferred)
     (bash-ts-mode . lsp-deferred))
   :config
-  (lsp-enable-which-key-integration t))
+  (setq lsp-ui-sideline-enable nil)
+  (setq lsp-headerline-breadcrumb-enable nil)
+  (setq lsp-enable-symbol-highlighting nil))
 
 (use-package lsp-ui
-  :after lsp-mode)
+  :after lsp-mode
+  :config
+  (setq lsp-ui-doc-position 'at-point))
 
 (use-package lsp-treemacs
   :after lsp-mode)
@@ -128,27 +144,31 @@
   :after lsp-mode
   :diminish
   :config
-  (global-flycheck-mode 0))
+  (global-flycheck-mode 1))
 
 (use-package company
   :after lsp-mode
   :diminish
-  :hook (lsp-mode . company-mode)
   :config
   (setq company-minimum-prefix-length 1)
-  (setq company-idle-delay 0.0))
+  (setq company-idle-delay 0.0)
+  (setq company-format-margin-function nil))
 
 (use-package company-box
-  :after company-box
-  :hook (company-mode . company-box-mode))
+  :hook (company-mode . company-box-mode)
+  :config
+  (setq company-box-doc-frame-parameters '((internal-border-width . 1)))
+  (setq company-box-doc-delay 0.0)
+  (setq company-box-doc-no-wrap t)
+  (setq company-box-enable-icon nil)
+  (setq company-box-scrollbar nil))
 
 (use-package general
   :after (evil-collection lsp-mode)
   :config
   (general-evil-setup)
   (general-nvmap
-    :prefix "SPC"
-    "l" lsp-command-map))
+    :prefix "SPC"))
 
 (use-package editorconfig
   :diminish

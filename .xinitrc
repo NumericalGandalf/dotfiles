@@ -11,7 +11,7 @@ command -v picom && picom &
 command -v xss-lock xsecurelock &&
   xss-lock --transfer-sleep-lock -- xsecurelock &
 
-command -v emacs && emacs --daemon
+command -v emacs && emacs --fg-daemon & 
 
 [[ -n "$1" ]] && command -v $1 && session=$1 ||
   session=i3 && exec $session
