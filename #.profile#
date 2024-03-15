@@ -1,5 +1,5 @@
 #!/usr/bin/sh
-
+l
 append_path() {
   case ":$PATH:" in
     *:"$1":*) ;;
