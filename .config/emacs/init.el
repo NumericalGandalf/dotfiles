@@ -5,7 +5,7 @@
 (setq inhibit-startup-message t)
 
 (setq scroll-step 1
-  scroll-margin 15)
+ scroll-margin 15)
 
 (setq mode-line-percent-position '(6 "%q"))
 
@@ -23,6 +23,8 @@
 
 (setq make-backup-files nil
   custom-file (expand-file-name "var/void.el" user-emacs-directory))
+
+(add-to-list 'load-path (expand-file-name "etc/" user-emacs-directory))
 
 (add-to-list 'major-mode-remap-alist '(c-mode . c-ts-mode))
 (add-to-list 'major-mode-remap-alist '(c++-mode . c++-ts-mode))
@@ -61,7 +63,10 @@
     evil-want-fine-undo t)
   :config
   (evil-set-undo-system 'undo-redo)
-  (setq evil-vsplit-window-right t)
+  (setq evil-vsplit-window-right t
+    evil-insert-state-cursor nil
+    evil-move-beyond-eol t
+    evil-move-cursor-back nil)
   (evil-mode 1))
 
 (use-package evil-collection
@@ -79,49 +84,42 @@
 
 (use-package helpful
   :config
-  (global-set-key (kbd "C-h f") #'helpful-callable)
-  (global-set-key (kbd "C-h v") #'helpful-variable)
-  (global-set-key (kbd "C-h k") #'helpful-key)
-  (global-set-key (kbd "C-h x") #'helpful-command))
+  (global-set-key (kbd "C-h f") 'helpful-callable)
+  (global-set-key (kbd "C-h v") 'helpful-variable)
+  (global-set-key (kbd "C-h o") 'helpful-symbol)
+  (global-set-key (kbd "C-h k") 'helpful-key)
+  (global-set-key (kbd "C-h x") 'helpful-command))
 
 (use-package helm
   :diminish
   :config
   (helm-mode 1)
   (helm-autoresize-mode t)
+  (setq helm-autoresize-min-height 5)
   (custom-set-faces '(helm-M-x-key ((t (:extend t :foreground "orange"))))
-    '(helm-M-x-short-doc ((t (:foreground "DimGray")))))
+    '(helm-M-x-short-doc ((t (:foreground "DimGray"))))
+    '(helm-M-x-key ((t (:extend t :foreground "orange"))))
+    '(helm-M-x-short-doc ((t (:foreground "DimGray"))))
+    '(helm-ff-dotted-directory ((t (:extend t :foreground "DarkOrange"))))
+    '(helm-ff-dotted-symlink-directory ((t (:extend t :foreground "DarkOrange")))))
   (global-set-key (kbd "C-c h") 'helm-command-prefix)
   (global-unset-key (kbd "C-x c"))
   (global-set-key (kbd "M-x") 'helm-M-x)
-  (global-set-key (kbd "C-x C-f") #'helm-find-files)
-  (global-set-key (kbd "C-x b") 'helm-mini))
+  (global-set-key (kbd "C-x C-f") 'helm-find-files)
+  (global-set-key (kbd "C-x b") 'helm-mini)
+  (global-set-key (kbd "C-s") 'helm-occur))
+
+(use-package company
+  :diminish
+  :config
+  (setq company-frontends ())
+  (require 'helm-company)
+  (helm-company-gandalf-init))
 
 (use-package flycheck
   :diminish
   :hook
   ((c-ts-mode . flycheck-mode)))
-
-(use-package company
-  :diminish
-  :hook
-  ((text-mode . company-mode)
-    (emacs-lisp-mode . company-mode))
-  :config
-  (define-key company-active-map (kbd "C-y") 'company-complete)
-  (setq company-frontends '(company-pseudo-tooltip-frontend)
-    company-minimum-prefix-length 1
-    company-idle-delay 0.0
-    company-format-margin-function nil))
-
-(use-package company-box
-  :diminish
-  :hook (company-mode . company-box-mode)
-  :config
-  (setq company-box-doc-delay 0.0
-    company-box-doc-frame-parameters company-box-frame-parameters
-    company-box-enable-icon nil
-    company-box-scrollbar nil))
 
 (use-package lsp-mode
   :after (which-key flycheck company)
