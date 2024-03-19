@@ -9,13 +9,14 @@ append_path() {
 
 append_path $HOME/.local/bin
 
+export HISTSIZE=5000
+export HISTIGNORE="*sudo -S*:$HISTIGNORE"
+
 export TERMINAL=alacritty
 export EDITOR=vim
 export ALTERNATE_EDITOR=emacs
 export PAGER=less
 export BROWSER=chromium
-
-export HISTIGNORE="*sudo -S*:$HISTIGNORE"
 
 display() {
   case "$XDG_VTNR" in

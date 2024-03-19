@@ -5,7 +5,9 @@
 (setq inhibit-startup-message t)
 
 (setq scroll-step 1
- scroll-margin 15)
+  scroll-margin 15)
+
+(fringe-mode '(0 . 0))
 
 (setq mode-line-percent-position '(6 "%q"))
 
@@ -34,12 +36,17 @@
 (setq isearch-repeat-on-direction-change t)
 (global-set-key (kbd "C-c C-s") 'query-replace-regexp)
 
+(setq compile-command nil)
+(global-set-key (kbd "C-c C-b") 'compile)
+(global-set-key (kbd "C-c b") 'recompile)
+(add-hook 'compilation-finish-functions 'switch-to-buffer-other-window 'compilation)
+
 (require 'package)
 (setq package-user-dir (expand-file-name "var/elpa/" user-emacs-directory)
   package-gnupghome-dir (expand-file-name "var/elpa/gnupg/" user-emacs-directory))
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
-(unless package-archive-contents (package-refresh-contents t))
 (package-initialize)
+(unless package-archive-contents (package-refresh-contents t))
 
 (require 'use-package)
 (setq use-package-always-ensure t)
@@ -64,14 +71,15 @@
   :config
   (evil-set-undo-system 'undo-redo)
   (setq evil-vsplit-window-right t
-    evil-insert-state-cursor nil
-    evil-move-beyond-eol t
-    evil-move-cursor-back nil)
+    evil-split-window-below t
+    evil-insert-state-cursor nil)
   (evil-mode 1))
 
 (use-package evil-collection
-  :after evil
-  :diminish evil-collection-unimpaired-mode
+  :after
+  evil
+  :diminish
+  evil-collection-unimpaired-mode
   :config
   (evil-collection-init))
 
@@ -84,24 +92,32 @@
 
 (use-package helpful
   :config
-  (global-set-key (kbd "C-h f") 'helpful-callable)
-  (global-set-key (kbd "C-h v") 'helpful-variable)
-  (global-set-key (kbd "C-h o") 'helpful-symbol)
-  (global-set-key (kbd "C-h k") 'helpful-key)
-  (global-set-key (kbd "C-h x") 'helpful-command))
+  (global-set-key [remap describe-function] 'helpful-callable)
+  (global-set-key [remap describe-variable] 'helpful-variable)
+  (global-set-key [remap describe-symbol] 'helpful-symbol)
+  (global-set-key [remap describe-key] 'helpful-key)
+  (global-set-key [remap describe-command] 'helpful-command))
 
 (use-package helm
   :diminish
   :config
   (helm-mode 1)
   (helm-autoresize-mode t)
-  (setq helm-autoresize-min-height 5)
-  (custom-set-faces '(helm-M-x-key ((t (:extend t :foreground "orange"))))
-    '(helm-M-x-short-doc ((t (:foreground "DimGray"))))
-    '(helm-M-x-key ((t (:extend t :foreground "orange"))))
-    '(helm-M-x-short-doc ((t (:foreground "DimGray"))))
-    '(helm-ff-dotted-directory ((t (:extend t :foreground "DarkOrange"))))
-    '(helm-ff-dotted-symlink-directory ((t (:extend t :foreground "DarkOrange")))))
+  (setq helm-autoresize-min-height 5
+    helm-display-header-line nil)
+  (custom-set-faces
+    '(helm-M-x-key
+       ((t (:extend t :foreground "#DFAF8F"))))
+    '(helm-M-x-short-doc
+       ((t (:foreground "DimGray"))))
+    '(helm-M-x-key
+       ((t (:extend t :foreground "#DFAF8F"))))
+    '(helm-M-x-short-doc
+       ((t (:foreground "DimGray"))))
+    '(helm-ff-dotted-directory
+       ((t (:extend t :foreground "#DFAF8F"))))
+    '(helm-ff-dotted-symlink-directory
+       ((t (:extend t :foreground "#DFAF8F")))))
   (global-set-key (kbd "C-c h") 'helm-command-prefix)
   (global-unset-key (kbd "C-x c"))
   (global-set-key (kbd "M-x") 'helm-M-x)
@@ -110,11 +126,30 @@
   (global-set-key (kbd "C-s") 'helm-occur))
 
 (use-package company
+  :after
+  helm
   :diminish
   :config
-  (setq company-frontends ())
+  (global-company-mode 0)
   (require 'helm-company)
-  (helm-company-gandalf-init))
+  (setq helm-company-show-icons nil
+    helm-company-initialize-pattern-with-prefix t
+    helm-company-candidate-number-limit 500
+    company-tooltip-align-annotations t)
+  (custom-set-faces
+    '(company-tooltip-annotation
+       ((t (:background nil)))))
+  (dolist (hook
+            '(emacs-lisp-mode-hook
+               c-ts-mode-hook
+               c++-ts-mode-hook
+               bash-ts-mode-hook
+               text-mode-hook))
+    (add-hook hook
+      (lambda ()
+        (interactive)
+        (define-key evil-insert-state-local-map
+          (kbd "C-;") 'helm-company)))))
 
 (use-package flycheck
   :diminish
@@ -122,25 +157,29 @@
   ((c-ts-mode . flycheck-mode)))
 
 (use-package lsp-mode
-  :after (which-key flycheck company)
-  :diminish lsp-mode
+  :after
+  (which-key flycheck company)
+  :diminish
+  lsp-mode
   :init
   (setq lsp-keymap-prefix "C-c l")
   :hook
   ((lsp-mode . lsp-enable-which-key-integration)
-    (lsp-mode . company-mode)
-    (c-ts-mode . lsp-deferred)
-    (c++-ts-mode . lsp-deferred)
-    (bash-ts-mode . lsp-deferred))
+    (c-ts-mode . lsp)
+    (c++-ts-mode . lsp)
+    (bash-ts-mode . lsp))
   :config
-  (setq lsp-ui-sideline-enable nil
+  (setq lsp-completion-provider :none
     lsp-headerline-breadcrumb-enable nil
     lsp-enable-symbol-highlighting nil))
 
 (use-package lsp-treemacs
-  :after lsp-mode
+  :after
+  lsp-mode
   :config
   (setq lsp-treemacs-theme "Iconless"))
+
+(use-package magit)
 
 (use-package editorconfig
   :diminish
