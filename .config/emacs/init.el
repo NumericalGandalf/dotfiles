@@ -2,12 +2,18 @@
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
 
-(setq inhibit-startup-message t)
+(setq inhibit-startup-message t
+  use-dialog-box nil)
 
 (setq scroll-step 1
   scroll-margin 15)
 
 (fringe-mode '(0 . 0))
+(recentf-mode 1)
+(savehist-mode 1)
+(save-place-mode 1)
+(global-auto-revert-mode 1)
+(setq global-auto-revert-non-file-buffers t)
 
 (setq mode-line-percent-position '(6 "%q"))
 
@@ -30,16 +36,19 @@
 
 (add-to-list 'major-mode-remap-alist '(c-mode . c-ts-mode))
 (add-to-list 'major-mode-remap-alist '(c++-mode . c++-ts-mode))
-(add-to-list 'major-mode-remap-alist '(c-or-c++-mode . c-or-c++-ts-mode))
 (add-to-list 'major-mode-remap-alist '(sh-mode . bash-ts-mode))
 
-(setq isearch-repeat-on-direction-change t)
-(global-set-key (kbd "C-c C-s") 'query-replace-regexp)
-
-(setq compile-command nil)
-(global-set-key (kbd "C-c C-b") 'compile)
-(global-set-key (kbd "C-c b") 'recompile)
+(setq compilation-ask-about-save nil
+  compilation-read-command nil)
 (add-hook 'compilation-finish-functions 'switch-to-buffer-other-window 'compilation)
+
+(global-set-key (kbd "C-x C-c")
+  (lambda () (interactive) (save-buffers-kill-terminal t)))
+(global-set-key (kbd "C-x M-c")
+  (lambda () (interactive) (save-buffers-kill-emacs t)))
+
+(setq isearch-repeat-on-direction-change t)
+(global-set-key (kbd "C-c C-s") 'replace-string)
 
 (require 'package)
 (setq package-user-dir (expand-file-name "var/elpa/" user-emacs-directory)
@@ -51,16 +60,26 @@
 (require 'use-package)
 (setq use-package-always-ensure t)
 
+(use-package zenburn-theme
+  :config
+  (load-theme 'zenburn t))
+
 (use-package diminish)
+
+(use-package magit)
 
 (use-package no-littering
   :config
   (require 'recentf)
   (add-to-list 'recentf-exclude no-littering-var-directory))
 
-(use-package zenburn-theme
+(use-package wgrep
   :config
-  (load-theme 'zenburn t))
+  (setq wgrep-auto-save-buffer t)
+  (custom-set-faces
+    '(wgrep-face ((t (:background "grey30"))))
+    '(wgrep-done-face ((t (:background nil))))
+    '(wgrep-file-face ((t (:background "gray30" :foreground "white"))))))
 
 (use-package evil
   :init
@@ -125,6 +144,26 @@
   (global-set-key (kbd "C-x b") 'helm-mini)
   (global-set-key (kbd "C-s") 'helm-occur))
 
+(use-package projectile
+  :after
+  helm
+  :diminish
+  :config
+  (define-key projectile-mode-map (kbd "C-x p") 'projectile-command-map)
+  (setq projectile-enable-caching t
+    projectile-per-project-compilation-buffer t)
+  (projectile-mode 1)
+  (define-key projectile-command-map (kbd "g")
+    (lambda () (interactive) (projectile-grep)))
+  (define-key projectile-command-map (kbd "C")
+    (lambda () (interactive) (projectile-compile-project t))))
+
+(use-package helm-projectile
+  :after
+  projectile
+  :config
+  (helm-projectile-on))
+
 (use-package company
   :after
   helm
@@ -171,6 +210,7 @@
   :config
   (setq lsp-completion-provider :none
     lsp-headerline-breadcrumb-enable nil
+    lsp-modeline-code-actions-segments '(count)
     lsp-enable-symbol-highlighting nil))
 
 (use-package lsp-treemacs
@@ -178,8 +218,6 @@
   lsp-mode
   :config
   (setq lsp-treemacs-theme "Iconless"))
-
-(use-package magit)
 
 (use-package editorconfig
   :diminish
