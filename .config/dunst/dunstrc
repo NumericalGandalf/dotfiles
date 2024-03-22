@@ -5,7 +5,7 @@
   width = 304
   height = 171
   origin = bottom-right
-  offset = 10x10
+  offset = 10x30
   scale = 0
 
   notification_limit = 20
@@ -21,7 +21,7 @@
 
   indicate_hidden = yes
 
-  transparency = 10
+  transparency = 0
 
   separator_height = 2
   padding = 8

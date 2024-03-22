@@ -68,11 +68,6 @@ for_window [window_role="task_dialog"] floating enable
 
 font pango:Hack Nerd Font Mono 8
 
-bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +5%
-bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -5%
-bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle
-bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle
-
 bindsym $mod+Shift+d exec --no-startup-id dmenu_run -i -b -p "Run" -fn "Hack Nerd Font Mono-10"
 
 bindsym $mod+Shift+a mode "i3"
@@ -97,6 +92,18 @@ mode "System" {
   bindsym s exec --no-startup-id systemctl suspend, mode "default"
   bindsym p exec --no-startup-id systemctl poweroff, mode "default"
   bindsym h exec --no-startup-id systemctl hibernate, mode "default"
+
+  bindsym Ctrl+g mode "default"
+}
+
+bindsym $mod+Shift+e mode "Audio"
+mode "Audio" {
+  bindsym $up exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +5%
+  bindsym $down exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -5%
+  bindsym Shift+$up exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +15%
+  bindsym Shift+$down exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -15%
+  bindsym m exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle
+  bindsym n exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle
 
   bindsym Ctrl+g mode "default"
 }
@@ -137,4 +144,15 @@ bar {
   position bottom
   binding_mode_indicator yes
   tray_output primary
+
+  bindsym button1 nop
+  bindsym button2 nop
+  bindsym button3 nop
+  bindsym button4 nop
+  bindsym button5 nop
+  bindsym button6 nop
+  bindsym button7 nop
+  bindsym button8 nop
+  bindsym button9 nop
+  bindsym button10 nop
 }

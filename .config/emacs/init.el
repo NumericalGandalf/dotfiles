@@ -5,8 +5,9 @@
 (setq inhibit-startup-message t
   use-dialog-box nil)
 
-(setq scroll-step 1
-  scroll-margin 15)
+(setq warning-minimum-level :error)
+
+(setq echo-keystrokes 0)
 
 (fringe-mode '(0 . 0))
 (recentf-mode 1)
@@ -30,17 +31,24 @@
   (add-to-list 'default-frame-alist `(font . ,rc/font)))
 
 (setq make-backup-files nil
+  create-lockfiles nil
   custom-file (expand-file-name "var/void.el" user-emacs-directory))
 
 (add-to-list 'load-path (expand-file-name "etc/" user-emacs-directory))
 
-(add-to-list 'major-mode-remap-alist '(c-mode . c-ts-mode))
-(add-to-list 'major-mode-remap-alist '(c++-mode . c++-ts-mode))
-(add-to-list 'major-mode-remap-alist '(sh-mode . bash-ts-mode))
-
 (setq compilation-ask-about-save nil
   compilation-read-command nil)
 (add-hook 'compilation-finish-functions 'switch-to-buffer-other-window 'compilation)
+
+(global-set-key (kbd "C-q")
+  (lambda ()
+    (interactive)
+    (move-beginning-of-line 1)
+    (kill-line)
+    (yank)
+    (open-line 1)
+    (next-line 1)
+    (yank)))
 
 (global-set-key (kbd "C-x C-c")
   (lambda () (interactive) (save-buffers-kill-terminal t)))
@@ -48,7 +56,7 @@
   (lambda () (interactive) (save-buffers-kill-emacs t)))
 
 (setq isearch-repeat-on-direction-change t)
-(global-set-key (kbd "C-c C-s") 'replace-string)
+(global-set-key (kbd "C-c C-s") 'query-replace)
 
 (require 'package)
 (setq package-user-dir (expand-file-name "var/elpa/" user-emacs-directory)
@@ -73,6 +81,12 @@
   (require 'recentf)
   (add-to-list 'recentf-exclude no-littering-var-directory))
 
+(use-package multiple-cursors
+  :config
+  (global-set-key (kbd "C-c m i") 'mc/edit-lines)
+  (global-set-key (kbd "C-c m I") 'mc/edit-beginnings-of-lines)
+  (global-set-key (kbd "C-c m C-i") 'mc/edit-ends-of-lines))
+
 (use-package wgrep
   :config
   (setq wgrep-auto-save-buffer t)
@@ -81,18 +95,18 @@
     '(wgrep-done-face ((t (:background nil))))
     '(wgrep-file-face ((t (:background "gray30" :foreground "white"))))))
 
-(use-package evil
-  :init
-  (setq evil-want-keybinding nil
-    evil-want-C-u-scroll t
-    evil-want-C-u-delete t
-    evil-want-fine-undo t)
-  :config
-  (evil-set-undo-system 'undo-redo)
-  (setq evil-vsplit-window-right t
-    evil-split-window-below t
-    evil-insert-state-cursor nil)
-  (evil-mode 1))
+;;(use-package evil
+;;  :init
+;;  (setq evil-want-keybinding nil
+;;    evil-want-C-u-scroll t
+;;    evil-want-C-u-delete t
+;;    evil-want-fine-undo t)
+;;  :config
+;;  (evil-set-undo-system 'undo-redo)
+;;  (setq evil-vsplit-window-right t
+;;    evil-split-window-below t
+;;    evil-insert-state-cursor nil)
+;;  (evil-mode 1))
 
 (use-package evil-collection
   :after
@@ -125,24 +139,18 @@
   (setq helm-autoresize-min-height 5
     helm-display-header-line nil)
   (custom-set-faces
-    '(helm-M-x-key
-       ((t (:extend t :foreground "#DFAF8F"))))
-    '(helm-M-x-short-doc
-       ((t (:foreground "DimGray"))))
-    '(helm-M-x-key
-       ((t (:extend t :foreground "#DFAF8F"))))
-    '(helm-M-x-short-doc
-       ((t (:foreground "DimGray"))))
-    '(helm-ff-dotted-directory
-       ((t (:extend t :foreground "#DFAF8F"))))
-    '(helm-ff-dotted-symlink-directory
-       ((t (:extend t :foreground "#DFAF8F")))))
+    '(helm-M-x-key ((t (:extend t :foreground "#DFAF8F"))))
+    '(helm-M-x-short-doc ((t (:foreground "DimGray"))))
+    '(helm-M-x-key ((t (:extend t :foreground "#DFAF8F"))))
+    '(helm-M-x-short-doc ((t (:foreground "DimGray"))))
+    '(helm-ff-dotted-directory ((t (:extend t :foreground "#DFAF8F"))))
+    '(helm-ff-dotted-symlink-directory ((t (:extend t :foreground "#DFAF8F"))))
+    '(helm-ff-file ((t (:extend t :foreground "#DCDCCC")))))
   (global-set-key (kbd "C-c h") 'helm-command-prefix)
   (global-unset-key (kbd "C-x c"))
   (global-set-key (kbd "M-x") 'helm-M-x)
   (global-set-key (kbd "C-x C-f") 'helm-find-files)
-  (global-set-key (kbd "C-x b") 'helm-mini)
-  (global-set-key (kbd "C-s") 'helm-occur))
+  (global-set-key (kbd "C-x b") 'helm-mini))
 
 (use-package projectile
   :after
@@ -166,23 +174,23 @@
 
 (use-package company
   :after
-  helm
+  (helm evil)
   :diminish
   :config
   (global-company-mode 0)
   (require 'helm-company)
-  (setq helm-company-show-icons nil
+  (setq company-frontends ()
+    helm-company-show-icons nil
     helm-company-initialize-pattern-with-prefix t
     helm-company-candidate-number-limit 500
     company-tooltip-align-annotations t)
   (custom-set-faces
-    '(company-tooltip-annotation
-       ((t (:background nil)))))
+    '(company-tooltip-annotation ((t (:background nil)))))
   (dolist (hook
             '(emacs-lisp-mode-hook
-               c-ts-mode-hook
-               c++-ts-mode-hook
-               bash-ts-mode-hook
+               c-mode-hook
+               c++-mode-hook
+               sh-mode-hook
                text-mode-hook))
     (add-hook hook
       (lambda ()
@@ -192,32 +200,29 @@
 
 (use-package flycheck
   :diminish
-  :hook
-  ((c-ts-mode . flycheck-mode)))
+  :config
+  (dolist (hook
+            '(c-mode-hook))
+    (add-hook hook 'flycheck-mode)))
 
 (use-package lsp-mode
   :after
-  (which-key flycheck company)
+  (which-key flycheck)
   :diminish
   lsp-mode
   :init
   (setq lsp-keymap-prefix "C-c l")
-  :hook
-  ((lsp-mode . lsp-enable-which-key-integration)
-    (c-ts-mode . lsp)
-    (c++-ts-mode . lsp)
-    (bash-ts-mode . lsp))
   :config
+  (add-hook 'lsp-mode-hook 'lsp-enable-which-key-integration)
   (setq lsp-completion-provider :none
+    lsp-lens-enable nil
     lsp-headerline-breadcrumb-enable nil
     lsp-modeline-code-actions-segments '(count)
     lsp-enable-symbol-highlighting nil))
 
-(use-package lsp-treemacs
+(use-package helm-lsp
   :after
-  lsp-mode
-  :config
-  (setq lsp-treemacs-theme "Iconless"))
+  lsp-mode)
 
 (use-package editorconfig
   :diminish

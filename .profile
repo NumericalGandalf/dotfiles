@@ -11,12 +11,15 @@ append_path $HOME/.local/bin
 
 export HISTSIZE=5000
 export HISTIGNORE="*sudo -S*:$HISTIGNORE"
+export SUDO_ASKPASS="$HOME/.local/bin/askpass"
 
 export TERMINAL=alacritty
 export EDITOR=vim
 export ALTERNATE_EDITOR=emacs
 export PAGER=less
 export BROWSER=chromium
+
+export GTK_THEME=Adwaita:dark
 
 display() {
   case "$XDG_VTNR" in
