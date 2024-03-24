@@ -49,27 +49,25 @@
   find-ls-option '("-exec ls -ldh {} +" . "-ldh")
   grep-save-buffers t)
 
-(defvar rc/find-history nil)
-(defvar rc/grep-history nil)
-(add-to-list 'savehist-additional-variables 'rc/find-history)
-(add-to-list 'savehist-additional-variables 'rc/grep-history)
+(require 'grep)
+(require 'find-dired)
 
 (defun rc/find (find-expr)
-  (interactive (list (read-string "Find: " nil 'rc/find-history)))
+  (interactive (list (read-string "Find: " nil 'find-command-history)))
   (find-dired-with-command default-directory
     (concat find-expr " " (car find-ls-option))))
 
 (defun rc/grep (grep-expr)
-  (interactive (list (read-string "Grep: " nil 'rc/grep-history)))
+  (interactive (list (read-string "Grep: " nil 'grep-history)))
   (grep grep-expr))
 
 (defun rc/project-find (find-expr)
-  (interactive (list (read-string "Find: " nil 'rc/find-history)))
+  (interactive (list (read-string "Find: " nil 'find-command-history)))
   (find-dired-with-command (project-root (project-current))
     (concat find-expr " " (car find-ls-option))))
 
 (defun rc/project-grep (grep-expr)
-  (interactive (list (read-string "Grep: " nil 'rc/grep-history)))
+  (interactive (list (read-string "Grep: " nil 'grep-history)))
   (let ((default-directory (project-root (project-current))))
     (grep grep-expr)))
 
