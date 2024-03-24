@@ -1,0 +1,7 @@
+#!/usr/bin/sh
+
+shopt -s expand_aliases
+
+alias ll="ls -lah --color=auto -I. -I.."
+alias grep="grep --color=auto -ni"
+alias find="find -H -O3"

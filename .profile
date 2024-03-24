@@ -9,6 +9,8 @@ append_path() {
 
 append_path $HOME/.local/bin
 
+export BASH_ENV="$HOME/.bash_env"
+
 export HISTSIZE=5000
 export HISTIGNORE="*sudo -S*:$HISTIGNORE"
 export SUDO_ASKPASS="$HOME/.local/bin/askpass"

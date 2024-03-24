@@ -5,14 +5,18 @@
 (setq inhibit-startup-message t
   use-dialog-box nil)
 
-(setq warning-minimum-level :error)
-
 (setq echo-keystrokes 0)
 
-(fringe-mode '(0 . 0))
-(recentf-mode 1)
+(fringe-mode 0)
+(setq overflow-newline-into-fringe nil)
+
+(require 'savehist)
 (savehist-mode 1)
+
+(recentf-mode 1)
 (save-place-mode 1)
+
+(require 'autorevert)
 (global-auto-revert-mode 1)
 (setq global-auto-revert-non-file-buffers t)
 
@@ -36,19 +40,56 @@
 
 (add-to-list 'load-path (expand-file-name "etc/" user-emacs-directory))
 
-(setq compilation-ask-about-save nil
-  compilation-read-command nil)
-(add-hook 'compilation-finish-functions 'switch-to-buffer-other-window 'compilation)
+(require 'dired)
+(setq dired-listing-switches "-lah"
+  dired-deletion-confirmer 'y-or-n-p)
 
-(global-set-key (kbd "C-q")
-  (lambda ()
-    (interactive)
-    (move-beginning-of-line 1)
-    (kill-line)
-    (yank)
-    (open-line 1)
-    (next-line 1)
-    (yank)))
+(setq compile-command ""
+  compilation-ask-about-save nil
+  find-ls-option '("-exec ls -ldh {} +" . "-ldh")
+  grep-save-buffers t)
+
+(defvar rc/find-history nil)
+(defvar rc/grep-history nil)
+(add-to-list 'savehist-additional-variables 'rc/find-history)
+(add-to-list 'savehist-additional-variables 'rc/grep-history)
+
+(defun rc/find (find-expr)
+  (interactive (list (read-string "Find: " nil 'rc/find-history)))
+  (find-dired-with-command default-directory
+    (concat find-expr " " (car find-ls-option))))
+
+(defun rc/grep (grep-expr)
+  (interactive (list (read-string "Grep: " nil 'rc/grep-history)))
+  (grep grep-expr))
+
+(defun rc/project-find (find-expr)
+  (interactive (list (read-string "Find: " nil 'rc/find-history)))
+  (find-dired-with-command (project-root (project-current))
+    (concat find-expr " " (car find-ls-option))))
+
+(defun rc/project-grep (grep-expr)
+  (interactive (list (read-string "Grep: " nil 'rc/grep-history)))
+  (let ((default-directory (project-root (project-current))))
+    (grep grep-expr)))
+
+(global-set-key (kbd "C-c c") 'compile)
+(global-set-key (kbd "C-c C-c") 'rc/find)
+(global-set-key (kbd "C-c C") 'rc/grep)
+
+(global-set-key (kbd "C-x p C-c") 'rc/project-find)
+(global-set-key (kbd "C-x p C") 'rc/project-grep)
+
+(defun rc/duplicate-line ()
+  (interactive)
+  (move-beginning-of-line 1)
+  (kill-line)
+  (yank)
+  (open-line 1)
+  (forward-line 1)
+  (yank))
+
+(global-set-key (kbd "C-q") 'rc/duplicate-line)
 
 (global-set-key (kbd "C-x C-c")
   (lambda () (interactive) (save-buffers-kill-terminal t)))
@@ -57,6 +98,8 @@
 
 (setq isearch-repeat-on-direction-change t)
 (global-set-key (kbd "C-c C-s") 'query-replace)
+
+(global-set-key (kbd "C-c M-m") 'man)
 
 (require 'package)
 (setq package-user-dir (expand-file-name "var/elpa/" user-emacs-directory)
@@ -95,41 +138,12 @@
     '(wgrep-done-face ((t (:background nil))))
     '(wgrep-file-face ((t (:background "gray30" :foreground "white"))))))
 
-;;(use-package evil
-;;  :init
-;;  (setq evil-want-keybinding nil
-;;    evil-want-C-u-scroll t
-;;    evil-want-C-u-delete t
-;;    evil-want-fine-undo t)
-;;  :config
-;;  (evil-set-undo-system 'undo-redo)
-;;  (setq evil-vsplit-window-right t
-;;    evil-split-window-below t
-;;    evil-insert-state-cursor nil)
-;;  (evil-mode 1))
-
-(use-package evil-collection
-  :after
-  evil
-  :diminish
-  evil-collection-unimpaired-mode
-  :config
-  (evil-collection-init))
-
 (use-package which-key
   :diminish
   :init
   (setq which-key-idle-delay 1)
   :config
   (which-key-mode 1))
-
-(use-package helpful
-  :config
-  (global-set-key [remap describe-function] 'helpful-callable)
-  (global-set-key [remap describe-variable] 'helpful-variable)
-  (global-set-key [remap describe-symbol] 'helpful-symbol)
-  (global-set-key [remap describe-key] 'helpful-key)
-  (global-set-key [remap describe-command] 'helpful-command))
 
 (use-package helm
   :diminish
@@ -145,36 +159,18 @@
     '(helm-M-x-short-doc ((t (:foreground "DimGray"))))
     '(helm-ff-dotted-directory ((t (:extend t :foreground "#DFAF8F"))))
     '(helm-ff-dotted-symlink-directory ((t (:extend t :foreground "#DFAF8F"))))
+    '(helm-buffer-directory ((t (:extend t :foreground "#DFAF8F"))))
     '(helm-ff-file ((t (:extend t :foreground "#DCDCCC")))))
-  (global-set-key (kbd "C-c h") 'helm-command-prefix)
-  (global-unset-key (kbd "C-x c"))
   (global-set-key (kbd "M-x") 'helm-M-x)
   (global-set-key (kbd "C-x C-f") 'helm-find-files)
   (global-set-key (kbd "C-x b") 'helm-mini))
 
-(use-package projectile
-  :after
-  helm
-  :diminish
-  :config
-  (define-key projectile-mode-map (kbd "C-x p") 'projectile-command-map)
-  (setq projectile-enable-caching t
-    projectile-per-project-compilation-buffer t)
-  (projectile-mode 1)
-  (define-key projectile-command-map (kbd "g")
-    (lambda () (interactive) (projectile-grep)))
-  (define-key projectile-command-map (kbd "C")
-    (lambda () (interactive) (projectile-compile-project t))))
-
-(use-package helm-projectile
-  :after
-  projectile
-  :config
-  (helm-projectile-on))
+(defun rc/helm-company-hook ()
+  (local-set-key (kbd "C-c h") 'helm-company))
 
 (use-package company
   :after
-  (helm evil)
+  helm
   :diminish
   :config
   (global-company-mode 0)
@@ -192,11 +188,7 @@
                c++-mode-hook
                sh-mode-hook
                text-mode-hook))
-    (add-hook hook
-      (lambda ()
-        (interactive)
-        (define-key evil-insert-state-local-map
-          (kbd "C-;") 'helm-company)))))
+    (add-hook hook 'rc/helm-company-hook)))
 
 (use-package flycheck
   :diminish
@@ -206,7 +198,7 @@
     (add-hook hook 'flycheck-mode)))
 
 (use-package lsp-mode
-  :after
+   :after
   (which-key flycheck)
   :diminish
   lsp-mode
