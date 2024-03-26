@@ -20,6 +20,7 @@ export EDITOR=vim
 export ALTERNATE_EDITOR=emacs
 export PAGER=less
 export BROWSER=chromium
+export CC=gcc
 
 export GTK_THEME=Adwaita:dark
 
