@@ -4,7 +4,7 @@ live_config_reload = true
 opacity = 0.85
 
 [font]
-normal = { family = "Hack Nerd Font Mono", style = "Regular" }
+normal = { family = "Monospace", style = "Regular" }
 size = 10
 
 [mouse]

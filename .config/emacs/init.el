@@ -33,7 +33,7 @@
 (setq display-line-numbers-type 'relative
   display-line-numbers-width-start t)
 
-(let ((rc/font "Hack Nerd Font Mono-11"))
+(let ((rc/font "Monospace-11"))
   (set-face-attribute 'default nil :font rc/font)
   (add-to-list 'default-frame-alist `(font . ,rc/font)))
 
@@ -70,28 +70,28 @@
 (require 'find-dired)
 
 (defun rc/read-command (prompt history)
-  (let ((completion-in-region-function 'completion--in-region))
+;;  (let ((completion-in-region-function 'completion--in-region))
     (read-shell-command
-      prompt (car (symbol-value history)) `(,history . 1))))
+      prompt (car (symbol-value history)) `(,history . 1)))
 
 (defun rc/find (find-expr)
   (interactive
-    (list (rc/read-command "Find: " 'find-command-history)))
+    (list (rc/read-command "Find command: " 'find-command-history)))
   (find-dired-with-command default-directory
     (concat find-expr " " (car find-ls-option))))
 
 (defun rc/grep (grep-expr)
-  (interactive (list (rc/read-command "Grep: " 'grep-history)))
+  (interactive (list (rc/read-command "Grep command: " 'grep-history)))
   (grep grep-expr))
 
 (defun rc/project-find (find-expr)
   (interactive
-    (list (rc/read-command "Find: " 'find-command-history)))
+    (list (rc/read-command "Find command: " 'find-command-history)))
   (find-dired-with-command (project-root (project-current))
     (concat find-expr " " (car find-ls-option))))
 
 (defun rc/project-grep (grep-expr)
-  (interactive (list (rc/read-command "Grep: " 'grep-history)))
+  (interactive (list (rc/read-command "Grep command: " 'grep-history)))
   (let ((default-directory (project-root (project-current))))
     (grep grep-expr)))
 
@@ -150,12 +150,7 @@
 
 (use-package wgrep
   :config
-  (setq wgrep-auto-save-buffer t)
-  (custom-set-faces
-    '(wgrep-face ((t (:background "grey30"))))
-    '(wgrep-done-face ((t (:background unspecified))))
-    '(wgrep-file-face
-       ((t (:background "gray30" :foreground "white"))))))
+  (setq wgrep-auto-save-buffer t))
 
 (use-package which-key
   :diminish
@@ -167,51 +162,34 @@
 (use-package helm
   :diminish
   :config
-  (helm-mode 1)
-  (helm-autoresize-mode t)
   (setq helm-autoresize-min-height 5
     helm-display-header-line nil)
-  (custom-set-faces
-    '(helm-M-x-key ((t (:extend t :foreground "#DFAF8F"))))
-    '(helm-M-x-short-doc ((t (:foreground "DimGray"))))
-    '(helm-M-x-key ((t (:extend t :foreground "#DFAF8F"))))
-    '(helm-M-x-short-doc ((t (:foreground "DimGray"))))
-    '(helm-ff-dotted-directory
-       ((t (:extend t :foreground "#DFAF8F"))))
-    '(helm-ff-dotted-symlink-directory
-       ((t (:extend t :foreground "#DFAF8F"))))
-    '(helm-buffer-directory ((t (:extend t :foreground "#DFAF8F"))))
-    '(helm-ff-prefix ((t (:foreground "#F0DFAF"
-                           :background unspecified :weight bold))))
-    '(helm-ff-file ((t (:extend t :foreground "#DCDCCC")))))
   (global-set-key (kbd "M-x") 'helm-M-x)
   (global-set-key (kbd "C-x C-f") 'helm-find-files)
-  (global-set-key (kbd "C-x b") 'helm-mini))
-
-(defun rc/helm-company-hook ()
-  (require 'helm-company)
-  (local-set-key (kbd "C-c h") 'helm-company))
+  (global-set-key (kbd "C-x b") 'helm-mini)
+  (helm-mode 1)
+  (helm-autoresize-mode 1))
 
 (use-package company
   :after
   helm
   :diminish
   :config
-  (global-company-mode 0)
+  (require 'helm-company)
   (setq company-frontends ()
     helm-company-show-icons nil
     helm-company-initialize-pattern-with-prefix t
-    helm-company-candidate-number-limit 500
-    company-tooltip-align-annotations t)
-  (custom-set-faces
-    '(company-tooltip-annotation ((t (:background unspecified)))))
+    helm-company-candidate-number-limit 500)
   (dolist (hook
             '(emacs-lisp-mode-hook
                c-mode-hook
                c++-mode-hook
                sh-mode-hook
                text-mode-hook))
-    (add-hook hook 'rc/helm-company-hook)))
+    (add-hook hook
+      (lambda ()
+        (interactive)
+        (local-set-key (kbd "C-c h") 'helm-company)))))
 
 (use-package flycheck
   :diminish

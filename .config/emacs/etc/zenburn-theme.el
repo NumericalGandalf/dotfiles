@@ -235,6 +235,10 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(grep-hit-face ((t (:foreground ,zenburn-blue))))
    `(grep-match-face ((t (:foreground ,zenburn-orange :weight bold))))
    `(match ((t (:background ,zenburn-bg-1 :foreground ,zenburn-orange :weight bold))))
+;;;;; wgrep
+   '(wgrep-face ((t (:background "grey30"))))
+   '(wgrep-done-face ((t (:background unspecified))))
+   '(wgrep-file-face ((t (:background "gray30" :foreground "white"))))
 ;;;;; hi-lock
    `(hi-blue    ((t (:background ,zenburn-cyan    :foreground ,zenburn-bg-1))))
    `(hi-green   ((t (:background ,zenburn-green+4 :foreground ,zenburn-bg-1))))
@@ -829,7 +833,9 @@ Also bind `class' to ((class color) (min-colors 89))."
                       :underline nil
                       :weight bold
                       :box (:line-width -1 :style released-button)
-                      :extend t))))
+           :extend t))))
+   '(helm-M-x-key ((t (:extend t :foreground "#DFAF8F"))))
+   '(helm-M-x-short-doc ((t (:foreground "DimGray"))))
    `(helm-selection ((t (:background ,zenburn-bg+1 :underline nil))))
    `(helm-selection-line ((t (:background ,zenburn-bg+1))))
    `(helm-visible-mark ((t (:foreground ,zenburn-bg :background ,zenburn-yellow-2))))
@@ -848,13 +854,16 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(helm-buffer-process ((t (:foreground ,zenburn-cyan :background ,zenburn-bg))))
    `(helm-buffer-saved-out ((t (:foreground ,zenburn-fg :background ,zenburn-bg))))
    `(helm-buffer-size ((t (:foreground ,zenburn-fg-1 :background ,zenburn-bg))))
+   '(helm-buffer-directory ((t (:extend t :foreground "#DFAF8F"))))
    `(helm-ff-directory ((t (:foreground ,zenburn-cyan :background ,zenburn-bg :weight bold))))
-   `(helm-ff-file ((t (:foreground ,zenburn-fg :background ,zenburn-bg :weight normal))))
+   `(helm-ff-file ((t (:foreground ,zenburn-fg :background unspecified :weight normal))))
    `(helm-ff-file-extension ((t (:foreground ,zenburn-fg :background ,zenburn-bg :weight normal))))
    `(helm-ff-executable ((t (:foreground ,zenburn-green+2 :background ,zenburn-bg :weight normal))))
    `(helm-ff-invalid-symlink ((t (:foreground ,zenburn-red :background ,zenburn-bg :weight bold))))
    `(helm-ff-symlink ((t (:foreground ,zenburn-yellow :background ,zenburn-bg :weight bold))))
-   `(helm-ff-prefix ((t (:foreground ,zenburn-bg :background ,zenburn-yellow :weight normal))))
+   `(helm-ff-prefix ((t (:foreground ,zenburn-fg :background unspecified :weight bold))))
+   '(helm-ff-dotted-directory ((t (:extend t :foreground "#DFAF8F"))))
+   '(helm-ff-dotted-symlink-directory ((t (:extend t :foreground "#DFAF8F"))))
    `(helm-grep-cmd-line ((t (:foreground ,zenburn-cyan :background ,zenburn-bg))))
    `(helm-grep-file ((t (:foreground ,zenburn-fg :background ,zenburn-bg))))
    `(helm-grep-finish ((t (:foreground ,zenburn-green+2 :background ,zenburn-bg))))
@@ -1715,6 +1724,7 @@ Also bind `class' to ((class color) (min-colors 89))."
 ;;;;; company-quickhelp
    `(company-quickhelp-color-background ,zenburn-bg+1)
    `(company-quickhelp-color-foreground ,zenburn-fg)
+   '(company-tooltip-annotation ((t (:background unspecified))))
 ;;;;; fill-column-indicator
    `(fci-rule-color ,zenburn-bg-05)
 ;;;;; nrepl-client
