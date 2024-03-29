@@ -17,24 +17,31 @@
 (setq-default resize-mini-windows t
   cursor-in-non-selected-windows nil)
 
+(let ((rc-font "Hack Nerd Font Mono-11"))
+  (set-face-attribute 'default nil :font rc-font)
+  (add-to-list 'default-frame-alist `(font . ,rc-font)))
+
+(use-package ef-themes
+  :config
+  (load-theme 'ef-maris-dark t))
+
 (global-display-line-numbers-mode 1)
 (column-number-mode 1)
 (setq display-line-numbers-type 'relative
   display-line-numbers-width-start t)
 
-(let ((rc-font "Hack Nerd Font Mono-11"))
-  (set-face-attribute 'default nil :font rc-font)
-  (add-to-list 'default-frame-alist `(font . ,rc-font)))
-
-(load (locate-user-emacs-file "zenburn-theme.el"))
-(load-theme 'zenburn t)
+(global-set-key (kbd "C-x C-c") 'save-buffers-kill-terminal)
+(global-set-key (kbd "C-x M-c") 'save-buffers-kill-emacs)
+(global-set-key (kbd "C-c M-m") 'man)
 
 (savehist-mode 1)
 (recentf-mode 1)
 (save-place-mode 1)
 (global-auto-revert-mode 1)
-(setq global-auto-revert-non-file-buffers t
-  enable-recursive-minibuffers t)
+
+(setq enable-recursive-minibuffers t
+  isearch-repeat-on-direction-change t
+  global-auto-revert-non-file-buffers t)
 
 (setq make-backup-files nil
   create-lockfiles nil
@@ -66,10 +73,13 @@
   :config
   (marginalia-mode 1))
 
+(require 'dired)
 (setq dired-listing-switches "-lah"
   dired-free-space 'separate
   dired-recursive-deletes 'always
   dired-auto-revert-buffer t)
+
+(define-key dired-mode-map [remap quit-window] 'delete-window)
 
 (setq auth-source-save-behavior nil)
 
@@ -80,7 +90,6 @@
   compilation-scroll-output 'first-error
   find-ls-option '("-exec ls -ldh {} +" . "-ldh"))
 
-(require 'find-dired)
 (require 'project)
 
 (defun rc--read-command (prompt history &optional directory)
@@ -94,6 +103,8 @@
     (project-root (project-current))))
 
 (defun rc--find (directory find-expr)
+  (split-window-right)
+  (other-window 1)
   (find-dired-with-command directory (concat find-expr " " (car find-ls-option))))
 
 (defun rc-find (find-expr)
@@ -124,6 +135,10 @@
 (global-set-key (kbd "C-x p C-c") 'rc-project-find)
 (global-set-key (kbd "C-x p C") 'rc-project-grep)
 
+(global-set-key (kbd "C-c k c") 'kill-compilation)
+(global-set-key (kbd "C-c k f") 'kill-find)
+(global-set-key (kbd "C-c k g") 'kill-grep)
+
 (use-package wgrep
   :config
   (setq wgrep-auto-save-buffer t))
@@ -148,14 +163,6 @@
 
 (global-set-key (kbd "C-q") 'rc-duplicate-line)
 
-(global-set-key (kbd "C-x C-c") 'save-buffers-kill-terminal)
-(global-set-key (kbd "C-x M-c") 'save-buffers-kill-emacs)
-
-(setq isearch-repeat-on-direction-change t)
-(global-set-key (kbd "C-c q") 'query-replace)
-
-(global-set-key (kbd "C-c M-m") 'man)
-
 (require 'eglot)
 (setq eglot-ignored-server-capabilities '(:documentHighlightProvider
                                        :inlayHintProvider))
@@ -167,6 +174,8 @@
 (define-key eglot-mode-map (kbd "C-c l r") 'eglot-rename)
 (define-key eglot-mode-map (kbd "C-c l f") 'eglot-format)
 (define-key eglot-mode-map (kbd "C-c l a") 'eglot-code-actions)
+(when (package-installed-p 'consult)
+  (define-key eglot-mode-map (kbd "C-c l e") 'consult-flymake))
 
 (use-package magit)
 
