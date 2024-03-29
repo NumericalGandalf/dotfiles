@@ -4,8 +4,8 @@ live_config_reload = true
 opacity = 0.85
 
 [font]
-normal = { family = "Monospace", style = "Regular" }
-size = 10
+normal = { family = "Hack Nerd Font Mono", style = "Regular" }
+size = 11
 
 [mouse]
 hide_when_typing = true

@@ -7,7 +7,17 @@ append_path() {
   esac
 }
 
-append_path $HOME/.local/bin
+append_ld_path() {
+  case ":$LD_LIBRARY_PATH:" in
+    *:"$1":*) ;;
+    *) LD_LIBRARY_PATH="${LD_LIBRARY_PATH:+$LD_LIBRARY_PATH:}$1"
+  esac
+}
+
+append_path "$HOME/.local/bin/"
+
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH
+append_ld_path "$HOME/.local/lib/"
 
 export BASH_ENV="$HOME/.bash_env"
 
@@ -20,7 +30,7 @@ export EDITOR=vim
 export ALTERNATE_EDITOR=emacs
 export PAGER=less
 export BROWSER=chromium
-export CC=gcc
+export CC=clang
 
 export GTK_THEME=Adwaita:dark
 
