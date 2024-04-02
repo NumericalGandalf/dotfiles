@@ -112,7 +112,7 @@ bindsym $mod+Shift+f mode "Flow"
 mode "Flow" {
   bindsym t exec --no-startup-id $TERMINAL, mode "default"
   bindsym w exec --no-startup-id $BROWSER, mode "default"
-  bindsym e exec --no-startup-id emacsclient -c, mode "default"
+  bindsym e exec --no-startup-id emacsclient -c -a 'emacs', mode "default"
   bindsym Shift+e exec --no-startup-id emacs, mode "default"
 
   bindsym Ctrl+g mode "default"
