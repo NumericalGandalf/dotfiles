@@ -33,11 +33,14 @@
   overflow-newline-into-fringe nil
   use-short-answers t
   inhibit-startup-message t
+  initial-scratch-message nil
   echo-keystrokes 0
   mode-line-percent-position '(6 "%q"))
 
 (setq-default resize-mini-windows t
   cursor-in-non-selected-windows nil)
+
+(eval (setq inhibit-startup-echo-area-message "gandalf"))
 
 (let ((rc-font "Hack Nerd Font Mono-11"))
   (set-face-attribute 'default nil :font rc-font)
