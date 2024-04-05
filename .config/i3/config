@@ -68,35 +68,31 @@ for_window [window_role="task_dialog"] floating enable
 
 font pango:Hack Nerd Font Mono 8
 
-bindsym $mod+Shift+d exec --no-startup-id dmenu_run -i -b -p "Run" -fn "Hack Nerd Font Mono-10"
-
-bindsym $mod+Shift+a mode "i3"
-mode "i3" {
-  bindsym e exit, mode "default"
-  bindsym q kill, mode "default"
-  bindsym c restart, mode "default"
-  bindsym x reload, mode "default"
-
-  bindsym f fullscreen toggle, mode "default"
-  bindsym a floating toggle, mode "default"
-  bindsym v split toggle, mode "default"
-  bindsym b layout toggle splith tabbed, mode "default"
-
-  bindsym Ctrl+g mode "default"
-}
+bindsym $mod+Shift+d exec --no-startup-id dmenu_run -i -b -p "Run" -fn "Hack Nerd Font Mono-11"
+bindsym $mod+Shift+e exec --no-startup-id emacsclient -c -a 'emacs'
 
 bindsym $mod+Shift+s mode "System"
 mode "System" {
-  bindsym l exec --no-startup-id loginctl lock-session, mode "default"
-  bindsym r exec --no-startup-id systemctl reboot, mode "default"
-  bindsym s exec --no-startup-id systemctl suspend, mode "default"
-  bindsym p exec --no-startup-id systemctl poweroff, mode "default"
-  bindsym h exec --no-startup-id systemctl hibernate, mode "default"
+  bindsym e exit
+  bindsym q kill
+  bindsym c restart
+  bindsym x reload
 
-  bindsym Ctrl+g mode "default"
+  bindsym f fullscreen toggle
+  bindsym a floating toggle
+  bindsym v split toggle
+  bindsym b layout toggle splith tabbed
+  
+  bindsym l exec --no-startup-id loginctl lock-session
+  bindsym r exec --no-startup-id systemctl reboot
+  bindsym s exec --no-startup-id systemctl suspend
+  bindsym p exec --no-startup-id systemctl poweroff
+  bindsym h exec --no-startup-id systemctl hibernate
+
+  bindsym Escape mode "default"
 }
 
-bindsym $mod+Shift+e mode "Audio"
+bindsym $mod+Shift+a mode "Audio"
 mode "Audio" {
   bindsym $up exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +5%
   bindsym $down exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -5%
@@ -105,17 +101,7 @@ mode "Audio" {
   bindsym m exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle
   bindsym n exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle
 
-  bindsym Ctrl+g mode "default"
-}
-
-bindsym $mod+Shift+f mode "Flow"
-mode "Flow" {
-  bindsym t exec --no-startup-id $TERMINAL, mode "default"
-  bindsym w exec --no-startup-id $BROWSER, mode "default"
-  bindsym e exec --no-startup-id emacsclient -c -a 'emacs', mode "default"
-  bindsym Shift+e exec --no-startup-id emacs, mode "default"
-
-  bindsym Ctrl+g mode "default"
+  bindsym Escape mode "default"
 }
 
 bindsym $mod+Shift+r mode "Resize"
@@ -130,7 +116,7 @@ mode "Resize" {
   bindsym Shift+$up resize grow up 10 px or 10 ppt
   bindsym Shift+$left resize grow left 10 px or 10 ppt
 
-  bindsym Ctrl+g mode "default"
+  bindsym Escape mode "default"
 }
 
 bindsym $mod+Shift+Escape mode "Free"

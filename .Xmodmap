@@ -1,3 +1,0 @@
-clear Lock
-keysym Caps_Lock = Escape
-keysym Super_L = Caps_Lock

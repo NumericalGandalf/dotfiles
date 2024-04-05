@@ -216,16 +216,16 @@
     `(custom-set ((,class (:foreground ,nord8))))
     `(custom-state ((,class (:foreground ,nord14))))
     `(custom-themed ((,class (:foreground ,nord8 :background ,nord2))))
-    `(cursor ((,class (:background ,nord4))))
+    `(cursor ((,class (:foreground ,nord1 :background ,nord8))))
     `(fringe ((,class (:foreground ,nord4 :background ,nord0))))
     `(file-name-shadow ((,class (:inherit shadow))))
     `(header-line ((,class (:foreground ,nord4 :background ,nord2))))
     `(help-argument-name ((,class (:foreground ,nord8))))
     `(highlight ((,class (:foreground ,nord8 :background ,nord2))))
-    `(lazy-highlight ((t (:foreground ,nord4 :background ,nord-region-highlight-background))))
+    `(lazy-highlight ((t (:foreground ,nord0 :background ,nord1))))
     `(hl-line ((,class (:background ,nord4))))
     `(info-menu-star ((,class (:foreground ,nord9))))
-    `(isearch ((,class (:foreground ,nord4 :background ,nord1))))
+    `(isearch ((,class (:foreground ,nord0 :background ,nord8))))
     `(isearch-fail ((,class (:foreground ,nord11))))
     `(xref-match ((t nil)))
     `(wgrep-face ((t (:background ,nord1))))
@@ -601,10 +601,5 @@
     (file-name-as-directory (file-name-directory load-file-name))))
 
 (provide-theme 'nord)
-
-;; Local Variables:
-;; no-byte-compile: t
-;; indent-tabs-mode: nil
-;; End:
 
 ;;; nord-theme.el ends here

@@ -9,19 +9,21 @@
 
 (defun rc-ensure-theme ()
   (when (display-graphic-p)
-    (let ((theme 'nord))
+    (let ((theme 'zenburn))
       (unless (member theme custom-enabled-themes)
         (load-theme theme t)))))
 
-(add-hook
+(defun rc-after-init () 
   (if (daemonp)
     (progn
       (setq initial-buffer-choice default-directory)
-      'server-after-make-frame-hook)
+      (add-hook 'server-after-make-frame-hook 'rc-ensure-theme))
     (progn
-      (unless (buffer-file-name) (find-file default-directory))
-      'emacs-startup-hook))
-  'rc-ensure-theme)
+      (unless (buffer-file-name)
+        (find-file default-directory))
+      (rc-ensure-theme))))
+
+(add-hook 'after-init-hook 'rc-after-init)
 
 (menu-bar-mode -1)
 (tool-bar-mode -1)
@@ -61,7 +63,8 @@
 
 (setq enable-recursive-minibuffers t
   isearch-repeat-on-direction-change t
-  global-auto-revert-non-file-buffers t)
+  global-auto-revert-non-file-buffers t
+  auto-revert-remote-files t)
 
 (setq make-backup-files nil
   create-lockfiles nil

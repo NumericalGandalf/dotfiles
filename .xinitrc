@@ -1,8 +1,5 @@
 #!/usr/bin/sh
 
-xmodmap ~/.Xmodmap
-xrdb -merge ~/.Xresources
-
 dunst &
 picom &
 xss-lock --transfer-sleep-lock -- xsecurelock &
