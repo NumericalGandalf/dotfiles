@@ -66,17 +66,17 @@ tiling_drag modifier
 for_window [window_role="pop-up"] floating enable
 for_window [window_role="task_dialog"] floating enable
 
-font pango:Hack Nerd Font Mono 8
+font pango:DejaVu Sans Mono 8
 
-bindsym $mod+Shift+d exec --no-startup-id dmenu_run -i -b -p "Run" -fn "Hack Nerd Font Mono-10"
+bindsym $mod+Shift+d exec --no-startup-id dmenu_run -i -b -p "Run" -fn "DejaVu Sans Mono-10"
 bindsym $mod+Shift+e exec --no-startup-id emacsclient -c -a 'emacs'
 
 bindsym $mod+Shift+s mode "System"
 mode "System" {
   bindsym e exit
   bindsym q kill
-  bindsym x reload
-  bindsym c restart
+  bindsym c reload
+  bindsym x restart
 
   bindsym f fullscreen toggle
   bindsym a floating toggle
@@ -127,16 +127,6 @@ mode "Free" {
 bar {
   status_command i3status
   position bottom
-  binding_mode_indicator yes
-  tray_output primary
-
-  bindsym button1 nop
-  bindsym button2 nop
-  bindsym button3 nop
-  bindsym button4 nop
-  bindsym button5 nop
-  bindsym button6 nop
-  bindsym button7 nop
-  bindsym button8 nop
-  bindsym button9 nop
+  separator_symbol "|"
+  tray_output none
 }

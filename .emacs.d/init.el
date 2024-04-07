@@ -24,7 +24,7 @@
 (setq-default resize-mini-windows t
   cursor-in-non-selected-windows nil)
 
-(let ((rc-font "Hack Nerd Font Mono-10.5"))
+(let ((rc-font "DejaVu Sans Mono-10.5"))
   (set-face-attribute 'default nil :font rc-font)
   (add-to-list 'default-frame-alist `(font . ,rc-font)))
 
@@ -162,6 +162,7 @@
   (setq wgrep-auto-save-buffer t))
 
 (global-set-key (kbd "C-h M") 'man)
+(global-set-key (kbd "C-S-y") 'yank-from-kill-ring)
     
 (setq xref-auto-jump-to-first-xref t
   xref-auto-jump-to-first-definition t)

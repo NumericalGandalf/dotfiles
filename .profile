@@ -48,8 +48,8 @@ export GTK_THEME="Adwaita:dark"
 
 display() {
   case "$XDG_VTNR" in
-    1) session=i3 ;;
-    2) exec sway ;;
+    2) session=i3 ;;
+    1) exec sway ;;
     *) return ;;
   esac
 

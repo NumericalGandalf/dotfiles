@@ -5,7 +5,8 @@ setxkbmap -option caps:swapescape
 
 dunst &
 picom &
-xss-lock --transfer-sleep-lock -- xsecurelock &
+
+xss-lock --transfer-sleep-lock -- i3lock -c 000000 &
 
 [[ -n "$1" ]] && command -v $1 && session=$1 ||
   session=i3 && exec $session
