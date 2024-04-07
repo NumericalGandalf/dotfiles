@@ -7,24 +7,6 @@
 
 (use-package diminish)
 
-(defun rc-ensure-theme ()
-  (when (display-graphic-p)
-    (let ((theme 'zenburn))
-      (unless (member theme custom-enabled-themes)
-        (load-theme theme t)))))
-
-(defun rc-after-init () 
-  (if (daemonp)
-    (progn
-      (setq initial-buffer-choice default-directory)
-      (add-hook 'server-after-make-frame-hook 'rc-ensure-theme))
-    (progn
-      (unless (buffer-file-name)
-        (find-file default-directory))
-      (rc-ensure-theme))))
-
-(add-hook 'after-init-hook 'rc-after-init)
-
 (menu-bar-mode -1)
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
@@ -42,19 +24,23 @@
 (setq-default resize-mini-windows t
   cursor-in-non-selected-windows nil)
 
-(eval (setq inhibit-startup-echo-area-message "gandalf"))
-
-(let ((rc-font "Hack Nerd Font Mono-11"))
+(let ((rc-font "Hack Nerd Font Mono-10.5"))
   (set-face-attribute 'default nil :font rc-font)
   (add-to-list 'default-frame-alist `(font . ,rc-font)))
+
+(defun rc-after-init ()
+  (if (daemonp)
+    (setq initial-buffer-choice default-directory))
+    (unless (buffer-file-name)
+      (find-file default-directory))
+  (load-theme 'zenburn t))
+
+(add-hook 'after-init-hook 'rc-after-init)
 
 (global-display-line-numbers-mode 1)
 (column-number-mode 1)
 (setq display-line-numbers-type 'relative
   display-line-numbers-width-start t)
-
-(global-set-key (kbd "C-c M-m") 'man)
-(global-set-key (kbd "C-c M-t") 'ansi-term)
 
 (savehist-mode 1)
 (recentf-mode 1)
@@ -102,6 +88,13 @@
     dired-kill-when-opening-new-dired-buffer t
     dired-auto-revert-buffer t
     auth-source-save-behavior nil))
+
+(defun rc-term ()
+  (interactive)
+  (term shell-file-name))
+
+(setq shell-file-name "/usr/bin/bash")
+(global-set-key (kbd "C-x T") 'rc-term)
 
 (setq compile-command ""
   compilation-ask-about-save nil
@@ -167,6 +160,8 @@
 (use-package wgrep
   :config
   (setq wgrep-auto-save-buffer t))
+
+(global-set-key (kbd "C-h M") 'man)
     
 (setq xref-auto-jump-to-first-xref t
   xref-auto-jump-to-first-definition t)

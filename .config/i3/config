@@ -68,26 +68,26 @@ for_window [window_role="task_dialog"] floating enable
 
 font pango:Hack Nerd Font Mono 8
 
-bindsym $mod+Shift+d exec --no-startup-id dmenu_run -i -b -p "Run" -fn "Hack Nerd Font Mono-11"
+bindsym $mod+Shift+d exec --no-startup-id dmenu_run -i -b -p "Run" -fn "Hack Nerd Font Mono-10"
 bindsym $mod+Shift+e exec --no-startup-id emacsclient -c -a 'emacs'
 
 bindsym $mod+Shift+s mode "System"
 mode "System" {
   bindsym e exit
   bindsym q kill
-  bindsym c restart
   bindsym x reload
+  bindsym c restart
 
   bindsym f fullscreen toggle
   bindsym a floating toggle
   bindsym v split toggle
   bindsym b layout toggle splith tabbed
   
-  bindsym l exec --no-startup-id loginctl lock-session
-  bindsym r exec --no-startup-id systemctl reboot
-  bindsym s exec --no-startup-id systemctl suspend
-  bindsym p exec --no-startup-id systemctl poweroff
-  bindsym h exec --no-startup-id systemctl hibernate
+  bindsym l exec --no-startup-id loginctl lock-session, mode "default"
+  bindsym r exec --no-startup-id systemctl reboot, mode "default"
+  bindsym s exec --no-startup-id systemctl suspend, mode "default"
+  bindsym p exec --no-startup-id systemctl poweroff, mode "default"
+  bindsym h exec --no-startup-id systemctl hibernate, mode "default"
 
   bindsym Escape mode "default"
 }
@@ -125,7 +125,6 @@ mode "Free" {
 }
 
 bar {
-  i3bar_command i3bar
   status_command i3status
   position bottom
   binding_mode_indicator yes
@@ -140,5 +139,4 @@ bar {
   bindsym button7 nop
   bindsym button8 nop
   bindsym button9 nop
-  bindsym button10 nop
 }

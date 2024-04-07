@@ -1,2 +1,2 @@
 .config/nvim/lazy-lock.json
-.config/emacs/var/
+.emacs.d/var/
