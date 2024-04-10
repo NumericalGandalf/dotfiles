@@ -1,24 +1,11 @@
-(require 'use-package)
 (require 'package)
-(setq use-package-always-ensure t
-  package-user-dir (locate-user-emacs-file "var/elpa/")
-  package-gnupghome-dir (locate-user-emacs-file "var/elpa/gnupg/"))
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
-(package-initialize)
-(unless package-archive-contents
-  (package-refresh-contents t))
+(require 'use-package)
 
 (use-package no-littering
   :init
   (setq no-littering-etc-directory user-emacs-directory))
 
 (use-package diminish)
-
-(menu-bar-mode -1)
-(tool-bar-mode -1)
-(scroll-bar-mode -1)
-(tooltip-mode 0)
-(fringe-mode 0)
 
 (setq use-dialog-box nil
   overflow-newline-into-fringe nil
@@ -34,15 +21,6 @@
 (let ((rc-font "Iosevka-11.5"))
   (set-face-attribute 'default nil :font rc-font)
   (add-to-list 'default-frame-alist `(font . ,rc-font)))
-
-(defun rc-after-init ()
-  (if (daemonp)
-    (setq initial-buffer-choice default-directory))
-    (unless (buffer-file-name)
-      (find-file default-directory))
-  (load-theme 'zenburn t))
-
-(add-hook 'after-init-hook 'rc-after-init)
 
 (global-display-line-numbers-mode 1)
 (column-number-mode 1)
@@ -184,3 +162,12 @@
   :diminish
   :config
   (editorconfig-mode 1))
+
+(defun rc-after-init ()
+  (if (daemonp)
+    (setq initial-buffer-choice default-directory)
+    (unless (buffer-file-name)
+      (find-file default-directory)))
+  (load-theme 'zenburn t))
+
+(add-hook 'after-init-hook 'rc-after-init)
