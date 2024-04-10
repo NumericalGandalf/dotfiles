@@ -83,22 +83,33 @@
   (require 'project)
   (project-root (project-current t)))
 
-(defun rc-find-buffer-close ()
+(defun rc-find-window-kill ()
   (interactive)
-  (if (one-window-p) (quit-window) (delete-window)))
+  (let ((find-window (get-buffer-window "*Find*")))
+    (when find-window
+      (with-selected-window find-window
+        (if (one-window-p)
+          (quit-window)
+          (delete-window))))))
 
 (defun rc--find (directory find-expr)
-  (split-window-right)
-  (other-window 1)
-  (find-dired-with-command directory (concat find-expr " " (car find-ls-option)))
-  (with-current-buffer "*Find*"
+  (with-selected-window
+    (if (one-window-p)
+      (split-window-right)
+      (let ((find-window (get-buffer-window "*Find*")))
+        (if find-window
+          find-window
+          (next-window nil 1))))
+    (find-dired-with-command directory (concat find-expr " " (car find-ls-option)))
     (use-local-map (copy-keymap dired-mode-map))
-    (local-set-key [remap quit-window] 'rc-find-buffer-close)
+    (local-set-key [remap quit-window] 'rc-find-window-kill)
     (local-set-key [remap dired-find-file] 'dired-find-file-other-window)))
 
 (defun rc-find (find-expr)
   (interactive
-    (list (rc--read-command "Find command: " 'find-command-history)))
+    (list (progn
+            (require 'find-dired)
+            (rc--read-command "Find command: " 'find-command-history))))
   (rc--find default-directory find-expr))
 
 (global-set-key (kbd "C-x p C-c") 'rc-project-find)
@@ -107,6 +118,7 @@
 
 (defun rc-project-find ()
   (interactive)
+  (require 'find-dired)
   (let* ((directory (rc--project-root))
           (find-expr (rc--read-command "Find command: " 'find-command-history directory)))
     (rc--find directory find-expr)))
