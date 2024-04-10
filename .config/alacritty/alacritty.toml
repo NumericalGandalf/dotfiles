@@ -4,8 +4,8 @@ live_config_reload = true
 opacity = 0.85
 
 [font]
-normal = { family = "DejaVu Sans Mono", style = "Regular" }
-size = 11
+normal = { family = "Iosevka", style = "Regular" }
+size = 11.5
 
 [mouse]
 hide_when_typing = true

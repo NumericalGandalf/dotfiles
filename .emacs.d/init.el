@@ -1,5 +1,12 @@
 (require 'use-package)
-(setq use-package-always-ensure t)
+(require 'package)
+(setq use-package-always-ensure t
+  package-user-dir (locate-user-emacs-file "var/elpa/")
+  package-gnupghome-dir (locate-user-emacs-file "var/elpa/gnupg/"))
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+(package-initialize)
+(unless package-archive-contents
+  (package-refresh-contents t))
 
 (use-package no-littering
   :init
@@ -24,7 +31,7 @@
 (setq-default resize-mini-windows t
   cursor-in-non-selected-windows nil)
 
-(let ((rc-font "DejaVu Sans Mono-10.5"))
+(let ((rc-font "Iosevka-11.5"))
   (set-face-attribute 'default nil :font rc-font)
   (add-to-list 'default-frame-alist `(font . ,rc-font)))
 
@@ -73,14 +80,6 @@
   :config
   (vertico-mode 1))
 
-(use-package consult
-  :config
-  (setq completion-in-region-function 'consult-completion-in-region)
-  (global-set-key [remap switch-to-buffer] 'consult-buffer)
-  (global-set-key [remap project-switch-to-buffer] 'consult-project-buffer)
-  (global-set-key [remap imenu] 'consult-imenu)
-  (global-set-key [remap bookmark-jump] 'consult-bookmark))
-
 (with-eval-after-load 'dired
   (setq dired-listing-switches "-lah"
     dired-free-space 'separate
@@ -88,13 +87,6 @@
     dired-kill-when-opening-new-dired-buffer t
     dired-auto-revert-buffer t
     auth-source-save-behavior nil))
-
-(defun rc-term ()
-  (interactive)
-  (term shell-file-name))
-
-(setq shell-file-name "/usr/bin/bash")
-(global-set-key (kbd "C-x T") 'rc-term)
 
 (setq compile-command ""
   compilation-ask-about-save nil
@@ -161,9 +153,18 @@
   :config
   (setq wgrep-auto-save-buffer t))
 
-(global-set-key (kbd "C-h M") 'man)
+(use-package magit)
+
+(global-set-key (kbd "C-x C-S-f") 'recentf)
 (global-set-key (kbd "C-S-y") 'yank-from-kill-ring)
-    
+(global-set-key (kbd "C-c M-s") 'tramp-revert-buffer-with-sudo)
+(global-set-key (kbd "C-h M") 'man)
+
+(use-package corfu
+  :config
+  (setq corfu-cycle t)
+  (global-corfu-mode 1))
+
 (setq xref-auto-jump-to-first-xref t
   xref-auto-jump-to-first-definition t)
 
@@ -177,11 +178,7 @@
   (define-key eglot-mode-map (kbd "C-c l i") 'eglot-find-implementation)
   (define-key eglot-mode-map (kbd "C-c l r") 'eglot-rename)
   (define-key eglot-mode-map (kbd "C-c l f") 'eglot-format)
-  (define-key eglot-mode-map (kbd "C-c l a") 'eglot-code-actions)
-  (when (package-installed-p 'consult)
-    (define-key eglot-mode-map (kbd "C-c l e") 'consult-flymake)))
-
-(use-package magit)
+  (define-key eglot-mode-map (kbd "C-c l a") 'eglot-code-actions))
 
 (use-package editorconfig
   :diminish
