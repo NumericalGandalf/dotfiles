@@ -1,11 +1,12 @@
-(require 'package)
-(require 'use-package)
+(unless (package-installed-p 'diminish)
+  (package-install 'diminish))
+
+(unless (package-installed-p 'delight)
+  (package-install 'delight))
 
 (use-package no-littering
   :init
   (setq no-littering-etc-directory user-emacs-directory))
-
-(use-package diminish)
 
 (setq use-dialog-box nil
   overflow-newline-into-fringe nil
@@ -17,15 +18,6 @@
 
 (setq-default resize-mini-windows t
   cursor-in-non-selected-windows nil)
-
-(let ((rc-font "Iosevka-11.5"))
-  (set-face-attribute 'default nil :font rc-font)
-  (add-to-list 'default-frame-alist `(font . ,rc-font)))
-
-(global-display-line-numbers-mode 1)
-(column-number-mode 1)
-(setq display-line-numbers-type 'relative
-  display-line-numbers-width-start t)
 
 (savehist-mode 1)
 (recentf-mode 1)
@@ -47,7 +39,8 @@
 
 (use-package orderless
   :config
-  (add-to-list 'completion-styles 'orderless))
+  (unless (member 'orderless completion-styles)
+    (add-to-list 'completion-styles 'orderless)))
 
 (use-package marginalia
   :diminish
@@ -179,7 +172,7 @@
   (if (daemonp)
     (setq initial-buffer-choice default-directory)
     (unless (buffer-file-name)
-      (find-file default-directory)))
-  (load-theme 'zenburn t))
+      (find-file default-directory))))
 
-(add-hook 'after-init-hook 'rc-after-init)
+(unless (member 'rc-after-init after-init-hook)
+  (add-hook 'after-init-hook 'rc-after-init))

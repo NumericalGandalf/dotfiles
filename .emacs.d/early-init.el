@@ -10,6 +10,7 @@
     (package-refresh-contents t)))
 
 (with-eval-after-load 'use-package-core
+  (require 'use-package)
   (setq use-package-always-ensure t))
 
 (tool-bar-mode 0)
@@ -17,3 +18,14 @@
 (scroll-bar-mode 0)
 (fringe-mode 0)
 (tooltip-mode 0)
+
+(let ((font "Iosevka-11.5"))
+  (set-face-attribute 'default nil :font font)
+  (add-to-list 'default-frame-alist `(font . ,font)))
+
+(global-display-line-numbers-mode 1)
+(column-number-mode 1)
+(setq display-line-numbers-type 'relative
+  display-line-numbers-width-start t)
+
+(load-theme 'zenburn t)
