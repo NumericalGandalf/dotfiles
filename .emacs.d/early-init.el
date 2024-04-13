@@ -28,4 +28,6 @@
 (setq display-line-numbers-type 'relative
   display-line-numbers-width-start t)
 
+(setq  mode-line-percent-position '(6 "%q"))
+
 (load-theme 'zenburn t)

@@ -1,8 +1,4 @@
-(unless (package-installed-p 'diminish)
-  (package-install 'diminish))
-
-(unless (package-installed-p 'delight)
-  (package-install 'delight))
+(use-package diminish)
 
 (use-package no-littering
   :init
@@ -13,8 +9,7 @@
   use-short-answers t
   inhibit-startup-message t
   initial-scratch-message nil
-  echo-keystrokes 0
-  mode-line-percent-position '(6 "%q"))
+  echo-keystrokes 0)
 
 (setq-default resize-mini-windows t
   cursor-in-non-selected-windows nil)
@@ -56,92 +51,39 @@
     dired-free-space 'separate
     dired-recursive-deletes 'always
     dired-kill-when-opening-new-dired-buffer t
-    dired-auto-revert-buffer t
-    auth-source-save-behavior nil))
+    dired-auto-revert-buffer t))
+
+(with-eval-after-load 'tramp
+  (setq auth-source-save-behavior nil))
 
 (setq compile-command ""
   compilation-ask-about-save nil
   compilation-scroll-output 'first-error
-  find-ls-option '("-exec ls -ldh {} +" . "-ldh"))
-
-(global-set-key (kbd "C-c b c") 'compile)
-(global-set-key (kbd "C-c k c") 'kill-compilation)
-
-(defun rc--read-command (prompt history &optional directory)
-  (let ((default-directory (if directory directory default-directory)))
-    (save-some-buffers t)
-    (read-shell-command prompt (car (symbol-value history)) `(,history . 1))))
-
-(defun rc--project-root ()
-  (require 'project)
-  (project-root (project-current t)))
-
-(defun rc-find-window-kill ()
-  (interactive)
-  (let ((find-window (get-buffer-window "*Find*")))
-    (when find-window
-      (with-selected-window find-window
-        (if (one-window-p)
-          (quit-window)
-          (delete-window))))))
-
-(defun rc--find (directory find-expr)
-  (with-selected-window
-    (if (one-window-p)
-      (split-window-right)
-      (let ((find-window (get-buffer-window "*Find*")))
-        (if find-window
-          find-window
-          (next-window nil 1))))
-    (find-dired-with-command directory (concat find-expr " " (car find-ls-option)))
-    (use-local-map (copy-keymap dired-mode-map))
-    (local-set-key [remap quit-window] 'rc-find-window-kill)
-    (local-set-key [remap dired-find-file] 'dired-find-file-other-window)))
+  find-ls-option '("-exec ls -ldh {} +" . "-ldh")
+  grep-save-buffers t)
 
 (defun rc-find (find-expr)
   (interactive
     (list (progn
             (require 'find-dired)
-            (rc--read-command "Find command: " 'find-command-history))))
-  (rc--find default-directory find-expr))
-
-(global-set-key (kbd "C-x p C-c") 'rc-project-find)
-(global-set-key (kbd "C-c b f") 'rc-find)
-(global-set-key (kbd "C-c k f") 'kill-find)
-
-(defun rc-project-find ()
-  (interactive)
-  (require 'find-dired)
-  (let* ((directory (rc--project-root))
-          (find-expr (rc--read-command "Find command: " 'find-command-history directory)))
-    (rc--find directory find-expr)))
+            (save-some-buffers t)
+            (read-shell-command "Find command: " (car find-command-history) '(find-command-history . 1)))))
+  (with-selected-window (display-buffer (get-buffer-create "*Find*"))
+    (find-dired-with-command default-directory (concat find-expr " " (car find-ls-option)))))
 
 (defun rc-grep (grep-expr)
   (interactive
-    (list (rc--read-command "Grep command: " 'grep-history)))
+    (list (read-shell-command "Grep command: " (car grep-history) '(grep-history . 1))))
   (grep grep-expr))
 
-(defun rc-project-grep ()
-  (interactive)
-  (let* ((directory (rc--project-root))
-         (grep-expr (rc--read-command "Grep command: " 'grep-history directory)))
-    (let ((default-directory directory))
-      (grep grep-expr))))
-
+(global-set-key (kbd "C-c b f") 'rc-find)
 (global-set-key (kbd "C-c b g") 'rc-grep)
-(global-set-key (kbd "C-x p C") 'rc-project-grep)
-(global-set-key (kbd "C-c k g") 'kill-grep)
 
 (use-package wgrep
   :config
   (setq wgrep-auto-save-buffer t))
 
 (use-package magit)
-
-(global-set-key (kbd "C-x C-S-f") 'recentf)
-(global-set-key (kbd "C-S-y") 'yank-from-kill-ring)
-(global-set-key (kbd "C-c M-s") 'tramp-revert-buffer-with-sudo)
-(global-set-key (kbd "C-h M") 'man)
 
 (use-package corfu
   :config
@@ -174,5 +116,4 @@
     (unless (buffer-file-name)
       (find-file default-directory))))
 
-(unless (member 'rc-after-init after-init-hook)
-  (add-hook 'after-init-hook 'rc-after-init))
+(add-hook 'after-init-hook 'rc-after-init)

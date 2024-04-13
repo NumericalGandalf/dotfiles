@@ -7,28 +7,7 @@ prepend_path () {
   esac
 }
 
-prepend_ld_path () {
-  case ":$LD_LIBRARY_PATH:" in
-    *:"$1":*) ;;
-    *) LD_LIBRARY_PATH="$1${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}"
-  esac
-}
-
-prepend_c_path () {
-  case ":$CPATH:" in
-    *:"$1":*) ;;
-    *) CPATH="$1${CPATH:+:${CPATH}}"
-  esac
-}
-
 prepend_path "$HOME/.local/bin/"
-
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH
-prepend_ld_path "$HOME/.local/lib/"
-
-export CC="clang"
-export CPATH=$CPATH
-prepend_c_path "$HOME/.local/include/"
 
 export HISTSIZE=5000
 export HISTIGNORE="*sudo -S*:$HISTIGNORE"
