@@ -1,10 +1,14 @@
 (when (boundp 'native-comp-eln-load-path)
-  (startup-redirect-eln-cache (locate-user-emacs-file "var/eln-cache/")))
+  (startup-redirect-eln-cache
+    (locate-user-emacs-file "./var/eln-cache/")))
 
 (with-eval-after-load 'package
-  (setq package-user-dir (locate-user-emacs-file "var/elpa/")
-    package-gnupghome-dir (locate-user-emacs-file "var/elpa/gnupg/"))
-  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+  (setq
+    package-user-dir (locate-user-emacs-file "./var/elpa/")
+    package-gnupghome-dir (locate-user-emacs-file "./var/elpa/gnupg/"))
+  (add-to-list
+    'package-archives
+    '("melpa" . "https://melpa.org/packages/"))
   (package-initialize)
   (unless package-archive-contents
     (package-refresh-contents t)))
@@ -19,15 +23,20 @@
 (fringe-mode 0)
 (tooltip-mode 0)
 
-(let ((font "Iosevka-11.5"))
-  (set-face-attribute 'default nil :font font)
-  (add-to-list 'default-frame-alist `(font . ,font)))
+(let
+  (
+    (font "Iosevka")
+    (height 115))
+  (set-face-attribute 'default t :font font :height height)
+  (add-to-list 'default-frame-alist `(font . ,font))
+  (set-face-attribute 'fixed-pitch nil :family font))
 
 (global-display-line-numbers-mode 1)
 (column-number-mode 1)
-(setq display-line-numbers-type 'relative
+(setq
+  display-line-numbers-type 'relative
   display-line-numbers-width-start t)
 
-(setq  mode-line-percent-position '(6 "%q"))
+(setq mode-line-percent-position '(6 "%q"))
 
 (load-theme 'zenburn t)

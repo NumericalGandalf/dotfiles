@@ -125,3 +125,5 @@ bar {
   separator_symbol "|"
   tray_output none
 }
+
+exec --no-startup-id emacs --daemon
