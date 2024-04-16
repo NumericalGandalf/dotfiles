@@ -32,6 +32,7 @@
     (set-face-attribute 'default t :font font :height height)
     (add-to-list 'default-frame-alist `(font . ,font))
     (set-face-attribute 'fixed-pitch nil :family font)
+    (set-face-attribute 'fixed-pitch-serif nil :family font)
     (set-face-attribute 'variable-pitch nil :family font)))
 
 (with-eval-after-load 'tooltip

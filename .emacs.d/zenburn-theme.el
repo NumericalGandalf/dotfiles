@@ -67,7 +67,6 @@ defining them in this alist."
 ;;; Color Palette
 (defvar zenburn-default-colors-alist
   `
-
   (("zenburn-fg-1" . "#656555")
     ("zenburn-fg-05" . "#989890")
     ("zenburn-fg" . "#DCDCCC")
