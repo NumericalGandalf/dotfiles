@@ -4,39 +4,39 @@
   no-littering
   :config (setq no-littering-etc-directory user-emacs-directory))
 
-(setq
-  use-dialog-box nil
-  overflow-newline-into-fringe nil
-  use-short-answers t
-  inhibit-startup-message t
-  initial-scratch-message nil
-  echo-keystrokes 0)
+(with-eval-after-load 'emacs
+  (setq
+    use-dialog-box nil
+    use-short-answers t
+    inhibit-startup-message t
+    echo-keystrokes 0)
+  (setq-default
+    resize-mini-windows t
+    cursor-in-non-selected-windows nil)
+  (setq
+    display-line-numbers-type 'relative
+    display-line-numbers-width-start t)
+  (global-display-line-numbers-mode 1)
+  (column-number-mode 1)
+  (global-visual-line-mode 1)
+  (savehist-mode 1)
+  (recentf-mode 1)
+  (save-place-mode 1))
 
-(setq-default
-  resize-mini-windows t
-  cursor-in-non-selected-windows nil)
+(with-eval-after-load 'autorevert
+  (setq global-auto-revert-non-file-buffers t
+    auto-revert-remote-files t)
+  (global-auto-revert-mode 1))
 
-(savehist-mode 1)
-(recentf-mode 1)
-(save-place-mode 1)
-(global-auto-revert-mode 1)
-(global-visual-line-mode 1)
+(with-eval-after-load 'isearch
+  (setq isearch-repeat-on-direction-change t))
 
-(setq
-  enable-recursive-minibuffers t
-  isearch-repeat-on-direction-change t
-  global-auto-revert-non-file-buffers t
-  auto-revert-remote-files t)
-
-(setq
-  make-backup-files nil
-  create-lockfiles nil
-  custom-file (locate-user-emacs-file "./var/void.el"))
-
-(setq
-  completion-ignore-case t
-  read-file-name-completion-ignore-case t
-  read-buffer-completion-ignore-case t)
+(with-eval-after-load 'minibuffer
+  (setq
+    enable-recursive-minibuffers t
+    completion-ignore-case t
+    read-file-name-completion-ignore-case t
+    read-buffer-completion-ignore-case t))
 
 (use-package
   orderless
@@ -51,6 +51,7 @@
 (with-eval-after-load 'dired
   (setq
     dired-listing-switches "-lah"
+    find-ls-option '("-exec ls -ldh {} +" . "-ldh")
     dired-free-space 'separate
     dired-recursive-deletes 'always
     dired-kill-when-opening-new-dired-buffer t
@@ -59,25 +60,29 @@
 (with-eval-after-load 'tramp
   (setq auth-source-save-behavior nil))
 
-(setq
-  compile-command ""
-  compilation-ask-about-save nil
-  compilation-scroll-output 'first-error)
+(with-eval-after-load 'compile
+  (setq
+    compile-command ""
+    compilation-ask-about-save nil
+    compilation-scroll-output 'first-error))
 
-(setq find-ls-option '("-exec ls -ldh {} +" . "-ldh"))
+(with-eval-after-load 'grep
+  (grep-apply-setting 'grep-command "")
+  (setq grep-save-buffers t
+    grep-use-null-device nil))
 
-(setq grep-save-buffers t)
-(grep-apply-setting 'grep-command "")
+(use-package wgrep :defer :config (setq wgrep-auto-save-buffer t))
 
-(use-package wgrep :config (setq wgrep-auto-save-buffer t))
+(use-package markdown-mode :defer)
 
-(use-package markdown-mode)
-
-(use-package magit)
+(use-package magit :defer)
 
 (use-package editorconfig :diminish :config (editorconfig-mode 1))
 
-(use-package elisp-autofmt :config (setq elisp-autofmt-style 'fixed))
+(use-package
+  elisp-autofmt
+  :defer
+  :config (setq elisp-autofmt-style 'fixed))
 
 (use-package
   corfu
@@ -87,11 +92,11 @@
     corfu-cycle t)
   (global-corfu-mode 1))
 
-(setq
-  xref-auto-jump-to-first-xref t
-  xref-auto-jump-to-first-definition t)
+(with-eval-after-load 'xref
+  (setq
+    xref-auto-jump-to-first-xref t
+    xref-auto-jump-to-first-definition t))
 
-(global-set-key (kbd "C-c l s") 'eglot)
 (with-eval-after-load 'eglot
   (setq eglot-ignored-server-capabilities
     '
@@ -100,7 +105,6 @@
       :foldingRangeProvider
       :colorProvider
       :inlayHintProvider))
-  (define-key eglot-mode-map (kbd "C-c l S") 'eglot-shutdown)
   (define-key eglot-mode-map (kbd "C-c l d") 'eglot-find-declaration)
   (define-key
     eglot-mode-map

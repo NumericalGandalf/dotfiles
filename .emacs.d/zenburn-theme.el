@@ -65,9 +65,9 @@ defining them in this alist."
   :package-version `(zenburn . "2.6"))
 
 ;;; Color Palette
-
 (defvar zenburn-default-colors-alist
   `
+
   (("zenburn-fg-1" . "#656555")
     ("zenburn-fg-05" . "#989890")
     ("zenburn-fg" . "#DCDCCC")
@@ -1133,7 +1133,9 @@ Also bind `class' to ((class color) (min-colors 89))."
     `
     (corfu-bar
       ((,class (:background unspecified :foreground unspecified))))
-    `(corfu-border ((,class (:background ,zenburn-bg+1))))
+    `
+    (corfu-border
+      ((,class (:background unspecified :foreground unspecified))))
     ;;;;; ido-mode
     `
     (ido-first-match

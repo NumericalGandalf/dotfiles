@@ -17,26 +17,23 @@
   (require 'use-package)
   (setq use-package-always-ensure t))
 
-(tool-bar-mode 0)
-(menu-bar-mode 0)
-(scroll-bar-mode 0)
-(fringe-mode 0)
-(tooltip-mode 0)
+(with-eval-after-load 'emacs
+  (tool-bar-mode 0)
+  (menu-bar-mode 0)
+  (scroll-bar-mode 0)
+  (fringe-mode 0))
 
-(let
-  (
-    (font "Iosevka")
-    (height 115))
-  (set-face-attribute 'default t :font font :height height)
-  (add-to-list 'default-frame-alist `(font . ,font))
-  (set-face-attribute 'fixed-pitch nil :family font))
+(with-eval-after-load 'faces
+  (setq custom-file (locate-user-emacs-file "./var/void.el"))
+  (let
+    (
+      (font "Iosevka")
+      (height 115))
+    (set-face-attribute 'default t :font font :height height)
+    (add-to-list 'default-frame-alist `(font . ,font))
+    (set-face-attribute 'fixed-pitch nil :family font)
+    (set-face-attribute 'variable-pitch nil :family font)))
 
-(global-display-line-numbers-mode 1)
-(column-number-mode 1)
-(setq
-  display-line-numbers-type 'relative
-  display-line-numbers-width-start t)
-
-(setq mode-line-percent-position '(6 "%q"))
-
-(load-theme 'zenburn t)
+(with-eval-after-load 'tooltip
+  (tooltip-mode 0)
+  (load-theme 'zenburn t))
