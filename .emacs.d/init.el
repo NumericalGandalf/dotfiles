@@ -2,34 +2,46 @@
 
 (use-package
   no-littering
-  :config (setq no-littering-etc-directory user-emacs-directory))
+  :init (setq no-littering-etc-directory user-emacs-directory))
 
 (with-eval-after-load 'emacs
   (setq
     use-dialog-box nil
     use-short-answers t
-    inhibit-startup-message t
-    echo-keystrokes 0)
+    echo-keystrokes 0
+    inhibit-startup-message t)
   (setq-default
     resize-mini-windows t
     cursor-in-non-selected-windows nil)
-  (setq
-    display-line-numbers-type 'relative
-    display-line-numbers-width-start t)
-  (global-display-line-numbers-mode 1)
-  (column-number-mode 1)
-  (global-visual-line-mode 1)
   (savehist-mode 1)
   (recentf-mode 1)
-  (save-place-mode 1))
+  (save-place-mode 1)
+  (column-number-mode 1)
+  (global-display-line-numbers-mode 1))
+
+(with-eval-after-load 'display-line-numbers
+  (setq
+    display-line-numbers-type 'relative
+    display-line-numbers-width-start t))
 
 (with-eval-after-load 'autorevert
-  (setq global-auto-revert-non-file-buffers t
+  (setq
+    global-auto-revert-non-file-buffers t
     auto-revert-remote-files t)
   (global-auto-revert-mode 1))
 
 (with-eval-after-load 'isearch
   (setq isearch-repeat-on-direction-change t))
+
+(with-eval-after-load 'files
+  (setq
+    backup-directory-alist
+    `(("." . ,(locate-user-emacs-file "./var/backup/")))
+    backup-by-copying t
+    version-control t
+    delete-old-versions t
+    kept-new-versions 8
+    kept-old-versions 0))
 
 (with-eval-after-load 'minibuffer
   (setq
@@ -68,7 +80,8 @@
 
 (with-eval-after-load 'grep
   (grep-apply-setting 'grep-command "")
-  (setq grep-save-buffers t
+  (setq
+    grep-save-buffers t
     grep-use-null-device nil))
 
 (use-package wgrep :defer :config (setq wgrep-auto-save-buffer t))
@@ -84,13 +97,19 @@
   :defer
   :config (setq elisp-autofmt-style 'fixed))
 
+(defun rc-corfu-in-minibuffer ()
+  (when (local-variable-p 'completion-at-point-functions)
+    (setq-local corfu-auto nil)
+    (corfu-mode 1)))
+
 (use-package
   corfu
   :config
   (setq
     corfu-auto t
     corfu-cycle t)
-  (global-corfu-mode 1))
+  (global-corfu-mode 1)
+  (add-hook 'minibuffer-setup-hook 'rc-corfu-in-minibuffer))
 
 (with-eval-after-load 'xref
   (setq
