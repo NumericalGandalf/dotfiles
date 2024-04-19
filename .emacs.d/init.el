@@ -94,4 +94,5 @@
   (define-key eglot-mode-map (kbd "C-c l a") 'eglot-code-actions))
 
 (setq custom-file (locate-user-emacs-file "custom.el"))
-(load custom-file)
+(when (file-exists-p custom-file) 
+  (load custom-file))
