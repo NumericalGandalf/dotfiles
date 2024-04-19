@@ -19,15 +19,14 @@
 (fringe-mode 0)
 (tooltip-mode 0)
 
-(with-eval-after-load 'faces
-  (setq custom-file (locate-user-emacs-file "./var/void.el"))
-  (let
-    (
-      (font "Iosevka")
-      (height 115))
-    (set-face-attribute 'default t :font font :height height)
-    (add-to-list 'default-frame-alist `(font . ,font))
-    (set-face-attribute 'fixed-pitch nil :family font)
-    (set-face-attribute 'fixed-pitch-serif nil :family font)
-    (set-face-attribute 'variable-pitch nil :family font))
-  (load-theme 'zenburn t))
+(let
+  (
+    (font "Iosevka")
+    (height 115))
+  (set-face-attribute 'default t :font font :height height)
+  (add-to-list 'default-frame-alist `(font . ,font))
+  (set-face-attribute 'fixed-pitch nil :family font)
+  (set-face-attribute 'fixed-pitch-serif nil :family font)
+  (set-face-attribute 'variable-pitch nil :family font))
+
+(load-theme 'zenburn t)
