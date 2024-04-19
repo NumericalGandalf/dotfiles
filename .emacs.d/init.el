@@ -45,9 +45,6 @@
     dired-kill-when-opening-new-dired-buffer t
     dired-auto-revert-buffer t))
 
-(with-eval-after-load 'tramp
-  (setq auth-source-save-behavior nil))
-
 (use-package wgrep :defer)
 
 (use-package markdown-mode :defer)
