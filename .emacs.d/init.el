@@ -13,7 +13,6 @@
   echo-keystrokes 0
   inhibit-startup-message t)
 
-(fido-vertical-mode 1)
 (column-number-mode 1)
 (savehist-mode 1)
 (recentf-mode 1)
@@ -32,6 +31,8 @@
 (use-package orderless
   :config
   (add-to-list 'completion-styles 'orderless))
+
+(use-package vertico :config (vertico-mode 1))
 
 (use-package marginalia :diminish :config (marginalia-mode 1))
 
@@ -94,3 +95,6 @@
   (define-key eglot-mode-map (kbd "C-c l r") 'eglot-rename)
   (define-key eglot-mode-map (kbd "C-c l f") 'eglot-format)
   (define-key eglot-mode-map (kbd "C-c l a") 'eglot-code-actions))
+
+(setq custom-file (locate-user-emacs-file "custom.el"))
+(load custom-file)
