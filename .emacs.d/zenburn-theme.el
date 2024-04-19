@@ -1467,7 +1467,7 @@ Also bind `class' to ((class color) (min-colors 89))."
       ((,class (:foreground ,zenburn-yellow :weight bold))))
     `
     (message-header-subject
-      ((,class (:foreground ,zenburn-orange :weight bold))))
+       ((,class (:foreground ,zenburn-orange :weight bold))))
     `(message-header-xheader ((,class (:foreground ,zenburn-green))))
     `
     (message-mml
