@@ -13,10 +13,11 @@
   echo-keystrokes 0
   inhibit-startup-message t)
 
+(fido-vertical-mode 1)
+(column-number-mode 1)
 (savehist-mode 1)
 (recentf-mode 1)
 (save-place-mode 1)
-(column-number-mode 1)
 
 (global-display-line-numbers-mode 1)
 (setq
@@ -27,16 +28,6 @@
 (setq
   global-auto-revert-non-file-buffers t
   auto-revert-remote-files t)
-
-(with-eval-after-load 'files
-  (setq
-    backup-directory-alist
-    `(("." . ,(locate-user-emacs-file "./var/backup/")))
-    backup-by-copying t
-    version-control t
-    delete-old-versions t))
-
-(use-package vertico :config (vertico-mode 1))
 
 (use-package orderless
   :config
@@ -52,6 +43,9 @@
     dired-recursive-deletes 'always
     dired-kill-when-opening-new-dired-buffer t
     dired-auto-revert-buffer t))
+
+(with-eval-after-load 'tramp
+  (setq auth-source-save-behavior nil))
 
 (use-package wgrep :defer)
 

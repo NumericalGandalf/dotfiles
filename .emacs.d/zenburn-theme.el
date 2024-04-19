@@ -1135,6 +1135,12 @@ Also bind `class' to ((class color) (min-colors 89))."
     `
     (corfu-border
       ((,class (:background unspecified :foreground unspecified))))
+    ;;;;; icomplete
+    `
+    (icomplete-selected-match
+      (
+        (,class
+          (:foreground ,zenburn-yellow :weight bold :underline t))))    
     ;;;;; ido-mode
     `
     (ido-first-match
