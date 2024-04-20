@@ -1,1 +1,0 @@
-require("gandalf").setup()

@@ -4,7 +4,6 @@ xrandr --output DP-1 --mode 1920x1080 --rate 144
 setxkbmap -option caps:swapescape
 
 dunst &
-# picom &
 
 xss-lock --transfer-sleep-lock -- i3lock -c 000000 &
 
