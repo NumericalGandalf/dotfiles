@@ -13,7 +13,7 @@ export HISTSIZE=5000
 export HISTIGNORE="*sudo -S*:$HISTIGNORE"
 
 export TERMINAL="alacritty"
-export EDITOR="emacsclient -c"
+export EDITOR="emacs"
 export ALTERNATE_EDITOR="emacs"
 export PAGER="less"
 export BROWSER="brave"

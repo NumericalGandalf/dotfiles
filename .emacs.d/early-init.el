@@ -19,11 +19,8 @@
 (fringe-mode 0)
 (tooltip-mode 0)
 
-(let
-  (
-    (font "Iosevka")
-    (height 115))
-  (set-face-attribute 'default t :font font :height height)
+(let ((font "Iosevka"))
+  (set-face-attribute 'default t :font font :height 115)
   (add-to-list 'default-frame-alist `(font . ,font))
   (set-face-attribute 'fixed-pitch nil :family font)
   (set-face-attribute 'fixed-pitch-serif nil :family font)
