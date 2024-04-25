@@ -14,10 +14,6 @@
   inhibit-startup-message t)
 
 (column-number-mode 1)
-(savehist-mode 1)
-(recentf-mode 1)
-(save-place-mode 1)
-
 (global-display-line-numbers-mode 1)
 (setq
   display-line-numbers-type 'relative
@@ -28,9 +24,9 @@
   global-auto-revert-non-file-buffers t
   auto-revert-remote-files t)
 
-(use-package orderless
-  :config
-  (add-to-list 'completion-styles 'orderless))
+(use-package
+  orderless
+  :config (add-to-list 'completion-styles 'orderless))
 
 (use-package vertico :config (vertico-mode 1))
 
@@ -43,6 +39,7 @@
     dired-free-space 'separate
     dired-recursive-deletes 'always
     dired-kill-when-opening-new-dired-buffer t
+    dired-dwim-target t
     dired-auto-revert-buffer t))
 
 (use-package wgrep :defer)
@@ -60,18 +57,20 @@
 
 (use-package
   corfu
-  :init
-  (defun rc-corfu-in-minibuffer ()
-    (when (local-variable-p 'completion-at-point-functions)
-      (setq-local corfu-auto nil)
-      (corfu-mode 1)))
   :config
   (setq
     corfu-auto t
     corfu-cycle t)
   (global-corfu-mode 1)
-  (add-hook 'minibuffer-setup-hook 'rc-corfu-in-minibuffer))
+  (add-hook
+    'minibuffer-setup-hook
+    (lambda ()
+      (interactive)
+      (when (local-variable-p 'completion-at-point-functions)
+        (setq-local corfu-auto nil)
+        (corfu-mode 1)))))
 
+(global-set-key (kbd "C-c l s") 'eglot)
 (with-eval-after-load 'eglot
   (setq eglot-ignored-server-capabilities
     '
@@ -91,8 +90,17 @@
     'eglot-find-implementation)
   (define-key eglot-mode-map (kbd "C-c l r") 'eglot-rename)
   (define-key eglot-mode-map (kbd "C-c l f") 'eglot-format)
-  (define-key eglot-mode-map (kbd "C-c l a") 'eglot-code-actions))
+  (define-key eglot-mode-map (kbd "C-c l a") 'eglot-code-actions)
+  (define-key eglot-mode-map (kbd "C-c l y") 'gud-gdb))
+
+(with-eval-after-load 'cc-vars
+  (add-to-list 'c-offsets-alist '(case-label . 4)))
+
+(global-set-key (kbd "C-c q g") 'grep)
+(global-set-key (kbd "C-c q f") 'find-dired)
+(global-set-key (kbd "C-c q m") 'man)
+(global-set-key (kbd "C-c q y") 'yank-from-kill-ring)
 
 (setq custom-file (locate-user-emacs-file "custom.el"))
-(when (file-exists-p custom-file) 
+(when (file-exists-p custom-file)
   (load custom-file))

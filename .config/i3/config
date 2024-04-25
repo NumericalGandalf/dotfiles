@@ -56,7 +56,7 @@ for_window [window_role="task_dialog"] floating enable
 
 bindsym $mod+Shift+f mode "Run"
 mode "Run" {
-  bindsym d exec --no-startup-id dmenu_run -i -b -fn "Iosevka-11", mode "default"
+  bindsym d exec --no-startup-id dmenu_run, mode "default"
   bindsym e exec --no-startup-id $EDITOR, mode "default"
   bindsym t exec --no-startup-id $TERMINAL, mode "default"
   bindsym w exec --no-startup-id $BROWSER, mode "default"

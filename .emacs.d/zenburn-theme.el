@@ -501,7 +501,7 @@ Also bind `class' to ((class color) (min-colors 89))."
     ;;;; Third-party packages
 
     ;;;;; wgrep
-    `(wgrep-grep-face ((,class (:inherit isearch))))
+    `(wgrep-face ((,class (:inherit isearch))))
     ;;;;; debbugs
     `(debbugs-gnu-done ((,class (:foreground ,zenburn-fg-1))))
     `(debbugs-gnu-handled ((,class (:foreground ,zenburn-green))))
