@@ -93,9 +93,6 @@
   (define-key eglot-mode-map (kbd "C-c l a") 'eglot-code-actions)
   (define-key eglot-mode-map (kbd "C-c l y") 'gud-gdb))
 
-(with-eval-after-load 'cc-vars
-  (add-to-list 'c-offsets-alist '(case-label . 4)))
-
 (global-set-key (kbd "C-c q g") 'grep)
 (global-set-key (kbd "C-c q f") 'find-dired)
 (global-set-key (kbd "C-c q m") 'man)
