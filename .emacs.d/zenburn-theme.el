@@ -401,19 +401,23 @@ Also bind `class' to ((class color) (min-colors 89))."
     `
     (font-lock-comment-delimiter-face
       ((,class (:foreground ,zenburn-green-2))))
-    `
-    (font-lock-constant-face
-      ((,class (:foreground ,zenburn-green+4))))
+    ;; `
+    ;; (font-lock-constant-face
+    ;;   ((,class (:foreground ,zenburn-green+4))))
+    `(font-lock-constant-face ((,class nil)))
     `(font-lock-doc-face ((,class (:foreground ,zenburn-green+2))))
+    ;; `
+    ;; (font-lock-function-name-face
+    ;;   ((,class (:foreground ,zenburn-cyan))))
     `
     (font-lock-function-name-face
-      ((,class (:foreground ,zenburn-cyan))))
+      ((,class (:foreground ,zenburn-fg))))
     `
     (font-lock-keyword-face
       ((,class (:foreground ,zenburn-yellow :weight bold))))
-    `
-    (font-lock-negation-char-face
-      ((,class (:foreground ,zenburn-yellow :weight bold))))
+    ;; `
+    ;; (font-lock-negation-char-face
+    ;;   ((,class (:foreground ,zenburn-yellow :weight bold))))
     `
     (font-lock-preprocessor-face
       ((,class (:foreground ,zenburn-blue+1))))
@@ -425,9 +429,12 @@ Also bind `class' to ((class color) (min-colors 89))."
       ((,class (:foreground ,zenburn-green :weight bold))))
     `(font-lock-string-face ((,class (:foreground ,zenburn-red))))
     `(font-lock-type-face ((,class (:foreground ,zenburn-blue-1))))
+    ;; `
+    ;; (font-lock-variable-name-face
+    ;;   ((,class (:foreground ,zenburn-orange))))
     `
     (font-lock-variable-name-face
-      ((,class (:foreground ,zenburn-orange))))
+      ((,class (:foreground ,zenburn-fg))))
     `
     (font-lock-warning-face
       ((,class (:foreground ,zenburn-yellow-2 :weight bold))))
@@ -501,7 +508,11 @@ Also bind `class' to ((class color) (min-colors 89))."
     ;;;; Third-party packages
 
     ;;;;; wgrep
-    `(wgrep-face ((,class (:inherit isearch))))
+    `(wgrep-face ((,class nil)))
+    `(wgrep-done-face ((,class nil)))
+    `(wgrep-file-face ((,class nil)))
+    `(wgrep-delete-face ((,class nil)))
+    `(wgrep-reject-face ((,class nil)))
     ;;;;; debbugs
     `(debbugs-gnu-done ((,class (:foreground ,zenburn-fg-1))))
     `(debbugs-gnu-handled ((,class (:foreground ,zenburn-green))))
@@ -1140,7 +1151,7 @@ Also bind `class' to ((class color) (min-colors 89))."
     (icomplete-selected-match
       (
         (,class
-          (:foreground ,zenburn-yellow :weight bold :underline t))))    
+          (:foreground ,zenburn-yellow :weight bold :underline t))))
     ;;;;; ido-mode
     `
     (ido-first-match
@@ -1473,7 +1484,7 @@ Also bind `class' to ((class color) (min-colors 89))."
       ((,class (:foreground ,zenburn-yellow :weight bold))))
     `
     (message-header-subject
-       ((,class (:foreground ,zenburn-orange :weight bold))))
+      ((,class (:foreground ,zenburn-orange :weight bold))))
     `(message-header-xheader ((,class (:foreground ,zenburn-green))))
     `
     (message-mml

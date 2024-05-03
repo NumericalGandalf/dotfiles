@@ -76,8 +76,9 @@
     '
     (:documentHighlightProvider
       :codeLensProvider
-      :foldingRangeProvider
+      :documentOnTypeFormattingProvider
       :colorProvider
+      :foldingRangeProvider
       :inlayHintProvider))
   (define-key eglot-mode-map (kbd "C-c l d") 'eglot-find-declaration)
   (define-key
@@ -90,8 +91,7 @@
     'eglot-find-implementation)
   (define-key eglot-mode-map (kbd "C-c l r") 'eglot-rename)
   (define-key eglot-mode-map (kbd "C-c l f") 'eglot-format)
-  (define-key eglot-mode-map (kbd "C-c l a") 'eglot-code-actions)
-  (define-key eglot-mode-map (kbd "C-c l y") 'gud-gdb))
+  (define-key eglot-mode-map (kbd "C-c l a") 'eglot-code-actions))
 
 (global-set-key (kbd "C-c q g") 'grep)
 (global-set-key (kbd "C-c q f") 'find-dired)
