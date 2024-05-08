@@ -581,6 +581,8 @@ Also bind `class' to ((class color) (min-colors 89))."
             :background ,zenburn-green-2))))
     ;;;;; dim-autoload
     `(dim-autoload-cookie-line ((,class :foreground ,zenburn-bg+1)))
+    ;;;;; dired
+    `(dired-directory ((,class (:inherit font-lock-type-face))))
     ;;;;; dired+
     `(diredp-display-msg ((,class (:foreground ,zenburn-blue))))
     `

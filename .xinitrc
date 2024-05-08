@@ -1,9 +1,7 @@
 #!/usr/bin/sh
 
-xrandr --output DP-1 --mode 1920x1080 --rate 144 --primary
+xrandr --output DP-1 --mode 2560x1440 --rate 165
 setxkbmap -option caps:swapescape
-
-dunst &
 
 xss-lock --transfer-sleep-lock -- i3lock -c 000000 &
 

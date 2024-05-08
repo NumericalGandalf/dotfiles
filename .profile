@@ -16,7 +16,7 @@ export TERMINAL="st"
 export EDITOR="emacs"
 export ALTERNATE_EDITOR="emacs"
 export PAGER="less"
-export BROWSER="brave"
+export BROWSER="firefox"
 
 export XDG_CONFIG_HOME="$HOME/.config/"
 
