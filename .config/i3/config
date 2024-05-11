@@ -107,7 +107,7 @@ mode "Free" {
   bindsym $mod+Shift+Escape mode "default"
 }
 
-font pango:Iosevka 12
+font pango:Iosevka 13
 
 bar {
   status_command i3status

@@ -14,11 +14,8 @@ export HISTIGNORE="*sudo -S*:$HISTIGNORE"
 
 export TERMINAL="st"
 export EDITOR="emacs"
-export ALTERNATE_EDITOR="emacs"
 export PAGER="less"
 export BROWSER="firefox"
-
-export XDG_CONFIG_HOME="$HOME/.config/"
 
 export WLR_NO_HARDWARE_CURSORS=1
 

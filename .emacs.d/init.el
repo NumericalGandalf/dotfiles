@@ -10,8 +10,11 @@
 (setq
   use-dialog-box nil
   use-short-answers t
+  ring-bell-function 'ignore
   echo-keystrokes 0
   inhibit-startup-message t)
+
+(global-visual-line-mode 1)
 
 (column-number-mode 1)
 (global-display-line-numbers-mode 1)
@@ -23,6 +26,13 @@
 (setq
   global-auto-revert-non-file-buffers t
   auto-revert-remote-files t)
+
+(setq
+  backup-directory-alist
+  `(("." . ,(locate-user-emacs-file "var/backups/")))
+  backup-by-copying t
+  version-control t
+  delete-old-versions t)
 
 (use-package
   orderless
@@ -38,11 +48,18 @@
     find-ls-option '("-exec ls -ldh {} +" . "-ldh")
     dired-free-space 'separate
     dired-recursive-deletes 'always
-    dired-kill-when-opening-new-dired-buffer t
     dired-dwim-target t
     dired-auto-revert-buffer t))
 
 (use-package wgrep :defer)
+
+(use-package
+  multiple-cursors
+  :config
+  (global-set-key (kbd "C->") 'mc/mark-next-like-this)
+  (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
+  (global-set-key (kbd "C-c C->") 'mc/mark-all-like-this)
+  (global-set-key (kbd "C-c C-<") 'mc/edit-lines))
 
 (use-package markdown-mode :defer)
 
@@ -61,14 +78,7 @@
   (setq
     corfu-auto t
     corfu-cycle t)
-  (global-corfu-mode 1)
-  (add-hook
-    'minibuffer-setup-hook
-    (lambda ()
-      (interactive)
-      (when (local-variable-p 'completion-at-point-functions)
-        (setq-local corfu-auto nil)
-        (corfu-mode 1)))))
+  (global-corfu-mode 1))
 
 (global-set-key (kbd "C-c l s") 'eglot)
 (with-eval-after-load 'eglot
@@ -93,10 +103,17 @@
   (define-key eglot-mode-map (kbd "C-c l f") 'eglot-format)
   (define-key eglot-mode-map (kbd "C-c l a") 'eglot-code-actions))
 
-(global-set-key (kbd "C-c q g") 'grep)
-(global-set-key (kbd "C-c q f") 'find-dired)
-(global-set-key (kbd "C-c q m") 'man)
-(global-set-key (kbd "C-c q y") 'yank-from-kill-ring)
+(defun rc-duplicate-line ()
+  (interactive)
+  (move-beginning-of-line 1)
+  (kill-line)
+  (yank)
+  (open-line 1)
+  (next-line 1)
+  (yank))
+
+(global-set-key (kbd "C-S-y") 'yank-from-kill-ring)
+(global-set-key (kbd "C-S-q") 'rc-duplicate-line)
 
 (setq custom-file (locate-user-emacs-file "custom.el"))
 (when (file-exists-p custom-file)
