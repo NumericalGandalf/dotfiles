@@ -5,7 +5,10 @@
 
 (use-package
   no-littering
-  :init (setq no-littering-etc-directory user-emacs-directory))
+  :init
+  (setq
+    no-littering-var-directory "~/.cache/emacs/"
+    no-littering-etc-directory user-emacs-directory))
 
 (setq
   use-dialog-box nil
@@ -13,8 +16,6 @@
   ring-bell-function 'ignore
   echo-keystrokes 0
   inhibit-startup-message t)
-
-(global-visual-line-mode 1)
 
 (column-number-mode 1)
 (global-display-line-numbers-mode 1)
@@ -29,7 +30,7 @@
 
 (setq
   backup-directory-alist
-  `(("." . ,(locate-user-emacs-file "var/backups/")))
+  `(("." . ,(no-littering-expand-var-file-name "backups/")))
   backup-by-copying t
   version-control t
   delete-old-versions t)
@@ -61,6 +62,7 @@
   (global-set-key (kbd "C-c C->") 'mc/mark-all-like-this)
   (global-set-key (kbd "C-c C-<") 'mc/edit-lines))
 
+(use-package rust-mode :defer)
 (use-package markdown-mode :defer)
 
 (use-package magit :defer)
@@ -80,7 +82,6 @@
     corfu-cycle t)
   (global-corfu-mode 1))
 
-(global-set-key (kbd "C-c l s") 'eglot)
 (with-eval-after-load 'eglot
   (setq eglot-ignored-server-capabilities
     '
@@ -103,18 +104,6 @@
   (define-key eglot-mode-map (kbd "C-c l f") 'eglot-format)
   (define-key eglot-mode-map (kbd "C-c l a") 'eglot-code-actions))
 
-(defun rc-duplicate-line ()
-  (interactive)
-  (move-beginning-of-line 1)
-  (kill-line)
-  (yank)
-  (open-line 1)
-  (next-line 1)
-  (yank))
-
-(global-set-key (kbd "C-S-y") 'yank-from-kill-ring)
-(global-set-key (kbd "C-S-q") 'rc-duplicate-line)
-
-(setq custom-file (locate-user-emacs-file "custom.el"))
+(setq custom-file (no-littering-expand-var-file-name "custom.el"))
 (when (file-exists-p custom-file)
   (load custom-file))

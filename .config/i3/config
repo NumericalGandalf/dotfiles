@@ -18,27 +18,14 @@ bindsym $mod+1 workspace 1
 bindsym $mod+2 workspace 2
 bindsym $mod+3 workspace 3
 bindsym $mod+4 workspace 4
-bindsym $mod+5 workspace 5
-bindsym $mod+6 workspace 6
-bindsym $mod+7 workspace 7 
-bindsym $mod+8 workspace 8
-bindsym $mod+9 workspace 9
 
 bindsym $mod+Shift+1 move container workspace 1, workspace 1
 bindsym $mod+Shift+2 move container workspace 2, workspace 2
 bindsym $mod+Shift+3 move container workspace 3, workspace 3
 bindsym $mod+Shift+4 move container workspace 4, workspace 4
-bindsym $mod+Shift+5 move container workspace 5, workspace 5
-bindsym $mod+Shift+6 move container workspace 6, workspace 6
-bindsym $mod+Shift+7 move container workspace 7, workspace 7
-bindsym $mod+Shift+8 move container workspace 8, workspace 8
-bindsym $mod+Shift+9 move container workspace 9, workspace 9
 
-workspace_auto_back_and_forth no
 popup_during_fullscreen smart
 focus_on_window_activation smart
-focus_follows_mouse no
-tiling_drag modifier
 smart_borders on
 
 for_window [window_role="pop-up"] floating enable
@@ -46,72 +33,72 @@ for_window [window_role="task_dialog"] floating enable
 
 bindsym $mod+Shift+f mode "Run"
 mode "Run" {
-  bindsym d exec --no-startup-id dmenu_run, mode "default"
-  bindsym e exec --no-startup-id $EDITOR, mode "default"
-  bindsym t exec --no-startup-id $TERMINAL, mode "default"
-  bindsym w exec --no-startup-id $BROWSER, mode "default"
+    bindsym d exec --no-startup-id dmenu_run, mode "default"
+    bindsym e exec --no-startup-id $EDITOR, mode "default"
+    bindsym t exec --no-startup-id $TERMINAL, mode "default"
+    bindsym w exec --no-startup-id $BROWSER, mode "default"
 
-  bindsym Escape mode "default"
+    bindsym Escape mode "default"
 }
 
 bindsym $mod+Shift+s mode "System"
 mode "System" {
-  bindsym e exit, mode "default"
-  bindsym q kill, mode "default"
-  bindsym c reload, mode "default"
-  bindsym x restart, mode "default"
+    bindsym e exit, mode "default"
+    bindsym q kill, mode "default"
+    bindsym c reload, mode "default"
+    bindsym x restart, mode "default"
 
-  bindsym f fullscreen toggle, mode "default"
-  bindsym a floating toggle, mode "default"
-  bindsym v split toggle, mode "default"
-  bindsym b layout toggle splith tabbed, mode "default"
-  
-  bindsym l exec --no-startup-id loginctl lock-session, mode "default"
-  bindsym r exec --no-startup-id systemctl reboot, mode "default"
-  bindsym s exec --no-startup-id systemctl suspend, mode "default"
-  bindsym p exec --no-startup-id systemctl poweroff, mode "default"
-  bindsym h exec --no-startup-id systemctl hibernate, mode "default"
+    bindsym f fullscreen toggle, mode "default"
+    bindsym a floating toggle, mode "default"
+    bindsym v split toggle, mode "default"
+    bindsym b layout toggle splith tabbed, mode "default"
+    
+    bindsym l exec --no-startup-id loginctl lock-session, mode "default"
+    bindsym r exec --no-startup-id systemctl reboot, mode "default"
+    bindsym s exec --no-startup-id systemctl suspend, mode "default"
+    bindsym p exec --no-startup-id systemctl poweroff, mode "default"
+    bindsym h exec --no-startup-id systemctl hibernate, mode "default"
 
-  bindsym Escape mode "default"
+    bindsym Escape mode "default"
 }
 
 bindsym $mod+Shift+a mode "Audio"
 mode "Audio" {
-  bindsym $up exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +5%
-  bindsym $down exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -5%
-  bindsym Shift+$up exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +15%
-  bindsym Shift+$down exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -15%
-  bindsym m exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle
-  bindsym n exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle
+    bindsym $up exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +5%
+    bindsym $down exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -5%
+    bindsym Shift+$up exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +15%
+    bindsym Shift+$down exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -15%
+    bindsym m exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle
+    bindsym n exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle
 
-  bindsym Escape mode "default"
+    bindsym Escape mode "default"
 }
 
 bindsym $mod+Shift+r mode "Resize"
 mode "Resize" {
-  bindsym $left resize shrink right 10 px or 10 ppt
-  bindsym $down resize shrink down 10 px or 10 ppt
-  bindsym $up resize shrink up 10 px or 10 ppt
-  bindsym $right resize shrink left 10 px or 10 ppt
+    bindsym $left resize shrink right 10 px or 10 ppt
+    bindsym $down resize shrink down 10 px or 10 ppt
+    bindsym $up resize shrink up 10 px or 10 ppt
+    bindsym $right resize shrink left 10 px or 10 ppt
 
-  bindsym Shift+$right resize grow right 10 px or 10 ppt
-  bindsym Shift+$down resize grow down 10 px or 10 ppt
-  bindsym Shift+$up resize grow up 10 px or 10 ppt
-  bindsym Shift+$left resize grow left 10 px or 10 ppt
+    bindsym Shift+$right resize grow right 10 px or 10 ppt
+    bindsym Shift+$down resize grow down 10 px or 10 ppt
+    bindsym Shift+$up resize grow up 10 px or 10 ppt
+    bindsym Shift+$left resize grow left 10 px or 10 ppt
 
-  bindsym Escape mode "default"
+    bindsym Escape mode "default"
 }
 
 bindsym $mod+Shift+Escape mode "Free"
 mode "Free" {
-  bindsym $mod+Shift+Escape mode "default"
+    bindsym $mod+Shift+Escape mode "default"
 }
 
-font pango:Iosevka 13
+font pango:DejaVu Sans Mono 13
 
 bar {
-  status_command i3status
-  position bottom
-  separator_symbol "|"
-  tray_output none
+    status_command i3status
+    position bottom
+    separator_symbol "|"
+    tray_output none
 }

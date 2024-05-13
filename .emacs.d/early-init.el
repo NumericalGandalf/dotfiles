@@ -1,11 +1,7 @@
-(when (boundp 'native-comp-eln-load-path)
-  (startup-redirect-eln-cache
-    (locate-user-emacs-file "./var/eln-cache/")))
-
 (with-eval-after-load 'package
   (setq
-    package-user-dir (locate-user-emacs-file "./var/elpa/")
-    package-gnupghome-dir (locate-user-emacs-file "./var/elpa/gnupg/"))
+    package-user-dir "~/.cache/emacs/elpa/"
+    package-gnupghome-dir "~/.cache/emacs/gnupg/")
   (add-to-list
     'package-archives
     '("melpa" . "https://melpa.org/packages/"))
@@ -18,8 +14,9 @@
 (scroll-bar-mode 0)
 (fringe-mode 0)
 (tooltip-mode 0)
+(global-visual-line-mode 1)
 
-(let ((font "Iosevka"))
+(let ((font "DejaVu Sans Mono"))
   (set-face-attribute 'default t :font font :height 150)
   (add-to-list 'default-frame-alist `(font . ,font))
   (set-face-attribute 'fixed-pitch nil :family font)
