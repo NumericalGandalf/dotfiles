@@ -17,8 +17,6 @@ export EDITOR="emacs"
 export PAGER="less"
 export BROWSER="firefox"
 
-export WLR_NO_HARDWARE_CURSORS=1
-
 display () {
     case "$XDG_VTNR" in
         1) session=i3 ;;
@@ -28,4 +26,4 @@ display () {
     exec xinit $session
 }
 
-[[ -z "$DISPLAY" ]] && [[ -z "$WAYLAND_DISPLAY" ]] && display
+[[ -z "$DISPLAY" ]] && display

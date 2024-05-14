@@ -1,20 +1,16 @@
-(require 'use-package)
-(setq use-package-always-ensure t)
+(menu-bar-mode 0)
+(tool-bar-mode 0)
+(fringe-mode 0)
+(scroll-bar-mode 0)
+(tooltip-mode 0)
+(global-visual-line-mode 1)
 
-(use-package diminish)
-
-(use-package
-  no-littering
-  :init
-  (setq
-    no-littering-var-directory "~/.cache/emacs/"
-    no-littering-etc-directory user-emacs-directory))
+(setq custom-file (locate-user-emacs-file "custom.el"))
+(load custom-file :noerror :nomessage)
 
 (setq
   use-dialog-box nil
   use-short-answers t
-  ring-bell-function 'ignore
-  echo-keystrokes 0
   inhibit-startup-message t)
 
 (column-number-mode 1)
@@ -30,18 +26,10 @@
 
 (setq
   backup-directory-alist
-  `(("." . ,(no-littering-expand-var-file-name "backups/")))
+  `(("." . ,(locate-user-emacs-file "backups/")))
   backup-by-copying t
   version-control t
   delete-old-versions t)
-
-(use-package
-  orderless
-  :config (add-to-list 'completion-styles 'orderless))
-
-(use-package vertico :config (vertico-mode 1))
-
-(use-package marginalia :diminish :config (marginalia-mode 1))
 
 (with-eval-after-load 'dired
   (setq
@@ -51,6 +39,38 @@
     dired-recursive-deletes 'always
     dired-dwim-target t
     dired-auto-revert-buffer t))
+
+(let ((font "DejaVu Sans Mono"))
+  (set-face-attribute 'default nil :font font :height 150)
+  (set-face-attribute 'fixed-pitch nil :family font)
+  (set-face-attribute 'fixed-pitch-serif nil :family font)
+  (set-face-attribute 'variable-pitch nil :family font))
+
+(require 'package)
+(add-to-list
+  'package-archives
+  '("melpa" . "https://melpa.org/packages/"))
+(package-initialize)
+(unless package-archive-contents
+  (package-refresh-contents t))
+
+(require 'use-package)
+(setq use-package-always-ensure t)
+
+(use-package
+  zendalf-theme
+  :vc (:url "https://github.com/BinaryGandalf/zendalf.git")
+  :config (load-theme 'zendalf))
+
+(use-package diminish)
+
+(use-package
+  orderless
+  :config (add-to-list 'completion-styles 'orderless))
+
+(use-package vertico :config (vertico-mode 1))
+
+(use-package marginalia :diminish :config (marginalia-mode 1))
 
 (use-package wgrep :defer)
 
@@ -102,8 +122,10 @@
     'eglot-find-implementation)
   (define-key eglot-mode-map (kbd "C-c l r") 'eglot-rename)
   (define-key eglot-mode-map (kbd "C-c l f") 'eglot-format)
-  (define-key eglot-mode-map (kbd "C-c l a") 'eglot-code-actions))
-
-(setq custom-file (no-littering-expand-var-file-name "custom.el"))
-(when (file-exists-p custom-file)
-  (load custom-file))
+  (define-key eglot-mode-map (kbd "C-c l a") 'eglot-code-actions)
+  (define-key eglot-mode-map (kbd "C-c l f") 'flymake-goto-next-error)
+  (define-key eglot-mode-map (kbd "C-c l f") 'flymake-goto-prev-error)
+  (define-key
+    eglot-mode-map
+    (kbd "C-c l e")
+    'flymake-show-project-diagnostics))
