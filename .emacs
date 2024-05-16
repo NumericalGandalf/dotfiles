@@ -13,6 +13,22 @@
  use-short-answers t
  inhibit-startup-message t)
 
+(ido-mode 1)
+(ido-everywhere 1)
+(setq
+ ido-use-filename-at-point 'guess
+ completion-ignore-case t
+ read-file-name-completion-ignore-case t
+ read-buffer-completion-ignore-case t)
+
+(ido-mode 1)
+(ido-everywhere 1)
+(setq
+ ido-use-filename-at-point 'guess
+ completion-ignore-case t
+ read-file-name-completion-ignore-case t
+ read-buffer-completion-ignore-case t)
+
 (column-number-mode 1)
 (global-display-line-numbers-mode 1)
 (setq
@@ -35,14 +51,13 @@
  indent-tabs-mode nil
  c-default-style '((java-mode . "java") (awk-mode . "awk") (other . "stroustrup")))
 
-(with-eval-after-load 'dired
-  (setq
-   dired-listing-switches "-lah"
-   find-ls-option '("-exec ls -ldh {} +" . "-ldh")
-   dired-free-space 'separate
-   dired-recursive-deletes 'always
-   dired-dwim-target t
-   dired-auto-revert-buffer t))
+(setq
+ dired-listing-switches "-lah"
+ find-ls-option '("-exec ls -ldh {} +" . "-ldh")
+ dired-free-space 'separate
+ dired-recursive-deletes 'always
+ dired-dwim-target t
+ dired-auto-revert-buffer t)
 
 (let ((font "DejaVu Sans Mono"))
   (set-face-attribute 'default nil :font font :height 150)
@@ -54,6 +69,8 @@
 (add-to-list
  'package-archives '("melpa" . "https://melpa.org/packages/"))
 (package-initialize)
+(unless package-archive-contents
+  (package-refresh-contents))
 
 (require 'use-package)
 (setq use-package-always-ensure t)
@@ -63,14 +80,6 @@
  :vc (:url "https://github.com/BinaryGandalf/zendalf.git")
  :config
  (load-theme 'zendalf t))
-
-(ido-mode 1)
-(ido-everywhere 1)
-(setq
- ido-use-filename-at-point 'guess
- completion-ignore-case t
- read-file-name-completion-ignore-case t
- read-buffer-completion-ignore-case t)
 
 (use-package
  ido-completing-read+
