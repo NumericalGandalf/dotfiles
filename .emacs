@@ -31,6 +31,10 @@
  version-control t
  delete-old-versions t)
 
+(setq-default
+ indent-tabs-mode nil
+ c-default-style '((java-mode . "java") (awk-mode . "awk") (other . "stroustrup")))
+
 (with-eval-after-load 'dired
   (setq
    dired-listing-switches "-lah"
@@ -57,17 +61,22 @@
 (use-package
  zendalf-theme
  :vc (:url "https://github.com/BinaryGandalf/zendalf.git")
- :config (load-theme 'zendalf))
+ :config
+ (load-theme 'zendalf t))
 
-(use-package diminish)
+(ido-mode 1)
+(ido-everywhere 1)
+(setq
+ ido-use-filename-at-point 'guess
+ completion-ignore-case t
+ read-file-name-completion-ignore-case t
+ read-buffer-completion-ignore-case t)
 
 (use-package
- orderless
- :config (add-to-list 'completion-styles 'orderless))
-
-(use-package vertico :config (vertico-mode 1))
-
-(use-package marginalia :diminish :config (marginalia-mode 1))
+ ido-completing-read+
+ :config
+ (setq magit-completing-read-function 'magit-ido-completing-read)
+ (ido-ubiquitous-mode 1))
 
 (use-package wgrep :defer)
 
@@ -88,12 +97,13 @@
 (use-package editorconfig :defer)
 
 (use-package
- corfu
+ company
  :config
  (setq
-  corfu-auto t
-  corfu-cycle t)
- (global-corfu-mode 1))
+  company-tooltip-scrollbar-width 0
+  company-tooltip-idle-delay 0
+  company-tooltip-align-annotations t)
+ (global-company-mode 1))
 
 (with-eval-after-load 'eglot
   (setq eglot-ignored-server-capabilities
