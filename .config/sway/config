@@ -33,7 +33,7 @@ for_window [window_role="task_dialog"] floating enable
 
 bindsym $mod+Shift+f mode "Run"
 mode "Run" {
-    bindsym d exec --no-startup-id dmenu_run, mode "default"
+    bindsym d exec --no-startup-id $LAUNCHER, mode "default"
     bindsym e exec --no-startup-id $EDITOR, mode "default"
     bindsym t exec --no-startup-id $TERMINAL, mode "default"
     bindsym w exec --no-startup-id $BROWSER, mode "default"
@@ -94,7 +94,7 @@ mode "Free" {
     bindsym $mod+Shift+Escape mode "default"
 }
 
-font pango:DejaVu Sans Mono 13
+font pango:DejaVu Sans Mono 11
 
 bar {
     status_command i3status
@@ -102,3 +102,12 @@ bar {
     separator_symbol "|"
     tray_output none
 }
+
+input * {
+    xkb_options "caps:swapescape"
+}
+
+output DP-1 mode 2560x1440@165Hz scale 1.25
+
+set $lock "swaylock -efc 000000"
+exec swayidle -w before-sleep $lock lock $lock
