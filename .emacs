@@ -63,12 +63,11 @@
         completion-ignore-case t
         read-file-name-completion-ignore-case t
         read-buffer-completion-ignore-case t)
-        magit-completing-read-function 'magit-ido-completing-read)
   (ido-mode 1)
   (ido-everywhere 1)
   (ido-ubiquitous-mode 1))
 
-(use-package wgrep :defer)
+(use-package wgrep)
 
 (use-package multiple-cursors
   :config
@@ -77,13 +76,13 @@
   (global-set-key (kbd "C-c C->") 'mc/mark-all-like-this)
   (global-set-key (kbd "C-c C-<") 'mc/edit-lines))
 
-(use-package rust-mode :defer)
-(use-package lua-mode :defer)
-(use-package markdown-mode :defer)
+(use-package rust-mode)
+(use-package lua-mode)
+(use-package markdown-mode)
 
-(use-package magit :defer)
+(use-package magit)
 
-(use-package editorconfig :defer)
+(use-package editorconfig)
 
 (use-package company
   :config
