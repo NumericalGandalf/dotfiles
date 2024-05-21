@@ -109,5 +109,7 @@ input * {
 
 output DP-1 mode 2560x1440@165Hz scale 1.25
 
+for_window [shell="xwayland"] title_format "[XWayland] %title"
+
 set $lock "swaylock -efc 000000"
 exec swayidle -w before-sleep $lock lock $lock
