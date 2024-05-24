@@ -10,7 +10,8 @@
 
 (setq use-dialog-box nil
       use-short-answers t
-      inhibit-startup-message t)
+      inhibit-startup-message t
+      isearch-repeat-on-direction-change t)
 
 (column-number-mode 1)
 (global-display-line-numbers-mode 1)
@@ -28,7 +29,7 @@
 
 (setq-default indent-tabs-mode nil
               c-default-style '((java-mode . "java") (awk-mode . "awk") (other . "stroustrup")))
-
+ 
 (setq dired-listing-switches "-lah"
       find-ls-option '("-exec ls -ldh {} +" . "-ldh")
       dired-free-space 'separate
@@ -79,6 +80,7 @@
 (use-package rust-mode)
 (use-package lua-mode)
 (use-package markdown-mode)
+(use-package cmake-mode)
 
 (use-package magit)
 
