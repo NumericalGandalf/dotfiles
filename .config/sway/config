@@ -24,6 +24,7 @@ bindsym $mod+Shift+2 move container workspace 2, workspace 2
 bindsym $mod+Shift+3 move container workspace 3, workspace 3
 bindsym $mod+Shift+4 move container workspace 4, workspace 4
 
+focus_follows_mouse no
 popup_during_fullscreen smart
 focus_on_window_activation smart
 smart_borders on
