@@ -104,10 +104,6 @@ bar {
     tray_output none
 }
 
-input * {
-    xkb_options "caps:swapescape"
-}
-
 output DP-1 mode 2560x1440@165Hz scale 1.25
 
 for_window [shell="xwayland"] title_format "[XWayland] %title"
