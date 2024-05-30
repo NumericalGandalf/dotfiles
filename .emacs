@@ -49,14 +49,12 @@
 (unless package-archive-contents
   (package-refresh-contents))
 
+(unless (package-installed-p 'zendalf-theme)
+  (package-vc-install '(zendalf-theme :url "https://github.com/NumericalGandalf/zendalf.git")))
+(load-theme 'zendalf t)
+
 (require 'use-package)
 (setq use-package-always-ensure t)
-
-(use-package zendalf-theme
-  :vc
-  (:url "https://github.com/BinaryGandalf/zendalf.git")
-  :config
-  (load-theme 'zendalf t))
 
 (use-package ido-completing-read+
   :config 
