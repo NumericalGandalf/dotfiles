@@ -18,11 +18,21 @@ bindsym $mod+1 workspace 1
 bindsym $mod+2 workspace 2
 bindsym $mod+3 workspace 3
 bindsym $mod+4 workspace 4
+bindsym $mod+5 workspace 5
+bindsym $mod+6 workspace 6
+bindsym $mod+7 workspace 7
+bindsym $mod+8 workspace 8
+bindsym $mod+9 workspace 9
 
 bindsym $mod+Shift+1 move container workspace 1, workspace 1
 bindsym $mod+Shift+2 move container workspace 2, workspace 2
 bindsym $mod+Shift+3 move container workspace 3, workspace 3
 bindsym $mod+Shift+4 move container workspace 4, workspace 4
+bindsym $mod+Shift+5 move container workspace 5, workspace 5
+bindsym $mod+Shift+6 move container workspace 6, workspace 6
+bindsym $mod+Shift+7 move container workspace 7, workspace 7
+bindsym $mod+Shift+8 move container workspace 8, workspace 8
+bindsym $mod+Shift+9 move container workspace 9, workspace 9
 
 focus_follows_mouse no
 popup_during_fullscreen smart
@@ -95,16 +105,11 @@ mode "Free" {
     bindsym $mod+Shift+Escape mode "default"
 }
 
-font pango:DejaVu Sans Mono 11
+font pango:DejaVu Sans Mono 10
 
-bar {
-    status_command i3status
-    position bottom
-    separator_symbol "|"
-    tray_output none
+input * {
+    xkb_options "caps:swapescape"
 }
-
-output DP-1 mode 2560x1440@165Hz scale 1.25
 
 for_window [shell="xwayland"] title_format "[XWayland] %title"
 
