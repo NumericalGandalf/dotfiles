@@ -30,9 +30,7 @@
 (setq-default indent-tabs-mode nil
               c-default-style '((java-mode . "java") (awk-mode . "awk") (other . "stroustrup")))
  
-(setq dired-listing-switches "-lah"
-      find-ls-option '("-exec ls -ldh {} +" . "-ldh")
-      dired-free-space 'separate
+(setq dired-free-space 'separate
       dired-recursive-deletes 'always
       dired-dwim-target t
       dired-auto-revert-buffer t)
@@ -91,6 +89,7 @@
         company-tooltip-align-annotations t)
   (global-company-mode 1))
 
+(global-set-key (kbd "C-c l s") 'eglot)
 (with-eval-after-load 'eglot
   (setq eglot-ignored-server-capabilities
         '(:documentHighlightProvider
