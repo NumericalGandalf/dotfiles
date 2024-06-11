@@ -107,10 +107,6 @@ mode "Free" {
 
 font pango:DejaVu Sans Mono 10
 
-input * {
-    xkb_options "caps:swapescape"
-}
-
 for_window [shell="xwayland"] title_format "[XWayland] %title"
 
 set $lock "swaylock -efc 000000"
