@@ -42,16 +42,6 @@ smart_borders on
 for_window [window_role="pop-up"] floating enable
 for_window [window_role="task_dialog"] floating enable
 
-bindsym $mod+Shift+f mode "Run"
-mode "Run" {
-    bindsym d exec --no-startup-id $LAUNCHER, mode "default"
-    bindsym e exec --no-startup-id $EDITOR, mode "default"
-    bindsym t exec --no-startup-id $TERMINAL, mode "default"
-    bindsym w exec --no-startup-id $BROWSER, mode "default"
-
-    bindsym Escape mode "default"
-}
-
 bindsym $mod+Shift+s mode "System"
 mode "System" {
     bindsym e exit, mode "default"
@@ -64,11 +54,15 @@ mode "System" {
     bindsym v split toggle, mode "default"
     bindsym b layout toggle splith tabbed, mode "default"
     
+    bindsym d exec --no-startup-id wmenu-run -bf "DejaVu Sans Mono 13", mode "default"
+    bindsym t exec --no-startup-id $TERMINAL, mode "default"
+    bindsym w exec --no-startup-id $BROWSER, mode "default"
+    
     bindsym l exec --no-startup-id loginctl lock-session, mode "default"
-    bindsym r exec --no-startup-id systemctl reboot, mode "default"
-    bindsym s exec --no-startup-id systemctl suspend, mode "default"
-    bindsym p exec --no-startup-id systemctl poweroff, mode "default"
-    bindsym h exec --no-startup-id systemctl hibernate, mode "default"
+    bindsym r exec --no-startup-id loginctl reboot, mode "default"
+    bindsym s exec --no-startup-id loginctl suspend, mode "default"
+    bindsym p exec --no-startup-id loginctl poweroff, mode "default"
+    bindsym h exec --no-startup-id loginctl hibernate, mode "default"
 
     bindsym Escape mode "default"
 }
@@ -98,11 +92,6 @@ mode "Resize" {
     bindsym Shift+$left resize grow left 10 px or 10 ppt
 
     bindsym Escape mode "default"
-}
-
-bindsym $mod+Shift+Escape mode "Free"
-mode "Free" {
-    bindsym $mod+Shift+Escape mode "default"
 }
 
 font pango:DejaVu Sans Mono 10

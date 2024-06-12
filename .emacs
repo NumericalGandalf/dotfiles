@@ -29,8 +29,9 @@
 
 (setq-default indent-tabs-mode nil
               c-default-style '((java-mode . "java") (awk-mode . "awk") (other . "stroustrup")))
- 
-(setq dired-free-space 'separate
+
+(setq dired-listing-switches "-lah"
+      dired-free-space 'separate
       dired-recursive-deletes 'always
       dired-dwim-target t
       dired-auto-revert-buffer t)
@@ -42,29 +43,27 @@
   (set-face-attribute 'variable-pitch nil :family font))
 
 (require 'package)
+(require 'use-package)
+(setq use-package-always-ensure t)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 (package-initialize)
 (unless package-archive-contents
   (package-refresh-contents))
 
-(unless (package-installed-p 'zendalf-theme)
-  (package-vc-install '(zendalf-theme :url "https://github.com/NumericalGandalf/zendalf.git")))
-(load-theme 'zendalf t)
-
-(require 'use-package)
-(setq use-package-always-ensure t)
+(use-package gruber-darker-theme
+  :config
+  (load-theme 'gruber-darker t))
 
 (use-package ido-completing-read+
   :config 
-  (setq ido-use-filename-at-point 'guess
-        completion-ignore-case t
+  (setq completion-ignore-case t
         read-file-name-completion-ignore-case t
-        read-buffer-completion-ignore-case t)
+        read-buffer-completion-ignore-case t
+        ido-use-filename-at-point 'guess
+        ido-use-url-at-point 'guess)
   (ido-mode 1)
   (ido-everywhere 1)
   (ido-ubiquitous-mode 1))
-
-(use-package wgrep)
 
 (use-package multiple-cursors
   :config
@@ -77,9 +76,9 @@
 (use-package lua-mode)
 (use-package markdown-mode)
 (use-package cmake-mode)
+(use-package yaml-mode)
 
 (use-package magit)
-
 (use-package editorconfig)
 
 (use-package company
