@@ -55,26 +55,16 @@ mode "System" {
     bindsym b layout toggle splith tabbed, mode "default"
     
     bindsym d exec --no-startup-id wmenu-run -bf "DejaVu Sans Mono 13", mode "default"
-    bindsym t exec --no-startup-id $TERMINAL, mode "default"
-    bindsym w exec --no-startup-id $BROWSER, mode "default"
+    bindsym t exec --no-startup-id alacritty -e tmux, mode "default"
+    bindsym w exec --no-startup-id firefox, mode "default"
+    bindsym m exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle
+    bindsym n exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle
     
     bindsym l exec --no-startup-id loginctl lock-session, mode "default"
     bindsym r exec --no-startup-id loginctl reboot, mode "default"
     bindsym s exec --no-startup-id loginctl suspend, mode "default"
     bindsym p exec --no-startup-id loginctl poweroff, mode "default"
     bindsym h exec --no-startup-id loginctl hibernate, mode "default"
-
-    bindsym Escape mode "default"
-}
-
-bindsym $mod+Shift+a mode "Audio"
-mode "Audio" {
-    bindsym $up exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +5%
-    bindsym $down exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -5%
-    bindsym Shift+$up exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +15%
-    bindsym Shift+$down exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -15%
-    bindsym m exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle
-    bindsym n exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle
 
     bindsym Escape mode "default"
 }
