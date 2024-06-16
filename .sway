@@ -55,8 +55,8 @@ mode "System" {
     bindsym b layout toggle splith tabbed, mode "default"
     
     bindsym d exec --no-startup-id wmenu-run -bf "DejaVu Sans Mono 13", mode "default"
-    bindsym t exec --no-startup-id alacritty -e tmux, mode "default"
-    bindsym w exec --no-startup-id firefox, mode "default"
+    bindsym t exec --no-startup-id $TERMINAL, mode "default"
+    bindsym w exec --no-startup-id $BROWSER, mode "default"
     bindsym m exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle
     bindsym n exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle
     

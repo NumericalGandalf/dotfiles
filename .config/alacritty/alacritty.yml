@@ -1,0 +1,8 @@
+colors:
+  primary:
+    background: "#181818"
+
+font:
+  size: 13
+  normal:
+    family: "DejaVu Sans Mono"
