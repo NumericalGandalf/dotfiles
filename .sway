@@ -1,4 +1,5 @@
 set $mod Mod1
+
 set $left h
 set $down j
 set $up k
@@ -54,9 +55,9 @@ mode "System" {
     bindsym v split toggle, mode "default"
     bindsym b layout toggle splith tabbed, mode "default"
     
-    bindsym d exec --no-startup-id wmenu-run -bf "DejaVu Sans Mono 13", mode "default"
     bindsym t exec --no-startup-id $TERMINAL, mode "default"
     bindsym w exec --no-startup-id $BROWSER, mode "default"
+    bindsym d exec --no-startup-id $LAUNCHER, mode "default"
     bindsym m exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle
     bindsym n exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle
     
@@ -71,22 +72,39 @@ mode "System" {
 
 bindsym $mod+Shift+r mode "Resize"
 mode "Resize" {
-    bindsym $left resize shrink right 10 px or 10 ppt
-    bindsym $down resize shrink down 10 px or 10 ppt
-    bindsym $up resize shrink up 10 px or 10 ppt
-    bindsym $right resize shrink left 10 px or 10 ppt
+    bindsym $right resize grow right 10 px or 10 ppt
+    bindsym Shift+$right resize shrink right 10 px or 10 ppt
+    bindsym Ctrl+$right resize grow right 5 px or 5 ppt
+    bindsym Shift+Ctrl+$right resize shrink right 5 px or 5 ppt
 
-    bindsym Shift+$right resize grow right 10 px or 10 ppt
-    bindsym Shift+$down resize grow down 10 px or 10 ppt
-    bindsym Shift+$up resize grow up 10 px or 10 ppt
-    bindsym Shift+$left resize grow left 10 px or 10 ppt
+    bindsym $down resize grow down 10 px or 10 ppt
+    bindsym Shift+$down resize shrink down 10 px or 10 ppt
+    bindsym Ctrl+$down resize grow down 5 px or 5 ppt
+    bindsym Shift+Ctrl+$down resize shrink down 5 px or 5 ppt
 
+    bindsym $up resize grow up 10 px or 10 ppt
+    bindsym Shift+$up resize shrink up 10 px or 10 ppt
+    bindsym Ctrl+$up resize grow up 5 px or 5 ppt
+    bindsym Shift+Ctrl+$up resize shrink up 5 px or 5 ppt
+
+    bindsym $left resize grow left 10 px or 10 ppt
+    bindsym Shift+$left resize shrink left 10 px or 10 ppt
+    bindsym Ctrl+$left resize grow left 5 px or 5 ppt
+    bindsym Shift+Ctrl+$left resize shrink left 5 px or 5 ppt
+    
     bindsym Escape mode "default"
 }
 
-font pango:DejaVu Sans Mono 10
-
 for_window [shell="xwayland"] title_format "[XWayland] %title"
 
-set $lock "swaylock -efc 000000"
+bar {
+    status_command i3status
+}
+
+input * {
+    xkb_layout us,de
+    xkb_options grp:win_space_toggle
+}
+
+set $lock swaylock -c 000000
 exec swayidle -w before-sleep $lock lock $lock

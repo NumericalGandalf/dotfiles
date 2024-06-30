@@ -3,24 +3,22 @@
 
 (menu-bar-mode 0)
 (tool-bar-mode 0)
-(fringe-mode 0)
 (scroll-bar-mode 0)
-(tooltip-mode 0)
+
+(blink-cursor-mode 0)
+(fringe-mode 0)
+
 (global-visual-line-mode 1)
-
-(setq use-dialog-box nil
-      use-short-answers t
-      inhibit-startup-message t
-      isearch-repeat-on-direction-change t)
-
 (column-number-mode 1)
 (global-display-line-numbers-mode 1)
-(setq display-line-numbers-type 'relative
-      display-line-numbers-width-start t)
 
 (global-auto-revert-mode 1)
 (setq global-auto-revert-non-file-buffers t
       auto-revert-remote-files t)
+
+(setq use-short-answers t
+      inhibit-startup-message t
+      isearch-repeat-on-direction-change t)
 
 (setq backup-directory-alist `(("." . ,(locate-user-emacs-file "backups/")))
       backup-by-copying t
@@ -36,12 +34,9 @@
       dired-dwim-target t
       dired-auto-revert-buffer t)
 
-(let ((font "DejaVu Sans Mono"))
-  (set-face-attribute 'default nil :font font :height 130)
-  (set-face-attribute 'fixed-pitch nil :family font)
-  (set-face-attribute 'fixed-pitch-serif nil :family font)
-  (set-face-attribute 'variable-pitch nil :family font))
-
+(setq compilation-ask-about-save nil
+      compile-command nil)
+      
 (require 'package)
 (require 'use-package)
 (setq use-package-always-ensure t)

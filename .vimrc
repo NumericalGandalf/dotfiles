@@ -1,8 +1,7 @@
 set number
-set relativenumber
 set ignorecase
 set smartcase
-
+set nohlsearch
 set termguicolors
 color GruberDarker
 set cursorline
