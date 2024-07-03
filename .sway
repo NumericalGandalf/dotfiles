@@ -104,5 +104,7 @@ input * {
     xkb_options grp:win_space_toggle
 }
 
-set $lock "swaylock -c 000000"
+output * bg #101010 solid_color
+
+set $lock "swaylock -c 101010"
 exec swayidle -w before-sleep $lock lock $lock
