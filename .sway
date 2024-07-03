@@ -106,5 +106,5 @@ input * {
     xkb_options grp:win_space_toggle
 }
 
-set $lock swaylock -c 000000
+set $lock "swaylock -c 000000"
 exec swayidle -w before-sleep $lock lock $lock
