@@ -45,21 +45,19 @@ for_window [window_role="task_dialog"] floating enable
 
 bindsym $mod+Shift+s mode "System"
 mode "System" {
-    bindsym e exit, mode "default"
-    bindsym q kill, mode "default"
-    bindsym c reload, mode "default"
-    bindsym x restart, mode "default"
+    bindsym e exit
+    bindsym q kill
+    bindsym c reload
+    bindsym x restart
 
-    bindsym f fullscreen toggle, mode "default"
-    bindsym a floating toggle, mode "default"
-    bindsym v split toggle, mode "default"
-    bindsym b layout toggle splith tabbed, mode "default"
+    bindsym f fullscreen toggle
+    bindsym v floating toggle
+    bindsym y split toggle
+    bindsym u layout toggle split tabbed
     
     bindsym t exec --no-startup-id $TERMINAL, mode "default"
     bindsym w exec --no-startup-id $BROWSER, mode "default"
     bindsym d exec --no-startup-id $LAUNCHER, mode "default"
-    bindsym m exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle
-    bindsym n exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle
     
     bindsym l exec --no-startup-id loginctl lock-session, mode "default"
     bindsym r exec --no-startup-id loginctl reboot, mode "default"
