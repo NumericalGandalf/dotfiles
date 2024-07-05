@@ -1,8 +1,0 @@
-colors:
-  primary:
-    foreground: '#e4e4ef'    
-    background: "#181818"
-
-  cursor:
-    text: "#181818"
-    cursor: "#ffdd33"

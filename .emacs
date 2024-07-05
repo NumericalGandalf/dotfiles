@@ -7,7 +7,9 @@
 
 (blink-cursor-mode 0)
 (fringe-mode 0)
+(electric-pair-mode 1)
 
+(setq display-line-numbers-type 'relative)
 (global-visual-line-mode 1)
 (column-number-mode 1)
 (global-display-line-numbers-mode 1)
@@ -36,7 +38,7 @@
 
 (setq compilation-ask-about-save nil
       compile-command nil)
-      
+
 (require 'package)
 (require 'use-package)
 (setq use-package-always-ensure t)
@@ -45,20 +47,52 @@
 (unless package-archive-contents
   (package-refresh-contents))
 
-(use-package gruber-darker-theme
+(use-package doom-themes
   :config
-  (load-theme 'gruber-darker t))
+  (setq doom-themes-enable-bold t
+        doom-themes-enable-italic t)
+  (setq doom-gruvbox-dark-variant "hard")
+  (load-theme 'doom-gruvbox t))
 
-(use-package ido-completing-read+
-  :config 
-  (setq completion-ignore-case t
-        read-file-name-completion-ignore-case t
-        read-buffer-completion-ignore-case t
-        ido-use-filename-at-point 'guess
-        ido-use-url-at-point 'guess)
-  (ido-mode 1)
-  (ido-everywhere 1)
-  (ido-ubiquitous-mode 1))
+(use-package vertico
+  :config
+  (vertico-mode 1))
+
+(use-package orderless
+  :config
+  (add-to-list 'completion-styles 'orderless))
+
+(use-package marginalia
+  :config
+  (marginalia-mode 1))
+
+(use-package consult
+  :bind
+  (("M-y" . consult-yank-pop)
+   ("C-s" . consult-line)
+   ("C-x M-:" . consult-complex-command)
+   ("C-x b" . consult-buffer)
+   ("C-x 4 b" . consult-buffer-other-window)
+   ("C-x 5 b" . consult-buffer-other-frame)
+   ("C-x t b" . consult-buffer-other-tab)
+   ("C-x r b" . consult-bookmark)
+   ("M-g e" . consult-compile-error)
+   ("M-g f" . consult-flymake)
+   ("M-g o" . consult-outline)
+   ("M-g k" . consult-global-mark)
+   ("M-g i" . consult-imenu)
+   ("M-s m" . consult-man)
+   ("M-s f" . consult-find)
+   ("M-s y" . consult-grep)
+   ("M-s g" . consult-git-grep)
+   :map isearch-mode-map
+   ("M-e" . consult-isearch-history)
+   :map minibuffer-local-map
+   ("M-s" . consult-history))
+  :config
+  (setq consult-line-start-from-top t
+        xref-show-xrefs-function 'consult-xref
+        xref-show-definitions-function 'consult-xref))
 
 (use-package multiple-cursors
   :config
@@ -74,7 +108,10 @@
 (use-package yaml-mode)
 
 (use-package magit)
-(use-package editorconfig)
+
+(use-package editorconfig
+  :config
+  (editorconfig-mode 1))
 
 (use-package company
   :config
@@ -83,7 +120,8 @@
         company-tooltip-align-annotations t)
   (global-company-mode 1))
 
-(global-set-key (kbd "C-c l s") 'eglot)
+(dolist (mode '(c c++ rust java))
+  (add-hook (intern (concat (symbol-name mode) "-mode-hook")) 'eglot-ensure))
 (with-eval-after-load 'eglot
   (setq eglot-ignored-server-capabilities
         '(:documentHighlightProvider
@@ -97,7 +135,4 @@
   (define-key eglot-mode-map (kbd "C-c l i") 'eglot-find-implementation)
   (define-key eglot-mode-map (kbd "C-c l r") 'eglot-rename)
   (define-key eglot-mode-map (kbd "C-c l f") 'eglot-format)
-  (define-key eglot-mode-map (kbd "C-c l a") 'eglot-code-actions)
-  (define-key eglot-mode-map (kbd "C-c l n") 'flymake-goto-next-error)
-  (define-key eglot-mode-map (kbd "C-c l p") 'flymake-goto-prev-error)
-  (define-key eglot-mode-map (kbd "C-c l e") 'flymake-show-project-diagnostics))
+  (define-key eglot-mode-map (kbd "C-c l a") 'eglot-code-actions))
