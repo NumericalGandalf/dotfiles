@@ -21,3 +21,7 @@ blue    = '#83a598'
 magenta = '#d3869b'
 cyan    = '#8ec07c'
 white   = '#ebdbb2'
+
+[font]
+size = 13
+normal = { family = "DejaVu Sans Mono" }

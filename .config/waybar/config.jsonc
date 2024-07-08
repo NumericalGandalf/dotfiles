@@ -1,0 +1,70 @@
+{
+    "modules-left": [
+        "sway/workspaces",
+        "sway/mode",
+	"sway/window"
+    ],
+    "modules-right": [
+        "battery",
+        "network",
+	"pulseaudio",
+        "memory",
+        "disk",
+        "cpu",
+        "sway/language",
+        "clock"
+    ],
+    "clock": {
+        "format": "{:%a, %d %b %H:%M:%S}",
+	"interval": 1
+    },
+    "sway/language": {
+	"tooltip": false
+    },
+    "cpu": {
+        "format": "CPU: {usage}%",
+        "states": {
+            "warning": 70,
+            "critical": 90
+        }
+    },
+    "disk": {
+        "format": "FS: {percentage_used}%",
+        "states": {
+            "warning": 70,
+            "critical": 90
+        }
+    },
+    "memory": {
+        "format": "RAM: {percentage}%",
+	"tooltip-format": "{used}GiB used out of {total}GiB\n{swapUsed}GiB Swap used out of {swapTotal}GiB ({swapPercentage}%)",
+        "states": {
+            "warning": 70,
+            "critical": 90
+        }
+    },
+    "network": {
+    	"interval": 1,
+        "format-wifi": "Wifi: {essid}",
+        "format-ethernet": "E: {ifname}",
+        "tooltip-format-wifi": "{ifname}: {ipaddr}/{cidr} ({signalStrength}%) {bandwidthTotalBytes}",
+        "tooltip-format-ethernet": "{ifname}: {ipaddr}/{cidr} {bandwithTotalBytes}"
+    },
+    "pulseaudio": {
+	"format": "A: {volume}%",
+	"format-muted": "A: {volume}% (muted)",
+	"scroll-step": 5,
+	"on-click": "pavucontrol"
+    },
+    "battery": {
+        "format": "{capacity}%",
+        "format-charging": "{capacity}%",
+        "states": {
+            "warning": 30,
+            "critical": 15
+        }
+    },
+    "sway/window": {
+	"tooltip": false
+    }
+}

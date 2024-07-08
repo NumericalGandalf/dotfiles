@@ -7,7 +7,9 @@
 
 (blink-cursor-mode 0)
 (fringe-mode 0)
+
 (electric-pair-mode 1)
+(ffap-bindings)
 
 (setq display-line-numbers-type 'relative)
 (global-visual-line-mode 1)
@@ -19,8 +21,7 @@
       auto-revert-remote-files t)
 
 (setq use-short-answers t
-      inhibit-startup-message t
-      isearch-repeat-on-direction-change t)
+      inhibit-startup-message t)
 
 (setq backup-directory-alist `(("." . ,(locate-user-emacs-file "backups/")))
       backup-by-copying t
@@ -39,6 +40,12 @@
 (setq compilation-ask-about-save nil
       compile-command nil)
 
+(let ((font "DejaVu Sans Mono"))
+  (set-face-attribute 'default nil :font font :height 130)
+  (set-face-attribute 'fixed-pitch nil :family font)
+  (set-face-attribute 'fixed-pitch-serif nil :family font)
+  (set-face-attribute 'variable-pitch nil :family font))
+
 (require 'package)
 (require 'use-package)
 (setq use-package-always-ensure t)
@@ -50,8 +57,8 @@
 (use-package doom-themes
   :config
   (setq doom-themes-enable-bold t
-        doom-themes-enable-italic t)
-  (setq doom-gruvbox-dark-variant "hard")
+        doom-themes-enable-italic t
+        doom-gruvbox-dark-variant "hard")
   (load-theme 'doom-gruvbox t))
 
 (use-package vertico
@@ -120,8 +127,14 @@
         company-tooltip-align-annotations t)
   (global-company-mode 1))
 
+(use-package treesit-auto
+  :config
+  (global-treesit-auto-mode 1))
+
 (dolist (mode '(c c++ rust java))
-  (add-hook (intern (concat (symbol-name mode) "-mode-hook")) 'eglot-ensure))
+  (add-hook (intern (concat (symbol-name mode) "-mode-hook")) 'eglot-ensure)
+  (add-hook (intern (concat (symbol-name mode) "-ts-mode-hook")) 'eglot-ensure))
+
 (with-eval-after-load 'eglot
   (setq eglot-ignored-server-capabilities
         '(:documentHighlightProvider
@@ -136,3 +149,8 @@
   (define-key eglot-mode-map (kbd "C-c l r") 'eglot-rename)
   (define-key eglot-mode-map (kbd "C-c l f") 'eglot-format)
   (define-key eglot-mode-map (kbd "C-c l a") 'eglot-code-actions))
+
+;; (unless (package-installed-p 'emapl)
+;;   (package-vc-install '(emapl :url "https://github.com/NumericalGandalf/emapl.git")))
+
+(load "~/Programming/emapl/emapl.el")

@@ -1,4 +1,5 @@
 set $mod Mod1
+floating_modifier $mod
 
 set $left h
 set $down j
@@ -35,30 +36,36 @@ bindsym $mod+Shift+7 move container workspace 7, workspace 7
 bindsym $mod+Shift+8 move container workspace 8, workspace 8
 bindsym $mod+Shift+9 move container workspace 9, workspace 9
 
-focus_follows_mouse no
 popup_during_fullscreen smart
 focus_on_window_activation smart
-smart_borders on
 
+gaps inner 4
+default_border none
+
+set $col_border #0f0e0e
+client.focused $col_border $col_border #000000 $col_border $col_border
+client.unfocused $col_border $col_border #000000 $col_border $col_border
+client.urgent $col_border $col_border #000000 $col_border $col_border
+
+for_window [floating] border pixel 4
 for_window [window_role="pop-up"] floating enable
 for_window [window_role="task_dialog"] floating enable
+for_window [shell="xwayland"] title_format "[XWayland] %title"
+
+bindsym $mod+Shift+q kill
+bindsym $mod+Shift+t exec --no-startup-id alacritty
+bindsym $mod+Shift+w exec --no-startup-id firefox
+bindsym $mod+Shift+d exec --no-startup-id $LAUNCHER
 
 bindsym $mod+Shift+s mode "System"
 mode "System" {
+    bindsym f fullscreen toggle, mode "default"
+    bindsym v floating toggle, mode "default"
+    bindsym y split toggle, mode "default"
+    bindsym u layout toggle split tabbed, mode "default"
+    
     bindsym e exit
-    bindsym q kill
     bindsym c reload
-    bindsym x restart
-
-    bindsym f fullscreen toggle
-    bindsym v floating toggle
-    bindsym y split toggle
-    bindsym u layout toggle split tabbed
-    
-    bindsym t exec --no-startup-id $TERMINAL, mode "default"
-    bindsym w exec --no-startup-id $BROWSER, mode "default"
-    bindsym d exec --no-startup-id $LAUNCHER, mode "default"
-    
     bindsym l exec --no-startup-id loginctl lock-session, mode "default"
     bindsym r exec --no-startup-id loginctl reboot, mode "default"
     bindsym s exec --no-startup-id loginctl suspend, mode "default"
@@ -68,35 +75,30 @@ mode "System" {
     bindsym Escape mode "default"
 }
 
+set $size 10
 bindsym $mod+Shift+r mode "Resize"
 mode "Resize" {
-    bindsym $right resize grow right 10 px or 10 ppt
-    bindsym Shift+$right resize shrink right 10 px or 10 ppt
-    bindsym Ctrl+$right resize grow right 5 px or 5 ppt
-    bindsym Shift+Ctrl+$right resize shrink right 5 px or 5 ppt
+    bindsym $right resize grow right $size px or $size ppt
+    bindsym Shift+$right resize shrink right $size px or $size ppt
 
-    bindsym $down resize grow down 10 px or 10 ppt
-    bindsym Shift+$down resize shrink down 10 px or 10 ppt
-    bindsym Ctrl+$down resize grow down 5 px or 5 ppt
-    bindsym Shift+Ctrl+$down resize shrink down 5 px or 5 ppt
+    bindsym $down resize grow down $size px or $size ppt
+    bindsym Shift+$down resize shrink down $size px or $size ppt
 
-    bindsym $up resize grow up 10 px or 10 ppt
-    bindsym Shift+$up resize shrink up 10 px or 10 ppt
-    bindsym Ctrl+$up resize grow up 5 px or 5 ppt
-    bindsym Shift+Ctrl+$up resize shrink up 5 px or 5 ppt
+    bindsym $up resize grow up $size px or $size ppt
+    bindsym Shift+$up resize shrink up $size px or $size ppt
 
-    bindsym $left resize grow left 10 px or 10 ppt
-    bindsym Shift+$left resize shrink left 10 px or 10 ppt
-    bindsym Ctrl+$left resize grow left 5 px or 5 ppt
-    bindsym Shift+Ctrl+$left resize shrink left 5 px or 5 ppt
+    bindsym $left resize grow left $size px or $size ppt
+    bindsym Shift+$left resize shrink left $size px or $size ppt
     
     bindsym Escape mode "default"
 }
 
-for_window [shell="xwayland"] title_format "[XWayland] %title"
+for_window [title="^emapl$"] floating enable
+
+font pango:DejaVu Sans Mono 10
 
 bar {
-    status_command i3status
+    swaybar_command waybar
 }
 
 input * {
@@ -104,7 +106,8 @@ input * {
     xkb_options grp:win_space_toggle
 }
 
-output * bg #101010 solid_color
+set $bg ~/Pictures/GruvboxWolf.png
+output * bg $bg fit
 
-set $lock "swaylock -c 101010"
+set $lock "swaylock -i $bg -s fit"
 exec swayidle -w before-sleep $lock lock $lock
