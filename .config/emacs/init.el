@@ -1,4 +1,4 @@
-(setq custom-file (locate-user-emacs-file "custom.el"))
+(setq custom-file (locate-user-emacs-file "var/custom.el"))
 (load custom-file :noerror :nomessage)
 
 (menu-bar-mode 0)
@@ -23,13 +23,13 @@
 (setq use-short-answers t
       inhibit-startup-message t)
 
-(setq backup-directory-alist `(("." . ,(locate-user-emacs-file "backups/")))
+(setq backup-directory-alist `(("." . ,(locate-user-emacs-file "var/backups/")))
       backup-by-copying t
       version-control t
       delete-old-versions t)
 
-(setq-default indent-tabs-mode nil
-              c-default-style '((java-mode . "java") (awk-mode . "awk") (other . "stroustrup")))
+(setq-default c-basic-offset 4
+              c-ts-mode-indent-offset c-basic-offset)
 
 (setq dired-listing-switches "-lah"
       dired-free-space 'separate
@@ -48,11 +48,15 @@
 
 (require 'package)
 (require 'use-package)
-(setq use-package-always-ensure t)
+(setq use-package-always-ensure t
+      package-user-dir (locate-user-emacs-file "var/elpa/")
+      package-gnupghome-dir (expand-file-name "gnupg/" package-user-dir))
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 (package-initialize)
 (unless package-archive-contents
   (package-refresh-contents))
+
+(use-package no-littering)
 
 (use-package doom-themes
   :config
@@ -72,6 +76,9 @@
 (use-package marginalia
   :config
   (marginalia-mode 1))
+
+(use-package embark)
+(use-package embark-consult)
 
 (use-package consult
   :bind
@@ -108,6 +115,10 @@
   (global-set-key (kbd "C-c C->") 'mc/mark-all-like-this)
   (global-set-key (kbd "C-c C-<") 'mc/edit-lines))
 
+(use-package treesit-auto
+  :config
+  (global-treesit-auto-mode 1))
+
 (use-package rust-mode)
 (use-package lua-mode)
 (use-package markdown-mode)
@@ -126,10 +137,6 @@
         company-tooltip-idle-delay 0
         company-tooltip-align-annotations t)
   (global-company-mode 1))
-
-(use-package treesit-auto
-  :config
-  (global-treesit-auto-mode 1))
 
 (dolist (mode '(c c++ rust java))
   (add-hook (intern (concat (symbol-name mode) "-mode-hook")) 'eglot-ensure)

@@ -51,11 +51,13 @@ for_window [floating] border pixel 4
 for_window [window_role="pop-up"] floating enable
 for_window [window_role="task_dialog"] floating enable
 for_window [shell="xwayland"] title_format "[XWayland] %title"
+for_window [title="^emapl$"] floating enable, border pixel 4
 
 bindsym $mod+Shift+q kill
 bindsym $mod+Shift+t exec --no-startup-id alacritty
+bindsym $mod+Shift+e exec --no-startup-id emacsclient -c
 bindsym $mod+Shift+w exec --no-startup-id firefox
-bindsym $mod+Shift+d exec --no-startup-id $LAUNCHER
+bindsym $mod+Shift+d exec --no-startup-id emacsclient -cF "((visibility . nil))" -e "(emapl)"
 
 bindsym $mod+Shift+s mode "System"
 mode "System" {
@@ -93,8 +95,6 @@ mode "Resize" {
     bindsym Escape mode "default"
 }
 
-for_window [title="^emapl$"] floating enable
-
 font pango:DejaVu Sans Mono 10
 
 bar {
@@ -111,3 +111,5 @@ output * bg $bg fit
 
 set $lock "swaylock -i $bg -s fit"
 exec swayidle -w before-sleep $lock lock $lock
+
+exec --no-startup-id emacs --daemon
