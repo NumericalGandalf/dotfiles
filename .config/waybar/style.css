@@ -1,85 +1,109 @@
-@define-color background #1d2021;
+@define-color background rgba(29, 32, 33, 0.9);
 @define-color foreground #ebdbb2;
-@define-color dim        #928374;
+@define-color tooltip    rgba(15, 14, 14, 0.9);
 @define-color yellow     #fabd2f;
 @define-color red        #fb4934;
 @define-color green      #b8bb26;
 
 * {
-    background: @background;
     color: @foreground;
     min-height: 0;
-    border: none;
     border-radius: 0;
     box-shadow: none;
     text-shadow: none;
-    font-family: "DejaVu Sans Mono";
+    font-family: "Fira Code", "Font Awesome 6";
     font-size: 13;
-    margin: 0 5;
-    padding: 0 5;
+    padding: 0 0;
+    margin-top: 1;
+}
+
+#waybar,
+#waybar * {
+    background: transparent;
+}
+
+#clock,
+#language,
+#cpu,
+#temperature,
+#disk,
+#memory,
+#pulseaudio,
+#bluetooth,
+#network {
+    padding: 0 10;
+    margin-left: 10;
+    margin-right: 4;
+    background: @background;
+}
+
+#cpu {
+    padding-right: 0;
+    margin-right: 0;
+}
+
+#temperature {
+    padding-left: 10;
+    margin-left: 0;
+}
+
+#workspaces,
+#mode,
+#window {
+    padding: 0 10;
+    margin-right: 10;
+    margin-left: 4;
+    background: @background;
 }
 
 tooltip,
 tooltip * {
-    margin: 0 0;
-    padding: 0 0;
-    border: 4 solid #0f0e0e;
-    background: #0f0e0e;
-}
-
-tooltip * {
-    border: none; 
-}
-
-window#waybar {
-    background: @background;
-    color: @foreground;
-    transition-duration: 0.5s;
+    margin: 0;
+    background: @tooltip;
 }
 
 #workspaces,
 #workspaces button {
-    background: @background;
-    color: @foreground;
     padding: 0 0;
-    margin-left: 0;
+    background: @background;
 }
 
 #workspaces button {
-    border-top: 3 solid @background;
-    border-bottom: 3 solid transparent;
+    border-top: 2 solid @background;
+    border-bottom: 2 solid @background;
 }
 
 #workspaces button.focused {
-    border-bottom: 3 solid @green;
+    border-bottom: 2 solid @green;
 }
 
 #workspaces button.urgent {
-    border-bottom: 3 solid @yellow;
+    border-bottom: 2 solid @yellow;
 }
 
-
 #mode {
-    border-bottom: 3 solid @red;
+    border-bottom: 2 solid @red;
 }
 
 #battery.warning,
 #disk.warning,
 #memory.warning,
+#temperature.warning,
 #cpu.warning {
-    border-top: 3 solid @background;
-    border-bottom: 3 solid @yellow;
+    border-top: 2 solid @background;
+    border-bottom: 2 solid @yellow;
 }
 
 #battery.critical,
 #disk.critical,
 #memory.critical,
+#temperature.critical,
 #cpu.critical {
-    border-top: 3 solid @background;
-    border-bottom: 3 solid @red;
+    border-top: 2 solid @background;
+    border-bottom: 2 solid @red;
 }
 
 #battery.charging {
-    border-top: 3 solid @background;
-    border-bottom: 3 solid @green;
+    border-top: 2 solid @background;
+    border-bottom: 2 solid @green;
 }

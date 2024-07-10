@@ -58,6 +58,7 @@ bindsym $mod+Shift+t exec --no-startup-id alacritty
 bindsym $mod+Shift+e exec --no-startup-id emacsclient -c
 bindsym $mod+Shift+w exec --no-startup-id firefox
 bindsym $mod+Shift+d exec --no-startup-id emacsclient -cF "((visibility . nil))" -e "(emapl)"
+bindsym $mod+Shift+b exec killall -SIGUSR1 waybar, smart_gaps toggle
 
 bindsym $mod+Shift+s mode "System"
 mode "System" {
@@ -95,7 +96,7 @@ mode "Resize" {
     bindsym Escape mode "default"
 }
 
-font pango:DejaVu Sans Mono 10
+font pango:Fira Code 10
 
 bar {
     swaybar_command waybar

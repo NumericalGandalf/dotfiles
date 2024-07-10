@@ -1,3 +1,6 @@
+[window]
+opacity = 0.9
+
 [colors.primary]
 background = '#1d2021'
 foreground = '#ebdbb2'
@@ -24,4 +27,4 @@ white   = '#ebdbb2'
 
 [font]
 size = 13
-normal = { family = "DejaVu Sans Mono" }
+normal = { family = "Fira Code" }

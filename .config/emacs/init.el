@@ -8,17 +8,13 @@
 (blink-cursor-mode 0)
 (fringe-mode 0)
 
-(electric-pair-mode 1)
+(electric-pair-mode)
 (ffap-bindings)
 
 (setq display-line-numbers-type 'relative)
-(global-visual-line-mode 1)
-(column-number-mode 1)
-(global-display-line-numbers-mode 1)
-
-(global-auto-revert-mode 1)
-(setq global-auto-revert-non-file-buffers t
-      auto-revert-remote-files t)
+(global-visual-line-mode)
+(column-number-mode)
+(global-display-line-numbers-mode)
 
 (setq use-short-answers t
       inhibit-startup-message t)
@@ -32,19 +28,27 @@
               c-ts-mode-indent-offset c-basic-offset)
 
 (setq dired-listing-switches "-lah"
-      dired-free-space 'separate
-      dired-recursive-deletes 'always
-      dired-dwim-target t
-      dired-auto-revert-buffer t)
+        dired-free-space 'separate
+        dired-recursive-deletes 'always
+        dired-dwim-target t
+        dired-auto-revert-buffer t)
+
+(setq global-auto-revert-non-file-buffers t
+	auto-revert-remote-files t)
+(global-auto-revert-mode)
 
 (setq compilation-ask-about-save nil
       compile-command nil)
 
-(let ((font "DejaVu Sans Mono"))
+(let ((font "Fira Code"))
   (set-face-attribute 'default nil :font font :height 130)
   (set-face-attribute 'fixed-pitch nil :family font)
   (set-face-attribute 'fixed-pitch-serif nil :family font)
   (set-face-attribute 'variable-pitch nil :family font))
+
+(let ((opacity 90))
+  (set-frame-parameter nil 'alpha-background opacity)
+  (add-to-list 'default-frame-alist `(alpha-background . ,opacity)))
 
 (require 'package)
 (require 'use-package)
@@ -59,23 +63,35 @@
 (use-package no-littering)
 
 (use-package doom-themes
+  :if (display-graphic-p)  
   :config
   (setq doom-themes-enable-bold t
         doom-themes-enable-italic t
         doom-gruvbox-dark-variant "hard")
   (load-theme 'doom-gruvbox t))
 
-(use-package vertico
+(use-package all-the-icons-dired
+  :if (display-graphic-p)
+  :hook (dired-mode . all-the-icons-dired-mode)
   :config
-  (vertico-mode 1))
+  (setq all-the-icons-dired-monochrome nil))
+
+(use-package all-the-icons-completion
+  :if (display-graphic-p)
+  :hook (marginalia-mode . all-the-icons-completion-marginalia-setup))
 
 (use-package orderless
   :config
-  (add-to-list 'completion-styles 'orderless))
+  (setq completion-styles '(orderless)
+	completion-category-defaults nil))
+
+(use-package vertico
+  :config
+  (vertico-mode))
 
 (use-package marginalia
   :config
-  (marginalia-mode 1))
+  (marginalia-mode))
 
 (use-package embark)
 (use-package embark-consult)
@@ -95,14 +111,12 @@
    ("M-g o" . consult-outline)
    ("M-g k" . consult-global-mark)
    ("M-g i" . consult-imenu)
-   ("M-s m" . consult-man)
-   ("M-s f" . consult-find)
-   ("M-s y" . consult-grep)
-   ("M-s g" . consult-git-grep)
-   :map isearch-mode-map
-   ("M-e" . consult-isearch-history)
+   ("M-p m" . consult-man)
+   ("M-p f" . consult-find)
+   ("M-p y" . consult-grep)
+   ("M-p g" . consult-git-grep)
    :map minibuffer-local-map
-   ("M-s" . consult-history))
+   ("M-r" . consult-history))
   :config
   (setq consult-line-start-from-top t
         xref-show-xrefs-function 'consult-xref
@@ -117,7 +131,7 @@
 
 (use-package treesit-auto
   :config
-  (global-treesit-auto-mode 1))
+  (global-treesit-auto-mode))
 
 (use-package rust-mode)
 (use-package lua-mode)
@@ -129,14 +143,15 @@
 
 (use-package editorconfig
   :config
-  (editorconfig-mode 1))
+  (editorconfig-mode))
 
 (use-package company
+  :if (display-graphic-p)
   :config
   (setq company-tooltip-scrollbar-width 0
         company-tooltip-idle-delay 0
         company-tooltip-align-annotations t)
-  (global-company-mode 1))
+  (global-company-mode))
 
 (dolist (mode '(c c++ rust java))
   (add-hook (intern (concat (symbol-name mode) "-mode-hook")) 'eglot-ensure)
@@ -157,7 +172,36 @@
   (define-key eglot-mode-map (kbd "C-c l f") 'eglot-format)
   (define-key eglot-mode-map (kbd "C-c l a") 'eglot-code-actions))
 
-;; (unless (package-installed-p 'emapl)
-;;   (package-vc-install '(emapl :url "https://github.com/NumericalGandalf/emapl.git")))
+(use-package ligature
+  :if (display-graphic-p)
+  :config
+  (ligature-set-ligatures
+   'prog-mode
+   '(("=" (rx (+ (or ">" "<" "|" "/" "~" ":" "!" "="))))
+     (";" (rx (+ ";")))
+     ("&" (rx (+ "&")))
+     ("!" (rx (+ (or "=" "!" "\." ":" "~"))))
+     ("?" (rx (or ":" "=" "\." (+ "?"))))
+     ("%" (rx (+ "%")))
+     ("|" (rx (+ (or ">" "<" "|" "/" ":" "!" "}" "\]" "-" "=" ))))
+     ("\\" (rx (or "/" (+ "\\"))))
+     ("+" (rx (or ">" (+ "+"))))
+     (":" (rx (or ">" "<" "=" "//" ":=" (+ ":"))))
+     ("/" (rx (+ (or ">"  "<" "|" "/" "\\" "\*" ":" "!" "="))))
+     ("\." (rx (or "=" "-" "\?" "\.=" "\.<" (+ "\."))))
+     ("-" (rx (+ (or ">" "<" "|" "~" "-"))))
+     ("*" (rx (or ">" "/" ")" (+ "*"))))
+     ("w" (rx (+ "w")))
+     ("<" (rx (+ (or "\+" "\*" "\$" "<" ">" ":" "~"  "!" "-"  "/" "|" "="))))
+     (">" (rx (+ (or ">" "<" "|" "/" ":" "=" "-"))))
+     ("#" (rx (or ":" "=" "!" "(" "\?" "\[" "{" "_(" "_" (+ "#"))))
+     ("~" (rx (or ">" "=" "-" "@" "~>" (+ "~"))))
+     ("_" (rx (+ (or "_" "|"))))
+     ("0" (rx (and "x" (+ (in "A-F" "a-f" "0-9")))))
+     "Fl"  "Tl"  "fi"  "fj"  "fl"  "ft"
+     "{|"  "[|"  "]#"  "(*"  "}#"  "$>"  "^="))
+  (global-ligature-mode))
 
-(load "~/Programming/emapl/emapl.el")
+(unless (package-installed-p 'emapl)
+  (package-vc-install '(emapl :url "https://github.com/NumericalGandalf/emapl.git")))
+(put 'erase-buffer 'disabled nil)

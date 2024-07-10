@@ -8,35 +8,42 @@
         "battery",
         "network",
 	"pulseaudio",
+	"bluetooth",
         "memory",
         "disk",
         "cpu",
+	"temperature",
         "sway/language",
         "clock"
     ],
     "clock": {
-        "format": "{:%a, %d %b %H:%M:%S}",
+        "format": " {:%a, %d %b %H:%M:%S}",
 	"interval": 1
     },
     "sway/language": {
+        "format": " {short}",
 	"tooltip": false
     },
     "cpu": {
-        "format": "CPU: {usage}%",
+        "format": " {usage}%",
         "states": {
             "warning": 70,
             "critical": 90
         }
     },
+    "temperature": {
+        "format": " {temperatureC}°C",
+	"tooltip": false,
+    },
     "disk": {
-        "format": "FS: {percentage_used}%",
+        "format": " {percentage_used}%",
         "states": {
             "warning": 70,
             "critical": 90
         }
     },
     "memory": {
-        "format": "RAM: {percentage}%",
+        "format": " {percentage}%",
 	"tooltip-format": "{used}GiB used out of {total}GiB\n{swapUsed}GiB Swap used out of {swapTotal}GiB ({swapPercentage}%)",
         "states": {
             "warning": 70,
@@ -45,16 +52,23 @@
     },
     "network": {
     	"interval": 1,
-        "format-wifi": "Wifi: {essid}",
-        "format-ethernet": "E: {ifname}",
+        "format-wifi": " {essid}",
+        "format-ethernet": " {ifname}",
         "tooltip-format-wifi": "{ifname}: {ipaddr}/{cidr} ({signalStrength}%) {bandwidthTotalBytes}",
         "tooltip-format-ethernet": "{ifname}: {ipaddr}/{cidr} {bandwithTotalBytes}"
     },
     "pulseaudio": {
-	"format": "A: {volume}%",
-	"format-muted": "A: {volume}% (muted)",
+	"format": " {volume}%",
+	"format-muted": " {volume}%",
+	"format-source": " {volume}%",
+        "format-source-muted": " {volume}%",
 	"scroll-step": 5,
 	"on-click": "pavucontrol"
+    },
+    "bluetooth": {
+        "format": " {status}",
+	"format-connected": " {num_connections}",
+    	"on-click": "blueman-manager",
     },
     "battery": {
         "format": "{capacity}%",
@@ -65,6 +79,10 @@
         }
     },
     "sway/window": {
+        "format": " {}",
 	"tooltip": false
+    },
+    "sway/mode": {
+        "format": " {}",
     }
 }
