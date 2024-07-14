@@ -39,26 +39,19 @@ bindsym $mod+Shift+9 move container workspace 9, workspace 9
 popup_during_fullscreen smart
 focus_on_window_activation smart
 
-gaps inner 4
-default_border none
+default_border pixel
+client.focused #4c7899 #285577 #ffffff #285577
+client.unfocused #333333 #222222 #888888 #222222
 
-set $col_border #0f0e0e
-client.focused $col_border $col_border #000000 $col_border $col_border
-client.unfocused $col_border $col_border #000000 $col_border $col_border
-client.urgent $col_border $col_border #000000 $col_border $col_border
-
-for_window [floating] border pixel 4
 for_window [window_role="pop-up"] floating enable
 for_window [window_role="task_dialog"] floating enable
 for_window [shell="xwayland"] title_format "[XWayland] %title"
-for_window [title="^emapl$"] floating enable, border pixel 4
+for_window [title="^emapl$"] floating enable
 
 bindsym $mod+Shift+q kill
 bindsym $mod+Shift+t exec --no-startup-id alacritty
 bindsym $mod+Shift+e exec --no-startup-id emacsclient -c
 bindsym $mod+Shift+w exec --no-startup-id firefox
-bindsym $mod+Shift+d exec --no-startup-id emacsclient -cF "((visibility . nil))" -e "(emapl)"
-bindsym $mod+Shift+b exec killall -SIGUSR1 waybar, smart_gaps toggle
 
 bindsym $mod+Shift+s mode "System"
 mode "System" {
@@ -107,7 +100,7 @@ input * {
     xkb_options grp:win_space_toggle
 }
 
-set $bg ~/Pictures/GruvboxWolf.png
+set $bg ~/Pictures/Forest.png
 output * bg $bg fit
 
 set $lock "swaylock -i $bg -s fit"

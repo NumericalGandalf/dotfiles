@@ -1,8 +1,9 @@
 {
+    "position": "bottom",
     "modules-left": [
         "sway/workspaces",
-        "sway/mode",
-	"sway/window"
+        "sway/mode",	
+	"sway/window",
     ],
     "modules-right": [
         "battery",
@@ -62,7 +63,7 @@
 	"format-muted": " {volume}%",
 	"format-source": " {volume}%",
         "format-source-muted": " {volume}%",
-	"scroll-step": 5,
+	"scroll-step": 0,
 	"on-click": "pavucontrol"
     },
     "bluetooth": {
@@ -80,9 +81,9 @@
     },
     "sway/window": {
         "format": " {}",
-	"tooltip": false
+	"tooltip": false,
     },
     "sway/mode": {
         "format": " {}",
-    }
+    },
 }
