@@ -49,8 +49,9 @@ for_window [shell="xwayland"] title_format "[XWayland] %title"
 for_window [title="^emapl$"] floating enable
 
 bindsym $mod+Shift+q kill
+bindsym $mod+Shift+e exec --no-startup-id emacsclient -ca emacs
+bindsym $mod+Shift+d exec --no-startup-id emacsclient -cF "((visibility . nil))" --eval "(emapl-frame)"
 bindsym $mod+Shift+t exec --no-startup-id alacritty
-bindsym $mod+Shift+e exec --no-startup-id emacsclient -c
 bindsym $mod+Shift+w exec --no-startup-id firefox
 
 bindsym $mod+Shift+s mode "System"
@@ -71,21 +72,32 @@ mode "System" {
     bindsym Escape mode "default"
 }
 
-set $size 10
+set $step 10
+
 bindsym $mod+Shift+r mode "Resize"
 mode "Resize" {
-    bindsym $right resize grow right $size px or $size ppt
-    bindsym Shift+$right resize shrink right $size px or $size ppt
+    bindsym $right resize grow right $step px or $step ppt
+    bindsym Shift+$right resize shrink right $step px or $step ppt
 
-    bindsym $down resize grow down $size px or $size ppt
-    bindsym Shift+$down resize shrink down $size px or $size ppt
+    bindsym $down resize grow down $step px or $step ppt
+    bindsym Shift+$down resize shrink down $step px or $step ppt
 
-    bindsym $up resize grow up $size px or $size ppt
-    bindsym Shift+$up resize shrink up $size px or $size ppt
+    bindsym $up resize grow up $step px or $step ppt
+    bindsym Shift+$up resize shrink up $step px or $step ppt
 
-    bindsym $left resize grow left $size px or $size ppt
-    bindsym Shift+$left resize shrink left $size px or $size ppt
+    bindsym $left resize grow left $step px or $step ppt
+    bindsym Shift+$left resize shrink left $step px or $step ppt
     
+    bindsym Escape mode "default"
+}
+
+bindsym $mod+Shift+a mode "Audio"
+mode "Audio" {
+    bindsym $up exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +$step%
+    bindsym $down exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -$step%
+    bindsym m exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle
+    bindsym n exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle
+
     bindsym Escape mode "default"
 }
 
@@ -100,10 +112,10 @@ input * {
     xkb_options grp:win_space_toggle
 }
 
-set $bg ~/Pictures/Forest.png
+set $bg ~/Pictures/Linux.png
 output * bg $bg fit
 
 set $lock "swaylock -i $bg -s fit"
 exec swayidle -w before-sleep $lock lock $lock
 
-exec --no-startup-id emacs --daemon
+exec --no-startup-id emacs --daemon; emacs
