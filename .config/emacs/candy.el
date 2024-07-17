@@ -1,13 +1,9 @@
-(menu-bar-mode 0)
 (tool-bar-mode 0)
 (scroll-bar-mode 0)
 (fringe-mode 0)
 
-(let ((font "Fira Code"))
-  (set-face-attribute 'default nil :font font :height 130)
-  (set-face-attribute 'fixed-pitch nil :family font)
-  (set-face-attribute 'fixed-pitch-serif nil :family font)
-  (set-face-attribute 'variable-pitch nil :family font))
+(defun display-startup-echo-area-message ())
+(setq server-client-instructions nil)
 
 (use-package all-the-icons-dired
   :hook (dired-mode . all-the-icons-dired-mode)
@@ -29,25 +25,48 @@
   :config
   (setq doom-modeline-buffer-file-name-style 'file-name-with-project))
 
+(defun rc-ensure-dashboard(&optional prefix)
+  "Opens dashboard if window is not splitted and current buffer is scratch.
+If PREFIX is non-nil, open the dashboard anyway."
+  (interactive "P")
+  (when (or prefix (and (string= (buffer-name) "*scratch*")
+		       (= (length (window-list)) 1)))
+    (dashboard-open)))
+
 (use-package dashboard
   :config
-  (setq initial-buffer-choice (lambda () (get-buffer-create dashboard-buffer-name))
+  (setq inhibit-startup-message t
 	dashboard-icon-type 'all-the-icons
+	dashboard-display-icons-p t
 	dashboard-set-heading-icons t
 	dashboard-set-file-icons t
 	dashboard-center-content t
-	dashboard-vertically-center-content t
+	dashboard-startup-banner (no-littering-expand-etc-file-name "banner.txt")
+	dashboard-heading-shorcut-format ""
 	dashboard-items '((recents   . 5)
-			  (bookmarks . 5)
 			  (projects  . 5)
-			  (agenda    . 5)
-			  (registers . 5))
+			  (bookmarks . 5)
+			  (agenda    . 5))
 	dashboard-heading-icons '((recents   . "history")
-                                  (bookmarks . "bookmark")
-                                  (agenda    . "calendar")
-                                  (projects  . "rocket")
-                                  (registers . "database")))
-  (dashboard-setup-startup-hook))
+				  (projects  . "rocket")
+				  (bookmarks . "bookmark")
+				  (agenda    . "calendar")
+				  (registers . "database"))
+	dashboard-startupify-list '(dashboard-insert-banner
+				    dashboard-insert-newline
+				    dashboard-insert-footer
+				    dashboard-insert-items
+				    dashboard-insert-newline
+				    dashboard-insert-init-info)
+	dashboard-item-names '(("Recent Files:" . "Recent Files")
+			       ("Projects:" . "Projects")
+			       ("Bookmarks:" . "Bookmarks")
+			       ("Agenda for the coming week:" . "Agenda")
+			       ("Registers:" . "Registers")))
+  (add-hook 'window-size-change-functions 'dashboard-resize-on-hook)
+  (add-hook 'window-setup-hook 'dashboard-resize-on-hook)
+  (add-hook 'emacs-startup-hook 'rc-ensure-dashboard)
+  (add-hook 'server-after-make-frame-hook 'rc-ensure-dashboard))
 
 (use-package ligature
   :config

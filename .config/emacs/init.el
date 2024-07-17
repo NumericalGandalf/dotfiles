@@ -1,9 +1,5 @@
-(require 'server)
-(unless (or (server-running-p) (daemonp))
-  (server-start))
-
 (setq custom-file (locate-user-emacs-file "var/custom.el"))
-(load custom-file :noerror)
+(load custom-file t t)
 
 (require 'package)
 (require 'use-package)
@@ -19,5 +15,9 @@
   :init
   (setq no-littering-etc-directory user-emacs-directory))
 
-(dolist (file '("candy" "qol" "minibuf" "prog" "ext"))
-  (load (no-littering-expand-etc-file-name file)))
+(dolist (file '("candy" "misc" "minibuf" "prog" "extensions"))
+  (load (no-littering-expand-etc-file-name file) nil t))
+
+(require 'server)
+(unless (or (server-running-p) (daemonp))
+  (server-start))

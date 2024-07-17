@@ -18,7 +18,10 @@
 (setq-default c-basic-offset 4
 	      c-ts-mode-indent-offset c-basic-offset)
 
-(use-package magit)
+(use-package magit
+  :config
+  (when global-auto-revert-mode
+    (setq magit-auto-revert-mode nil)))
 
 (use-package editorconfig
   :config

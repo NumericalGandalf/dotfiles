@@ -8,4 +8,3 @@
 (unless (package-installed-p 'emapl)
   (package-vc-install '(emapl :url "https://github.com/NumericalGandalf/emapl.git")))
 (require 'emapl)
-(global-set-key (kbd "M-D") 'emapl-run)
