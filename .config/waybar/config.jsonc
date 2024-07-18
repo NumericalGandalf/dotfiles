@@ -1,6 +1,6 @@
 {
     "position": "top",
-    // "ipc": true,
+    "ipc": true,
     "modules-left": [
         "sway/workspaces",
         "sway/mode",	

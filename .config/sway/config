@@ -4,16 +4,14 @@ set $up k
 set $right l
 
 set $emacs emacsclient -ca emacs
-set $emapl emacsclient -cF "((visibility . nil))" --eval "(emapl-frame)"
-set $waybar ~/.config/sway/waybar.sh
+set $emapl emacsclient -cF "((visibility . nil))" -e "(emapl-frame)"
 
 set $step 10
-set $bg ~/Pictures/Linux.png
+set $bg ~/dotfiles/.config/emacs/res/Emacs.png
 set $lock "swaylock -i $bg -s fit"
 
 exec --no-startup-id $emacs
 exec --no-startup-id swayidle -w before-sleep $lock lock $lock
-exec_always --no-startup-id $waybar -T
 
 font pango:Fira Code 10
 
@@ -53,22 +51,18 @@ bindsym $mod+Shift+9 move container workspace 9, workspace 9
 popup_during_fullscreen smart
 focus_on_window_activation smart
 
-default_border none
-gaps inner 4
-smart_gaps on
+default_border pixel
+smart_borders on
 
-for_window [floating] border pixel
 for_window [window_role="pop-up"] floating enable
 for_window [window_role="task_dialog"] floating enable
 for_window [shell="xwayland"] title_format "[XWayland] %title"
-for_window [title="^emapl$"] floating enable, position center, border pixel
+for_window [title="^emapl$"] floating enable, position center
 
 bindsym $mod+Shift+q kill
 bindsym $mod+Shift+e exec --no-startup-id $emacs
 bindsym $mod+Shift+d exec --no-startup-id $emapl
-bindsym $mod+Shift+t exec --no-startup-id alacritty
 bindsym $mod+Shift+w exec --no-startup-id firefox
-bindsym $mod+Shift+b exec --no-startup-id $waybar
 
 bindsym $mod+Shift+s mode "System"
 mode "System" {
@@ -115,11 +109,11 @@ mode "Audio" {
     bindsym Escape mode "default"
 }
 
-# bar {
-#     swaybar_command waybar
-#     mode dock
-#     hidden_state hide
-# }
+bar {
+    swaybar_command waybar
+    mode hide
+    hidden_state hide
+}
 
 input * {
     xkb_layout us,de
