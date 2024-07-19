@@ -5,18 +5,8 @@
 (unless (server-running-p)
   (server-start))
 
-(defgroup rc nil
-  "User dotfiles configuration."
-  :version "26.1"
-  :group 'local
-  :prefix "rc-")
-
 (setq custom-file (locate-user-emacs-file "var/custom.el"))
 (load custom-file t t)
-
-(defun rc-expand-file (file)
-  "Expands FILE from config root."
-  (expand-file-name file user-emacs-directory))
 
 (require 'package)
 (require 'use-package)
@@ -30,7 +20,12 @@
 
 (use-package no-littering)
 
-(add-to-list 'load-path (rc-expand-file "modules/"))
+(add-to-list 'load-path (locate-user-emacs-file "lisp/"))
 
-(dolist (file '("candy" "goodies" "minibuf" "prog" "extensions"))
-  (load (locate-user-emacs-file (concat "modules/" file)) nil t))
+(require 'candy)
+(require 'goodies)
+(require 'minibuf)
+(require 'prog)
+(require 'apps)
+(require 'rc)
+(require 'dots)
