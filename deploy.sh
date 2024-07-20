@@ -42,7 +42,7 @@ function requires_emacs_version()
 
 function backup_file()
 {
-    [[ ! -f $1 || ! -d $1 ]] && return
+    [[ ! -e $1 ]] && return
     
     local d=$(dirname $1)
     local b=$(basename $1)
@@ -53,7 +53,7 @@ function backup_file()
 	echo "${d}/${b}.${n}.bak"
     }
 
-    while [[ -f $(f) || -d $(f) ]]
+    while [[ -e $(f) ]]
     do
 	let n++
     done
@@ -63,11 +63,13 @@ function backup_file()
 
 function link_emacs_dir()
 {
-    backup_file "$HOME/.emacs"
-    backup_file "$HOME/.emacs.d"
-    [[ -e "$HOME/.emacs" ]] && rm "$HOME/.emacs"
-    [[ -L "$HOME/.emacs.d" ]] && rm "$HOME/.emacs.d"
-    # ln -sf $(realpath emacs) "$HOME/.emacs.d"
+    local emacs_file="$HOME/.emacs"
+    local emacs_dir="$HOME/.emacs.d"
+    backup_file $emacs_file
+    backup_file $emacs_dir
+    [[ -e $emacs_file ]] && rm $emacs_file
+    [[ -e $emacs_dir ]] && rm $emacs_dir
+    ln -sf $(realpath emacs) $emacs_dir
 }
 
 requires_shell bash
