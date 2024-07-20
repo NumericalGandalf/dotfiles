@@ -1,5 +1,6 @@
 (defgroup rc nil
   "User Emacs utilities."
+  :group 'local
   :prefix "-rc")
 
 (defcustom rc-font "Hack Nerd Font Mono"
@@ -37,10 +38,10 @@ Name of downloaded font asset is `rc-font-asset-name'."
 		"https://github.com/ryanoasis/nerd-fonts/releases/latest/download/"
 		font-archive)))
     (make-directory default-directory t)
-    (shell-command (combine-and-quote-strings `("curl" "-sLO" ,link "&&"
-						"tar" "xJf" ,font-archive "&&"
-						"fc-cache" "-f" "&&"
-						"rm" ,font-archive)))
+    (shell-command (combine-and-quote-strings `("curl" "-sLO" ,link)))
+    (shell-command (combine-and-quote-strings `("tar" "xJf" ,font-archive)))
+    (shell-command (combine-and-quote-strings `("fc-cache" "-f")))
+    (shell-command (combine-and-quote-strings `("rm" ,font-archive)))
     (message (combine-and-quote-strings `("Extracted" "archive" ,font-archive
 					  "to" ,default-directory)))))
 

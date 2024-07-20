@@ -32,6 +32,8 @@
 (setq-default auto-save-default nil)
 (auto-save-visited-mode 1)
 
+(setq auth-source-save-behavior nil)
+
 (defun move-text-indent-after-advice (&rest _)
   "Advice for indenting region after move text function."
   (let ((deactivate deactivate-mark))

@@ -5,8 +5,9 @@
     border-radius: 0;
     box-shadow: none;
     text-shadow: none;
-    font-family: "Fira Code", "Font Awesome 6";
+    font-family: "Hack Nerd Font Mono", "Font Awesome 6";
     font-size: 13;
+    margin: 1;
 }
 
 #clock,
@@ -21,7 +22,7 @@
 #mode,
 #window,
 #workspaces {
-    padding: 0 10;    
+    padding: 0 15;    
 }
 
 #workspaces {

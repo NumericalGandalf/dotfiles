@@ -1,6 +1,3 @@
-(require 'rc)
-(require 'dots)
-
 (tool-bar-mode 0)
 (scroll-bar-mode 0)
 (fringe-mode 0)
@@ -57,7 +54,7 @@ If PREFIX is non-nil, open the dashboard anyway."
 	dashboard-set-heading-icons t
 	dashboard-set-file-icons t
 	dashboard-center-content t
-	dashboard-startup-banner (dots-expand-file "assets/Emacs.txt")
+	dashboard-startup-banner (locate-user-emacs-file "res/Emacs.txt")
 	dashboard-heading-shorcut-format ""
 	dashboard-items '((recents   . 5)
 			  (projects  . 5)

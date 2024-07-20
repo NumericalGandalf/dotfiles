@@ -1,5 +1,6 @@
 (defgroup dots nil
   "Dotfile Management."
+  :group 'local
   :prefix "-dots")
 
 (defun dots-expand-file (file)

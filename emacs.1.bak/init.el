@@ -2,7 +2,7 @@
   (startup-redirect-eln-cache "var/eln-cache/"))
 
 (require 'server)
-(unless (server-running-p)
+(unless (or (server-running-p) (daemonp))
   (server-start))
 
 (setq custom-file (locate-user-emacs-file "var/custom.el"))
