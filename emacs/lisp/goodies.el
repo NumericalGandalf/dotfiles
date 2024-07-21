@@ -1,5 +1,3 @@
-(require 'rc)
-
 (setq use-short-answers t
       vc-follow-symlinks t)
 
