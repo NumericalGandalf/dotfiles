@@ -38,12 +38,15 @@ Name of downloaded font asset is `rc-font-asset-name'."
 		"https://github.com/ryanoasis/nerd-fonts/releases/latest/download/"
 		font-archive)))
     (make-directory default-directory t)
-    (shell-command (combine-and-quote-strings `("curl" "-sLO" ,link)))
-    (shell-command (combine-and-quote-strings `("tar" "xJf" ,font-archive)))
-    (shell-command (combine-and-quote-strings `("fc-cache" "-f")))
-    (shell-command (combine-and-quote-strings `("rm" ,font-archive)))
-    (message (combine-and-quote-strings `("Extracted" "archive" ,font-archive
-					  "to" ,default-directory)))))
+    (shell-command (rc-join "curl -sLO" link
+			    "&& tar xJf" font-archive
+			    "&& fc-cache -f"
+			    "&& rm" font-archive))
+    (message (rc-join "Extracted archive" font-archive "to" default-directory))))
+
+(defun rc-join (&rest args)
+  "Join strings ARGS with space as seperator."
+  (s-join " " args))
 
 (defun rc-sudo-buffer (&optional prefix)
   "Open current buffer as root.
@@ -66,7 +69,7 @@ If PREFIX is non-nil, free current buffer from root."
 (global-set-key (kbd "C-r") 'rc-sudo-buffer)
 
 (defun rc-duplicate-line (&optional n)
-  "Duplicates the current line N times."
+  "Duplicate the current line N times."
   (interactive "p")
   (dotimes (_ n)
     (move-beginning-of-line 1)

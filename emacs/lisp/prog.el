@@ -21,17 +21,18 @@
 (use-package magit
   :config
   (when global-auto-revert-mode
-    (setq magit-auto-revert-mode nil)))
+    (magit-auto-revert-mode 0)))
 
 (use-package editorconfig
   :config
   (editorconfig-mode))
 
 (use-package company
+  :custom
+  (company-tooltip-scrollbar-width 0)
+  (company-tooltip-idle-delay 0)
+  (company-tooltip-align-annotations t)
   :config
-  (setq company-tooltip-scrollbar-width 0
-        company-tooltip-idle-delay 0
-        company-tooltip-align-annotations t)
   (global-company-mode))
 
 (dolist (mode '(c c++ rust java))

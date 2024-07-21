@@ -7,7 +7,7 @@
   :type 'natnum)
 
 (defun app-launcher ()
-  "Creates new minibuffer-only frame and calls `app-launcher-run-app'."
+  "Create new minibuffer-only frame and call `app-launcher-run-app'."
   (interactive)
   (with-selected-frame
       (make-frame `((name . "app-launcher")
@@ -19,10 +19,13 @@
       (delete-frame))))
 
 (use-package vterm
-  :config
-  (setq vterm-timer-delay 0.01
-	vterm-max-scrollback 10000
-	vterm-clear-scrollback-when-clearing t)
-  (define-key vterm-mode-map (kbd "C-j") 'vterm-send-C-c))
+  :bind
+  (:map vterm-mode-map
+	("C-j" . vterm-send-C-c))
+  :custom
+  (vterm-timer-delay 0.01)
+  (vterm-max-scrollback 10000)
+  (vterm-clear-scrollback-when-clearing t)
+  (vterm-always-compile-module t))
 
 (provide 'apps)

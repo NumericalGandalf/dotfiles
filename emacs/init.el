@@ -1,6 +1,3 @@
-(when (boundp 'native-comp-eln-load-path)
-  (startup-redirect-eln-cache "var/eln-cache/"))
-
 (require 'server)
 (unless (or (server-running-p) (daemonp))
   (server-start))
@@ -27,5 +24,3 @@
 (require 'minibuf)
 (require 'prog)
 (require 'apps)
-(require 'rc)
-(require 'dots)

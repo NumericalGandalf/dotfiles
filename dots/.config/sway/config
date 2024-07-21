@@ -1,5 +1,3 @@
-include "font"
-
 set $left h
 set $down j
 set $up k
@@ -15,6 +13,9 @@ set $lock "swaylock -i $bg -s fit"
 
 exec --no-startup-id $emacs
 exec --no-startup-id swayidle -w before-sleep $lock lock $lock
+
+include "font"
+include "outputs"
 
 set $mod Mod1
 floating_modifier $mod
@@ -111,11 +112,11 @@ mode "Audio" {
     bindsym Escape mode "default"
 }
 
-bar {
-    swaybar_command waybar
-    mode hide
-    hidden_state hide
-}
+# bar {
+#     swaybar_command waybar
+#     mode hide
+#     hidden_state hide
+# }
 
 input * {
     xkb_layout us,de
@@ -123,4 +124,3 @@ input * {
 }
 
 output * bg $bg fit
-output "Dell Inc. AW2724DM 66YZHV3" mode 2560x1440@165Hz scale 1.25

@@ -1,12 +1,13 @@
 (use-package orderless
-  :config
-  (setq completion-styles '(orderless)
-	completion-category-defaults nil))
+  :custom
+  (completion-styles '(orderless))
+  (completion-category-defaults nil))
 
 (use-package vertico
+  :custom
+  (vertico-cycle t)
+  (enable-recursive-minibuffers t)
   :config
-  (setq vertico-cycle t
-	enable-recursive-minibuffers t)
   (vertico-mode))
 
 (use-package marginalia
@@ -32,17 +33,21 @@
    ("M-o g" . consult-git-grep)
    :map minibuffer-local-map
    ("M-r" . consult-history))
-  :config
-  (setq consult-line-start-from-top t
-        xref-show-xrefs-function 'consult-xref
-        xref-show-definitions-function 'consult-xref))
+  :custom
+  (consult-line-start-from-top t)
+  (xref-show-xrefs-function 'consult-xref)
+  (xref-show-definitions-function 'consult-xref))
 
-(use-package embark)
-
-(use-package embark-consult
+(use-package embark
   :bind
   (("C-." . embark-act)
-   ("C-;" . embark-dwin))
-  :hook (embark-collect-mode . consult-preview-at-point-mode))
+   ("C-;" . embark-dwin)
+   ("C-h B" . embark-bindings))
+  :custom
+  (prefix-help-command 'embark-prefix-help-command))
+
+(use-package embark-consult
+  :hook
+  (embark-collect-mode . consult-preview-at-point-mode))
 
 (provide 'minibuf)

@@ -57,7 +57,7 @@
   (global-set-key (kbd "C-c C-<") 'mc/edit-lines))
 
 (use-package wgrep
-  :config
-  (setq wgrep-auto-save-buffer t))
+  :custom
+  (wgrep-auto-save-buffer t))
 
 (provide 'goodies)
