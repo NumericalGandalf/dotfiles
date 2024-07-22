@@ -112,11 +112,11 @@ mode "Audio" {
     bindsym Escape mode "default"
 }
 
-# bar {
-#     swaybar_command waybar
-#     mode hide
-#     hidden_state hide
-# }
+bar {
+    swaybar_command waybar
+    mode hide
+    hidden_state hide
+}
 
 input * {
     xkb_layout us,de

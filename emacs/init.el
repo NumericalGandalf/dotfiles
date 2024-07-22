@@ -24,3 +24,4 @@
 (require 'minibuf)
 (require 'prog)
 (require 'apps)
+(require 'dots)

@@ -50,4 +50,12 @@
   :hook
   (embark-collect-mode . consult-preview-at-point-mode))
 
+(use-package company
+  :custom
+  (company-tooltip-scrollbar-width 0)
+  (company-tooltip-idle-delay 0)
+  (company-tooltip-align-annotations t)
+  :config
+  (global-company-mode))
+
 (provide 'minibuf)

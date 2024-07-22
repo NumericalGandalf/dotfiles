@@ -1,7 +1,7 @@
 (defgroup rc nil
   "User Emacs utilities."
   :group 'local
-  :prefix "-rc")
+  :prefix "rc-")
 
 (defcustom rc-font "Hack Nerd Font Mono"
   "User nerd font."
@@ -15,25 +15,49 @@
   "Default height of user font."
   :type 'natnum)
 
-(defun rc-load-font ()
-  "Loads user font for all pitches.
-Loaded font is `rc-font', font height is `rc-font-height'."
+(defcustom rc-after-load-font-hook nil
+  "Hook to run after user font gets loaded."
+  :type 'hook)
+
+(defun rc-join (&rest strings)
+  "Join STRINGS with space as seperator."
+  (s-join " " strings))
+
+(defun rc-insert (string &optional nobreak)
+  "Insert STRING into current buffer.
+If NOBREAK is non-nil, do not break line afterwards."
+  (insert string)
+  (unless nobreak
+    (newline)))
+
+(defmacro rc-with-file (file &rest body)
+  "Erase contents of FILE and evaluate BODY."
+  (declare (indent 1))
+  `(with-temp-file ,file
+     (erase-buffer)
+     ,@body))
+
+(defun rc-load-font (&optional prefix)
+  "Load user font and run `rc-after-load-font-hook'.
+If optional PREFIX is non-nil, do not run hooks."
   (interactive)
   (let ((height (* rc-font-height 10)))
     (set-face-attribute 'default nil :font rc-font :height height)
     (set-face-attribute 'fixed-pitch nil :family rc-font  :height height)
     (set-face-attribute 'fixed-pitch-serif nil :family rc-font :height height)
-    (set-face-attribute 'variable-pitch nil :family rc-font :height height)))
+    (set-face-attribute 'variable-pitch nil :family rc-font :height height))
+  (unless prefix
+    (run-hooks 'rc-after-load-font-hook)))
 
-(rc-load-font)
+(rc-load-font t)
 
 (defun rc-install-font ()
-  "Downloads and installs user font from nerd-fonts repo.
-Name of downloaded font asset is `rc-font-asset-name'."
+  "Download and install user font from nerd-fonts repo."
   (interactive)
-  (let* ((default-directory (concat
-			     "~/.local/share/fonts/" rc-font-asset-name "/"))
-	 (font-archive (concat rc-font-asset-name ".tar.xz"))
+  (let* ((asset-name rc-font-asset-name)
+	 (default-directory (concat
+			     "~/.local/share/fonts/" asset-name "/"))
+	 (font-archive (concat asset-name ".tar.xz"))
 	 (link (concat
 		"https://github.com/ryanoasis/nerd-fonts/releases/latest/download/"
 		font-archive)))
@@ -44,10 +68,6 @@ Name of downloaded font asset is `rc-font-asset-name'."
 			    "&& rm" font-archive))
     (message (rc-join "Extracted archive" font-archive "to" default-directory))))
 
-(defun rc-join (&rest args)
-  "Join strings ARGS with space as seperator."
-  (s-join " " args))
-
 (defun rc-sudo-buffer (&optional prefix)
   "Open current buffer as root.
 If PREFIX is non-nil, free current buffer from root."
@@ -55,7 +75,7 @@ If PREFIX is non-nil, free current buffer from root."
   (let* ((buf (current-buffer))
 	 (file (or (buffer-file-name)
 		   (when (derived-mode-p 'dired-mode)
-		     (expand-file-name default-directory))))
+		     default-directory)))
 	 (match (string-match "^/sudo:" file)))
     (when file
       (if prefix

@@ -5,10 +5,9 @@
     border-radius: 0;
     box-shadow: none;
     text-shadow: none;
-    font-family: "Hack Nerd Font Mono", "Font Awesome 6";
-    font-size: 13;
-    margin: 1;
 }
+
+@import url("font.css");
 
 #clock,
 #language,

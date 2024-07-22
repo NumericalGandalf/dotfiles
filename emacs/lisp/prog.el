@@ -27,14 +27,6 @@
   :config
   (editorconfig-mode))
 
-(use-package company
-  :custom
-  (company-tooltip-scrollbar-width 0)
-  (company-tooltip-idle-delay 0)
-  (company-tooltip-align-annotations t)
-  :config
-  (global-company-mode))
-
 (dolist (mode '(c c++ rust java))
   (add-hook (intern (concat (symbol-name mode) "-mode-hook")) 'eglot-ensure)
   (add-hook (intern (concat (symbol-name mode) "-ts-mode-hook")) 'eglot-ensure))
