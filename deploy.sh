@@ -1,5 +1,7 @@
 #!/usr/bin/sh
 
+emacs_dir="$HOME/.emacs.d"
+
 function fail() {
     echo "Error:" "$@" >&2
     exit 1
@@ -21,19 +23,26 @@ function requires_emacs_version() {
 	fail "Requires at least Emacs version" $1
 }
 
+function unlink_emacs_dir() {
+    [[ -L $emacs_dir ]] && rm $emacs_dir
+    [[ -d $emacs_dir ]] && rm -rf $emacs_dir
+}
+
 function link_emacs_dir() {
+    local emacs_file="$HOME/.emacs"
     local dot_emacs_dir=$(realpath emacs)
     [[ ! -d $dot_emacs_dir ]] && fail "Missing Emacs dotfiles"
     
-    local emacs_file="$HOME/.emacs"
-    local emacs_dir="$HOME/.emacs.d"
-
     [[ -e $emacs_file ]] && rm $emacs_file
-    [[ -L $emacs_dir ]] && rm $emacs_dir
-    [[ -d $emacs_dir ]] && rm -rf $emacs_dir
+    unlink_emacs_dir
 
     ln -s $dot_emacs_dir $emacs_dir
 }
+
+if [[ $1 == "-d" ]]; then
+    unlink_emacs_dir
+    exit 0
+fi
 
 requires_shell bash
 

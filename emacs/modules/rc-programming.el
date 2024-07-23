@@ -46,4 +46,4 @@
   (define-key eglot-mode-map (kbd "C-c l f") 'eglot-format)
   (define-key eglot-mode-map (kbd "C-c l a") 'eglot-code-actions))
 
-(provide 'prog)
+(provide 'rc-programming)

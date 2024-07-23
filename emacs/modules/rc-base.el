@@ -3,7 +3,7 @@
   :group 'local
   :prefix "rc-")
 
-(defcustom rc-font "Hack Nerd Font Mono"
+(defcustom rc-font "Hack Nerd Font"
   "User nerd font."
   :type 'string)
 
@@ -16,8 +16,18 @@
   :type 'natnum)
 
 (defcustom rc-after-load-font-hook nil
-  "Hook to run after user font gets loaded."
+  "Hook to run after user font gets loaded.
+
+During those hooks, FONT is bound to the fonts name
+and HEIGHT is bound to the fonts height."
   :type 'hook)
+
+(defun rc-var-file (&optional file)
+  (expand-file-name
+   (if file file "./")
+   (if (eq system-type 'gnu/linux)
+       "~/.cache/emacs/var/"
+     (locate-user-emacs-file "var/"))))
 
 (defun rc-join (&rest strings)
   "Join STRINGS with space as seperator."
@@ -37,10 +47,20 @@ If NOBREAK is non-nil, do not break line afterwards."
      (erase-buffer)
      ,@body))
 
+(setq use-short-answers t
+      vc-follow-symlinks t
+      auth-source-save-behavior nil)
+
+(setq dired-listing-switches "-lah"
+      dired-free-space 'separate
+      dired-recursive-deletes 'always
+      dired-dwim-target t
+      dired-auto-revert-buffer t)
+
 (defun rc-load-font (&optional prefix)
   "Load user font and run `rc-after-load-font-hook'.
 If optional PREFIX is non-nil, do not run hooks."
-  (interactive)
+  (interactive "P")
   (let ((height (* rc-font-height 10)))
     (set-face-attribute 'default nil :font rc-font :height height)
     (set-face-attribute 'fixed-pitch nil :family rc-font  :height height)
@@ -68,37 +88,4 @@ If optional PREFIX is non-nil, do not run hooks."
 			    "&& rm" font-archive))
     (message (rc-join "Extracted archive" font-archive "to" default-directory))))
 
-(defun rc-sudo-buffer (&optional prefix)
-  "Open current buffer as root.
-If PREFIX is non-nil, free current buffer from root."
-  (interactive "P")
-  (let* ((buf (current-buffer))
-	 (file (or (buffer-file-name)
-		   (when (derived-mode-p 'dired-mode)
-		     default-directory)))
-	 (match (string-match "^/sudo:" file)))
-    (when file
-      (if prefix
-	  (when match
-	    (find-file (tramp-file-local-name file))
-	    (kill-buffer buf))
-	(unless match
-	  (find-file (concat "/sudo::" file))
-	  (kill-buffer buf))))))
-
-(global-set-key (kbd "C-r") 'rc-sudo-buffer)
-
-(defun rc-duplicate-line (&optional n)
-  "Duplicate the current line N times."
-  (interactive "p")
-  (dotimes (_ n)
-    (move-beginning-of-line 1)
-    (kill-line)
-    (yank)
-    (open-line 1)
-    (next-line 1)
-    (yank)))
-
-(global-set-key (kbd "C-q") 'rc-duplicate-line)
-
-(provide 'rc)
+(provide 'rc-base)

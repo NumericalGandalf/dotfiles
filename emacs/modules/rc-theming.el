@@ -1,4 +1,6 @@
-(require 'rc)
+(defcustom scroll-margin-percentage 40
+  "Scroll margin in percent."
+  :type 'natnum)
 
 (tool-bar-mode 0)
 (scroll-bar-mode 0)
@@ -34,9 +36,6 @@
   (doom-modeline-buffer-file-name-style 'file-name-with-project)
   (doom-modeline-buffer-modification-icon nil)
   (doom-modeline-highlight-modified-buffer-name nil))
-
-(defun display-startup-echo-area-message ())
-(setq server-client-instructions nil)
 
 (defun dashboard-ensure (&optional prefix)
   "Open dashboard if window is not splitted and current buffer is scratch.
@@ -78,4 +77,34 @@ If PREFIX is non-nil, open the dashboard anyway."
   (add-hook 'emacs-startup-hook 'dashboard-ensure)
   (add-hook 'server-after-make-frame-hook 'dashboard-ensure))
 
-(provide 'candy)
+(setq display-line-numbers-width-start t
+      display-line-numbers-grow-only t
+      display-line-numbers-type 'relative)
+(global-display-line-numbers-mode)
+
+(defun display-line-numbers-disable ()
+  "Disable line numbers in current buffer."
+  (interactive)
+  (display-line-numbers-mode 0))
+
+(dolist (mode '(image eww))
+  (add-hook
+   (intern (concat (symbol-name mode) "-mode-hook"))
+   'display-line-numbers-disable))
+
+(column-number-mode)
+(global-visual-line-mode)
+
+(setq scroll-step 1
+      scroll-preserve-screen-position t)
+
+(defun scroll-margin-update ()
+  "Update scroll margin by `scroll-margin-percentage'."
+  (interactive)
+  (setq scroll-margin (floor (* (window-body-height)
+				(* scroll-margin-percentage 0.01)))))
+
+(scroll-margin-update)
+(add-hook 'window-configuration-change-hook 'scroll-margin-update)
+
+(provide 'rc-theming)

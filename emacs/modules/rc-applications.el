@@ -28,4 +28,4 @@
   (vterm-clear-scrollback-when-clearing t)
   (vterm-always-compile-module t))
 
-(provide 'apps)
+(provide 'rc-applications)

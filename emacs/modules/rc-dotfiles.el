@@ -1,5 +1,4 @@
 (require 'cl-lib)
-(require 'rc)
 
 (defgroup dots nil
   "Dotfile Management."
@@ -94,4 +93,4 @@ If PREFIX is non-nil, run disconnection."
 	(addr "90:9C:4A:DA:5C:9F"))
     (message (rc-join "bluetoothctl" method addr "&> /dev/null"))))
 
-(provide 'dots)
+(provide 'rc-dotfiles)

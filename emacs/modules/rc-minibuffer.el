@@ -1,3 +1,5 @@
+(savehist-mode)
+
 (use-package orderless
   :custom
   (completion-styles '(orderless))
@@ -58,4 +60,4 @@
   :config
   (global-company-mode))
 
-(provide 'minibuf)
+(provide 'rc-minibuffer)

@@ -1,27 +1,15 @@
-(require 'server)
-(unless (or (server-running-p) (daemonp))
-  (server-start))
+(add-to-list 'load-path (locate-user-emacs-file "modules/"))
 
-(setq custom-file (locate-user-emacs-file "var/custom.el"))
+(require 'rc-base)
+
+(setq custom-file (rc-var-file "custom.el"))
 (load custom-file t t)
 
-(require 'package)
-(require 'use-package)
-(setq package-user-dir (locate-user-emacs-file "var/elpa/")
-      package-gnupghome-dir (expand-file-name "gnupg/" package-user-dir)
-      use-package-always-ensure t)
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
-(package-initialize)
-(unless package-archive-contents
-  (package-refresh-contents))
-
-(use-package no-littering)
-
-(add-to-list 'load-path (locate-user-emacs-file "lisp/"))
-
-(require 'candy)
-(require 'goodies)
-(require 'minibuf)
-(require 'prog)
-(require 'apps)
-(require 'dots)
+(require 'rc-packages)
+(require 'rc-theming)
+(require 'rc-dotfiles)
+(require 'rc-minibuffer)
+(require 'rc-applications)
+(require 'rc-editing)
+(require 'rc-programming)
+(require 'rc-keybindings)
