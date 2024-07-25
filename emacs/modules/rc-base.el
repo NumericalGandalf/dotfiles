@@ -34,11 +34,6 @@ Cache directories are system dependent:
   (interactive)
   (find-file (file-truename user-init-file)))
 
-(defun rc-open-emacs-dir ()
-  "Open `user-emacs-directory' in dired."
-  (interactive)
-  (find-file (file-truename user-emacs-directory)))
-
 (defun rc-open-cache-dir ()
   "Open `rc-cache-file' root in dired."
   (interactive)
@@ -90,17 +85,16 @@ If optional PREFIX is non-nil, do not run hooks."
   "Download and install user font from nerd-fonts repo."
   (interactive)
   (let* ((asset-name rc-font-asset-name)
-	 (default-directory (concat
-			     "~/.local/share/fonts/" asset-name "/"))
+	 (default-directory (concat "~/.local/share/fonts/" asset-name "/"))
 	 (font-archive (concat asset-name ".tar.xz"))
 	 (link (concat
 		"https://github.com/ryanoasis/nerd-fonts/releases/latest/download/"
 		font-archive)))
     (make-directory default-directory t)
-    (call-process-shell-command (rc-join "curl -sLO" link))
-    (call-process-shell-command (rc-join "tar xJf" font-archive))
-    (call-process-shell-command "fc-cache -f")
-    (call-process-shell-command (rc-join "rm" font-archive))
+    (call-process-shell-command (rc-join "curl -sLO" link
+                                         "&& tar xJf" font-archive
+                                         "&& fc-cache -f"
+                                         "&& rm" font-archive))
     (message "Extracted archive %s to %s" font-archive default-directory)))
 
 (provide 'rc-base)

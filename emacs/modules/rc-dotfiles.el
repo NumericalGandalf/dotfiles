@@ -5,6 +5,10 @@
   :group 'local
   :prefix "dots-")
 
+(defcustom dots-deploy-hook nil
+  "Hooks to run on dotfiles deploy."
+  :type 'hook)
+
 (defcustom dots-sway-font-height-offset -3
   "Offset of sway font height."
   :type 'integer)
@@ -46,6 +50,16 @@ Expansions [@]:
   "Expand FILE from the dotfiles asset directory."
   (expand-file-name (or file "./")
                     (dots-expand-file "../assets/")))
+
+(defun dots-open-files ()
+  "Open `dots-expand-file' in dired."
+  (interactive)
+  (find-file (file-truename (dots-expand-file))))
+
+(defun dots-open-assets ()
+  "Open `dots-expand-asset' in dired."
+  (interactive)
+  (find-file (file-truename (dots-expand-asset))))
 
 (defun dots-stow-destination (&optional file)
   "Get stow destination of FILE.
@@ -119,6 +133,13 @@ If PREFIX is non-nil, reset the scheme keys."
   (interactive)
   (call-process-shell-command "swaymsg reload"))
 
+(defun dots-sway-write-wallpaper ()
+  "Write wallpaper into sway config."
+  (interactive)
+  (rc-with-file (dots-expand-file ".config/sway/wallpaper")
+    (insert (rc-join "set $wallpaper"
+                     (dots-expand-asset "butterfly.png")))))
+
 (defun dots-sway-write-font ()
   "Write `rc-font' into sway config."
   (interactive)
@@ -143,6 +164,16 @@ If PREFIX is non-nil, reset the scheme keys."
     (insert "}")
     (indent-region (point-min) (point-max))))
 
+(defun dots-kitty-write-font ()
+  "Write `rc-font' into kitty config."
+  (interactive)
+  (rc-with-file (dots-expand-file ".config/kitty/font.conf")
+    (rc-insert (rc-join "font_family" rc-font))
+    (rc-insert "bold_font auto")
+    (rc-insert "italic_font auto")
+    (rc-insert "bold_italic_font auto")
+    (insert (rc-join "font_size" (int-to-string rc-font-height)))))
+
 (defun dots-alacritty-write-font ()
   "Write `rc-font' into alacritty config."
   (interactive)
@@ -151,6 +182,13 @@ If PREFIX is non-nil, reset the scheme keys."
     (rc-insert (rc-join "normal" "=" "{" "family" "="
 			(prin1-to-string rc-font) "}"))
     (insert (rc-join "size" "=" (int-to-string rc-font-height)))))
+
+(defun dots-deploy-all ()
+  "Deploy dotfiles and run hooks `dots-deploy-hook'."
+  (interactive)
+  (dots-sway-write-font)
+  (dots-sway-write-wallpaper)
+  (dots-waybar-write-font))
 
 (defun dots-bluetooth-connect (&optional prefix)
   "Connect AirPods Max via bluez bluetoothctl.

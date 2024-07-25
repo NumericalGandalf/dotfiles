@@ -1,5 +1,8 @@
 (savehist-mode)
 
+(setq resize-mini-windows t
+      enable-recursive-minibuffers t)
+
 (use-package orderless
   :custom
   (completion-styles '(orderless))
@@ -8,7 +11,6 @@
 (use-package vertico
   :custom
   (vertico-cycle t)
-  (enable-recursive-minibuffers t)
   :config
   (vertico-mode))
 

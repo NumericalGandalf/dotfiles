@@ -42,9 +42,10 @@
    "C->" 'mc/mark-all-like-this
    "C-<" 'mc/edit-lines
 
-   "o i" 'rc-open-emacs-dir
-   "o I" 'rc-open-init-file
-   "o p" 'rc-open-cache-dir
+   "o ." 'rc-open-init-file
+   "o ," 'rc-open-cache-dir
+   "o /" 'dots-open-files
+   "o ?" 'dots-open-assets
    "o y" 'dashboard-force
 
    "r t" 'vterm)
