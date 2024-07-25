@@ -1,10 +1,10 @@
-(unless (package-installed-p 'app-launcher)
-  (package-vc-install
-   '(app-launcher :url "https://github.com/SebastienWae/app-launcher.git")))
-
 (defcustom app-launcher-frame-height 20
   "Height of `app-launcher' frame."
   :type 'natnum)
+
+(use-package app-launcher
+  :straight (:host github :repo "SebastienWae/app-launcher")
+  :commands (app-launcher))
 
 (defun app-launcher ()
   "Create new minibuffer-only frame and call `app-launcher-run-app'."
@@ -19,9 +19,7 @@
       (delete-frame))))
 
 (use-package vterm
-  :bind
-  (:map vterm-mode-map
-	("C-j" . vterm-send-C-c))
+  :defer
   :custom
   (vterm-timer-delay 0.01)
   (vterm-max-scrollback 10000)

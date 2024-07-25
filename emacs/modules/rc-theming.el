@@ -1,7 +1,3 @@
-(defcustom scroll-margin-percentage 40
-  "Scroll margin in percent."
-  :type 'natnum)
-
 (tool-bar-mode 0)
 (scroll-bar-mode 0)
 
@@ -22,12 +18,11 @@
   :hook
   (ibuffer-mode . nerd-icons-ibuffer-mode))
 
-(unless (package-installed-p 'nerd-icons-completion)
-  (package-vc-install
-   '(nerd-icons-completion
-     :url "https://github.com/maxecharel/nerd-icons-completion.git"
-     :branch "contrib")))
-(add-hook 'marginalia-mode-hook 'nerd-icons-completion-marginalia-setup)
+(use-package nerd-icons-completion
+  :straight
+  (:host github :repo "maxecharel/nerd-icons-completion" :branch "contrib")
+  :hook
+  (marginalia-mode . nerd-icons-completion-marginalia-setup))
 
 (use-package doom-modeline
   :init
@@ -37,16 +32,8 @@
   (doom-modeline-buffer-modification-icon nil)
   (doom-modeline-highlight-modified-buffer-name nil))
 
-(defun dashboard-ensure (&optional prefix)
-  "Open dashboard if window is not splitted and current buffer is scratch.
-If PREFIX is non-nil, open the dashboard anyway."
-  (interactive "P")
-  (when (or prefix (and (string= (buffer-name) "*scratch*")
-			(= (length (window-list)) 1)))
-    (delete-other-windows)
-    (dashboard-open)))
-
 (use-package dashboard
+  :defer
   :custom
   (inhibit-startup-message t)
   (dashboard-icon-type 'nerd-icons)
@@ -54,8 +41,8 @@ If PREFIX is non-nil, open the dashboard anyway."
   (dashboard-set-heading-icons t)
   (dashboard-set-file-icons t)
   (dashboard-center-content t)
-  (dashboard-startup-banner (locate-user-emacs-file "banner.txt"))
   (dashboard-heading-shorcut-format "")
+  (dashboard-startup-banner (dots-expand-asset "banner.txt"))
   (dashboard-items '((recents   . 5)
 		     (projects  . 5)
 		     (bookmarks . 5)
@@ -73,38 +60,22 @@ If PREFIX is non-nil, open the dashboard anyway."
 			  ("Registers:" . "Registers")))
   :config
   (add-hook 'window-size-change-functions 'dashboard-resize-on-hook)
-  (add-hook 'window-setup-hook 'dashboard-resize-on-hook)
-  (add-hook 'emacs-startup-hook 'dashboard-ensure)
-  (add-hook 'server-after-make-frame-hook 'dashboard-ensure))
+  (add-hook 'window-setup-hook 'dashboard-resize-on-hook))
 
-(setq display-line-numbers-width-start t
-      display-line-numbers-grow-only t
-      display-line-numbers-type 'relative)
-(global-display-line-numbers-mode)
-
-(defun display-line-numbers-disable ()
-  "Disable line numbers in current buffer."
+(defun dashboard-ensure ()
+  "Open dashboard if window is not splitted and current buffer is scratch."
   (interactive)
-  (display-line-numbers-mode 0))
+  (when (and (string= (buffer-name) "*scratch*")
+	     (= (length (window-list)) 1))
+    (dashboard-open)))
 
-(dolist (mode '(image eww))
-  (add-hook
-   (intern (concat (symbol-name mode) "-mode-hook"))
-   'display-line-numbers-disable))
-
-(column-number-mode)
-(global-visual-line-mode)
-
-(setq scroll-step 1
-      scroll-preserve-screen-position t)
-
-(defun scroll-margin-update ()
-  "Update scroll margin by `scroll-margin-percentage'."
+(defun dashboard-force ()
+  "Force dashboard and delete all other windows."
   (interactive)
-  (setq scroll-margin (floor (* (window-body-height)
-				(* scroll-margin-percentage 0.01)))))
+  (delete-other-windows)
+  (dashboard-open))
 
-(scroll-margin-update)
-(add-hook 'window-configuration-change-hook 'scroll-margin-update)
+(add-hook 'emacs-startup-hook 'dashboard-ensure)
+(add-hook 'server-after-make-frame-hook 'dashboard-ensure)
 
 (provide 'rc-theming)

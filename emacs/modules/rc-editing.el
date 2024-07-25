@@ -1,6 +1,4 @@
-(setq ffap-require-prefix t)
 (ffap-bindings)
-
 (save-place-mode)
 
 (setq-default auto-save-default nil)
@@ -13,6 +11,21 @@
       auto-revert-remote-files t
       auto-revert-verbose nil)
 (global-auto-revert-mode 1)
+
+(setq display-line-numbers-width-start t
+      display-line-numbers-grow-only t
+      display-line-numbers-type 'relative)
+
+(dolist (mode '(conf text prog dired vterm))
+  (add-hook
+   (intern (concat (symbol-name mode) "-mode-hook"))
+   'display-line-numbers-mode))
+
+(column-number-mode)
+(global-visual-line-mode)
+
+(setq scroll-step 1
+      scroll-preserve-screen-position t)
 
 (defun rc-sudo-buffer (&optional prefix)
   "Open current buffer as root.
@@ -52,20 +65,16 @@ If PREFIX is non-nil, free current buffer from root."
     (setq deactivate-mark deactivate)))
 
 (use-package move-text
+  :defer
   :config
-  (global-set-key (kbd "M-P") 'move-text-up)
-  (global-set-key (kbd "M-N") 'move-text-down)
   (advice-add 'move-text-up :after 'move-text-indent-after)
   (advice-add 'move-text-down :after 'move-text-indent-after))
 
 (use-package multiple-cursors
-  :config
-  (global-set-key (kbd "C->") 'mc/mark-next-like-this)
-  (global-set-key (kbd "C-<") 'mc/unmark-next-like-this)
-  (global-set-key (kbd "C-c C->") 'mc/mark-all-like-this)
-  (global-set-key (kbd "C-c C-<") 'mc/edit-lines))
+  :defer)
 
 (use-package wgrep
+  :defer
   :custom
   (wgrep-auto-save-buffer t))
 

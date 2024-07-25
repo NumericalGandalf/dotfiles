@@ -1,89 +1,89 @@
 {
     "ipc": true,
     "modules-left": [
-        "sway/workspaces",
-        "sway/mode",	
+	"sway/workspaces",
+	"sway/mode",	
 	"sway/window",
     ],
     "modules-right": [
-        "battery",
-        "network",
+	"battery",
+	"network",
 	"pulseaudio",
 	"bluetooth",
-        "memory",
-        "disk",
-        "cpu",
+	"memory",
+	"disk",
+	"cpu",
 	"temperature",
-        "sway/language",
-        "clock"
+	"sway/language",
+	"clock"
     ],
     "clock": {
-        "format": "<span font='icon'></span> {:%a, %d %b %H:%M:%S}",
+	"format": "<span font='icon'></span> {:%a, %d %b %H:%M:%S}",
 	"interval": 1
     },
     "sway/language": {
-        "format": "<span font='icon'></span> {short}",
+	"format": "<span font='icon'></span> {short}",
 	"tooltip": false
     },
     "cpu": {
-        "format": "<span font='icon'></span> {usage}%",
-        "states": {
-            "warning": 70,
-            "critical": 90
-        }
+	"format": "<span font='icon'></span> {usage}%",
+	"states": {
+	    "warning": 70,
+	    "critical": 90
+	}
     },
     "temperature": {
-        "format": "<span font='icon'></span> {temperatureC}°C",
+	"format": "<span font='icon'></span> {temperatureC}°C",
 	"tooltip": false,
     },
     "disk": {
-        "format": "<span font='icon'></span> {percentage_used}%",
-        "states": {
-            "warning": 70,
-            "critical": 90
-        }
+	"format": "<span font='icon'></span> {percentage_used}%",
+	"states": {
+	    "warning": 70,
+	    "critical": 90
+	}
     },
     "memory": {
-        "format": "<span font='icon'></span> {percentage}%",
+	"format": "<span font='icon'></span> {percentage}%",
 	"tooltip-format": "{used}GiB used out of {total}GiB\n{swapUsed}GiB Swap used out of {swapTotal}GiB ({swapPercentage}%)",
-        "states": {
-            "warning": 70,
-            "critical": 90
-        }
+	"states": {
+	    "warning": 70,
+	    "critical": 90
+	}
     },
     "network": {
-    	"interval": 1,
-        "format-wifi": "<span font='icon'></span> {essid}",
-        "format-ethernet": "<span font='icon'></span> {ifname}",
-        "tooltip-format-wifi": "{ifname}: {ipaddr}/{cidr} ({signalStrength}%) {bandwidthTotalBytes}",
-        "tooltip-format-ethernet": "{ifname}: {ipaddr}/{cidr} {bandwithTotalBytes}"
+	"interval": 1,
+	"format-wifi": "<span font='icon'></span> {essid}",
+	"format-ethernet": "<span font='icon'></span> {ifname}",
+	"tooltip-format-wifi": "{ifname}: {ipaddr}/{cidr} ({signalStrength}%) {bandwidthTotalBytes}",
+	"tooltip-format-ethernet": "{ifname}: {ipaddr}/{cidr} {bandwithTotalBytes}"
     },
     "pulseaudio": {
 	"format": "<span font='icon'></span> {volume}%",
 	"format-muted": "<span font='icon'></span> {volume}%",
 	"format-source": "<span font='icon'></span> {volume}%",
-        "format-source-muted": "<span font='icon'></span> {volume}%",
+	"format-source-muted": "<span font='icon'></span> {volume}%",
 	"scroll-step": 0,
 	"on-click": "pavucontrol"
     },
     "bluetooth": {
-        "format": "<span font='icon'></span> {status}",
+	"format": "<span font='icon'></span> {status}",
 	"format-connected": "<span font='icon'></span> {num_connections}",
-    	"on-click": "blueman-manager",
+	"on-click": "blueman-manager",
     },
     "battery": {
-        "format": "{capacity}%",
-        "format-charging": "{capacity}%",
-        "states": {
-            "warning": 30,
-            "critical": 15
-        }
+	"format": "{capacity}%",
+	"format-charging": "{capacity}%",
+	"states": {
+	    "warning": 30,
+	    "critical": 15
+	}
     },
     "sway/window": {
-        "format": "<span font='icon'></span> {}",
+	"format": "<span font='icon'></span> {}",
 	"tooltip": false,
     },
     "sway/mode": {
-        "format": "<span font='icon'></span> {}",
+	"format": "<span font='icon'></span> {}",
     },
 }

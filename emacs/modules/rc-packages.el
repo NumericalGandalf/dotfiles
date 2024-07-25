@@ -19,9 +19,11 @@
 	(eval-print-last-sexp)))
     (load bootstrap-file nil 'nomessage)))
 
-(setq package-user-dir (rc-var-file "elpa/")
-      package-gnupghome-dir (expand-file-name "gnupg/" package-user-dir)
-      use-package-always-ensure t)
+(setq package-user-dir (rc-cache-file "elpa/")
+      package-gnupghome-dir (expand-file-name "gnupg/" package-user-dir))
+
+(setq use-package-always-ensure t
+      use-package-compute-statistics t)
 
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 
@@ -32,13 +34,16 @@
 
 (use-package no-littering
   :init
-  (setq no-littering-var-directory (rc-var-file)
+  (setq no-littering-var-directory (rc-cache-file)
 	no-littering-etc-directory user-emacs-directory))
 
-(use-package delight)
-(use-package diminish)
+(use-package diminish
+  :defer)
 
-(setq straight-base-dir (rc-var-file))
+(use-package delight
+  :defer)
+
+(setq straight-base-dir (rc-cache-file))
 (straight-bootstrap)
 
 (provide 'rc-packages)

@@ -1,24 +1,40 @@
+(defcustom treesit-ignore-langs '(latex markdown janet)
+  "List of languages to ignore in `treesit-ensure-all'."
+  :type '(repeat symbol))
+
+(defcustom treesit-user-load-path (rc-cache-file "tree-sitter/")
+  "User tree-sitter library load path."
+  :type 'string)
+
 (use-package treesit-auto
   :config
   (global-treesit-auto-mode))
 
-(use-package rust-mode)
-(use-package lua-mode)
-(use-package markdown-mode)
-(use-package cmake-mode)
-(use-package yaml-mode)
-(use-package json-mode)
+(defun treesit-ensure-all ()
+  (interactive)
+  (setq treesit-language-source-alist
+        (treesit-auto--build-treesit-source-alist))
+  (dolist (source treesit-language-source-alist)
+    (let ((lang (nth 0 source)))
+      (unless (or (treesit-ready-p lang t)
+                  (member lang treesit-ignore-langs))
+        (apply 'treesit--install-language-grammar-1
+               treesit-user-load-path source)))))
+
+(add-to-list 'treesit-extra-load-path treesit-user-load-path)
+;; (add-to-list 'dots-deploy-hook 'treesit-ensure-all)
 
 (setq compilation-ask-about-save nil
       compile-command nil)
 
 (electric-pair-mode)
 
-(setq indent-tabs-mode nil)
-(setq-default c-basic-offset 4
+(setq-default indent-tabs-mode nil
+	      c-basic-offset 4
 	      c-ts-mode-indent-offset c-basic-offset)
 
 (use-package magit
+  :defer  
   :config
   (when global-auto-revert-mode
     (magit-auto-revert-mode 0)))
@@ -28,7 +44,6 @@
   (editorconfig-mode))
 
 (dolist (mode '(c c++ rust java))
-  (add-hook (intern (concat (symbol-name mode) "-mode-hook")) 'eglot-ensure)
   (add-hook (intern (concat (symbol-name mode) "-ts-mode-hook")) 'eglot-ensure))
 
 (with-eval-after-load 'eglot

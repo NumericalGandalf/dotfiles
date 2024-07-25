@@ -8,26 +8,41 @@
   :type 'string)
 
 (defcustom rc-font-asset-name "Hack"
-  "Asset name of user font in nerd-fonts repo."
+  "Asset name of user font in the nerd-fonts repo."
   :type 'string)
 
 (defcustom rc-font-height 13
-  "Default height of user font."
+  "Default height of the user font."
   :type 'natnum)
 
 (defcustom rc-after-load-font-hook nil
-  "Hook to run after user font gets loaded.
-
-During those hooks, FONT is bound to the fonts name
-and HEIGHT is bound to the fonts height."
+  "Hooks to run after user font gets loaded."
   :type 'hook)
 
-(defun rc-var-file (&optional file)
-  (expand-file-name
-   (if file file "./")
-   (if (eq system-type 'gnu/linux)
-       "~/.cache/emacs/var/"
-     (locate-user-emacs-file "var/"))))
+(defun rc-cache-file (&optional file)
+  "Expand FILE from emacs cache directory.
+
+Cache directories are system dependent:
+    gnu/linux -> ~/.cache/emacs"
+  (expand-file-name (or file "./")
+		    (if (eq system-type 'gnu/linux)
+			"~/.cache/emacs/"
+		      (locate-user-emacs-file "var/"))))
+
+(defun rc-open-init-file ()
+  "Open `user-init-file'."
+  (interactive)
+  (find-file (file-truename user-init-file)))
+
+(defun rc-open-emacs-dir ()
+  "Open `user-emacs-directory' in dired."
+  (interactive)
+  (find-file (file-truename user-emacs-directory)))
+
+(defun rc-open-cache-dir ()
+  "Open `rc-cache-file' root in dired."
+  (interactive)
+  (find-file (file-truename (rc-cache-file))))
 
 (defun rc-join (&rest strings)
   "Join STRINGS with space as seperator."
@@ -82,10 +97,10 @@ If optional PREFIX is non-nil, do not run hooks."
 		"https://github.com/ryanoasis/nerd-fonts/releases/latest/download/"
 		font-archive)))
     (make-directory default-directory t)
-    (shell-command (rc-join "curl -sLO" link
-			    "&& tar xJf" font-archive
-			    "&& fc-cache -f"
-			    "&& rm" font-archive))
-    (message (rc-join "Extracted archive" font-archive "to" default-directory))))
+    (call-process-shell-command (rc-join "curl -sLO" link))
+    (call-process-shell-command (rc-join "tar xJf" font-archive))
+    (call-process-shell-command "fc-cache -f")
+    (call-process-shell-command (rc-join "rm" font-archive))
+    (message "Extracted archive %s to %s" font-archive default-directory)))
 
 (provide 'rc-base)

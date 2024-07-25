@@ -69,58 +69,58 @@ bindsym $mod+Shift+w exec --no-startup-id firefox
 
 bindsym $mod+Shift+s mode "System"
 mode "System" {
-    bindsym f fullscreen toggle, mode "default"
-    bindsym v floating toggle, mode "default"
-    bindsym y split toggle, mode "default"
-    bindsym u layout toggle split tabbed, mode "default"
-    
-    bindsym e exit
-    bindsym c reload
-    bindsym l exec --no-startup-id loginctl lock-session, mode "default"
-    bindsym r exec --no-startup-id loginctl reboot, mode "default"
-    bindsym s exec --no-startup-id loginctl suspend, mode "default"
-    bindsym p exec --no-startup-id loginctl poweroff, mode "default"
-    bindsym h exec --no-startup-id loginctl hibernate, mode "default"
+bindsym f fullscreen toggle, mode "default"
+bindsym v floating toggle, mode "default"
+bindsym y split toggle, mode "default"
+bindsym u layout toggle split tabbed, mode "default"
 
-    bindsym Escape mode "default"
+bindsym e exit
+bindsym c reload
+bindsym l exec --no-startup-id loginctl lock-session, mode "default"
+bindsym r exec --no-startup-id loginctl reboot, mode "default"
+bindsym s exec --no-startup-id loginctl suspend, mode "default"
+bindsym p exec --no-startup-id loginctl poweroff, mode "default"
+bindsym h exec --no-startup-id loginctl hibernate, mode "default"
+
+bindsym Escape mode "default"
 }
 
 bindsym $mod+Shift+r mode "Resize"
 mode "Resize" {
-    bindsym $right resize grow right $step px or $step ppt
-    bindsym Shift+$right resize shrink right $step px or $step ppt
+bindsym $right resize grow right $step px or $step ppt
+bindsym Shift+$right resize shrink right $step px or $step ppt
 
-    bindsym $down resize grow down $step px or $step ppt
-    bindsym Shift+$down resize shrink down $step px or $step ppt
+bindsym $down resize grow down $step px or $step ppt
+bindsym Shift+$down resize shrink down $step px or $step ppt
 
-    bindsym $up resize grow up $step px or $step ppt
-    bindsym Shift+$up resize shrink up $step px or $step ppt
+bindsym $up resize grow up $step px or $step ppt
+bindsym Shift+$up resize shrink up $step px or $step ppt
 
-    bindsym $left resize grow left $step px or $step ppt
-    bindsym Shift+$left resize shrink left $step px or $step ppt
-    
-    bindsym Escape mode "default"
+bindsym $left resize grow left $step px or $step ppt
+bindsym Shift+$left resize shrink left $step px or $step ppt
+
+bindsym Escape mode "default"
 }
 
 bindsym $mod+Shift+a mode "Audio"
 mode "Audio" {
-    bindsym $up exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +$step%
-    bindsym $down exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -$step%
-    bindsym m exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle
-    bindsym n exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle
+bindsym $up exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +$step%
+bindsym $down exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -$step%
+bindsym m exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle
+bindsym n exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle
 
-    bindsym Escape mode "default"
+bindsym Escape mode "default"
 }
 
 bar {
-    swaybar_command waybar
-    mode hide
-    hidden_state hide
+swaybar_command waybar
+mode hide
+hidden_state hide
 }
 
 input * {
-    xkb_layout us,de
-    xkb_options grp:win_space_toggle
+xkb_layout us,de
+xkb_options grp:win_space_toggle
 }
 
 output * bg $bg fit
