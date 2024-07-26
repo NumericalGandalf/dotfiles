@@ -30,7 +30,7 @@ FILE may be absolute or relative to the dotfiles dots directory."
 (defun dots-stow-entry (entry &optional unstow)
   "Stow ENTRY.
 If UNSTOW is non-nil, unstow entry."
-  (let* ((dest (dots-stow-destination entry)))
+  (let ((dest (dots-stow-destination entry)))
     (when (file-exists-p dest)
       (if (f-symlink-p dest)
           (delete-file dest)
@@ -38,10 +38,10 @@ If UNSTOW is non-nil, unstow entry."
 	    (delete-directory dest t)
           (delete-file dest))))
     (if unstow
-        (message "Unstow %s" entry)
+        (message "Unstowed %s" entry)
       (progn
-        (message "Stow %s" dest)
-        (make-symbolic-link entry dest)))))
+        (make-symbolic-link entry dest)
+        (message "Stowed %s" dest)))))
 
 (defun dots-stow-all (&optional prefix dir)
   "Recursively iterate over DIR and stow files.
@@ -78,19 +78,16 @@ If PREFIX is non-nil, reset the scheme keys."
                                dots-gtk-font-height-offset))))
                          (t unwrapped)))))
       (if prefix
-          (progn
-            (call-process-shell-command
-             (rc-join "gsettings reset" scheme key))
+          (rc-shell (rc-join "gsettings reset" scheme key)
             (message "Reset %s %s" scheme key))
-        (progn
-          (call-process-shell-command
-           (rc-join "gsettings set" scheme key value))
-          (message "Apply %s %s %s" scheme key value))))))
+        (rc-shell (rc-join "gsettings set" scheme key value)
+          (message "Set %s %s %s" scheme key value))))))
 
 (defun dots-sway-reload ()
   "Reload sway."
   (interactive)
-  (call-process-shell-command "swaymsg reload"))
+  (rc-shell "swaymsg reload"
+    (message "Reloaded sway")))
 
 (defun dots-sway-write-wallpaper ()
   "Write wallpaper into sway config."

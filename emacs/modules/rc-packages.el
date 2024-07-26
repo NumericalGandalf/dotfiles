@@ -23,6 +23,7 @@
       package-gnupghome-dir (expand-file-name "gnupg/" package-user-dir))
 
 (setq use-package-always-ensure t
+      use-package-always-defer t
       use-package-compute-statistics t)
 
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
@@ -33,15 +34,13 @@
   (package-refresh-contents))
 
 (use-package no-littering
+  :demand
   :init
   (setq no-littering-var-directory (rc-cache-file)
 	no-littering-etc-directory user-emacs-directory))
 
-(use-package diminish
-  :defer)
-
-(use-package delight
-  :defer)
+(use-package diminish)
+(use-package delight)
 
 (setq straight-base-dir (rc-cache-file))
 (straight-bootstrap)

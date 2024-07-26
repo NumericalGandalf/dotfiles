@@ -1,4 +1,5 @@
 (use-package general
+  :demand
   :config
   (general-define-key
    "M-y" 'consult-yank-pop
@@ -20,6 +21,13 @@
    "4 b" 'consult-buffer-other-window
    "5 b" 'consult-buffer-other-frame
    "r b" 'consult-bookmark)
+
+  (general-define-key
+   :prefix "C-h"
+   "f" 'helpful-callable
+   "v" 'helpful-variable
+   "k" 'helpful-key
+   "C-." 'helpful-at-point)
 
   (general-define-key
    :prefix "M-g"
@@ -48,7 +56,8 @@
    "o ?" 'dots-open-assets
    "o y" 'dashboard-force
 
-   "r t" 'vterm)
+   "r t" 'vterm
+   "f r" 'recentf)
 
   (general-def minibuffer-local-map
     "M-r" 'consult-history

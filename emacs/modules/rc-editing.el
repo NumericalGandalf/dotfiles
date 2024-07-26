@@ -65,16 +65,13 @@ If PREFIX is non-nil, free current buffer from root."
     (setq deactivate-mark deactivate)))
 
 (use-package move-text
-  :defer
   :config
   (advice-add 'move-text-up :after 'move-text-indent-after)
   (advice-add 'move-text-down :after 'move-text-indent-after))
 
-(use-package multiple-cursors
-  :defer)
+(use-package multiple-cursors)
 
 (use-package wgrep
-  :defer
   :custom
   (wgrep-auto-save-buffer t))
 

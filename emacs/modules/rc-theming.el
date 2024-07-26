@@ -1,7 +1,10 @@
 (tool-bar-mode 0)
 (scroll-bar-mode 0)
 
+(rc-load-font t)
+
 (use-package catppuccin-theme
+  :demand
   :custom
   (catppuccin-flavor 'macchiato)
   (catppuccin-italic-comments t)
@@ -25,6 +28,7 @@
   (marginalia-mode . nerd-icons-completion-marginalia-setup))
 
 (use-package doom-modeline
+  :demand
   :init
   (doom-modeline-mode)
   :custom
@@ -33,7 +37,6 @@
   (doom-modeline-highlight-modified-buffer-name nil))
 
 (use-package dashboard
-  :defer
   :custom
   (inhibit-startup-message t)
   (dashboard-icon-type 'nerd-icons)

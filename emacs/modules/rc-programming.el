@@ -1,4 +1,5 @@
 (use-package treesit-auto
+  :demand
   :config
   (global-treesit-auto-mode))
 
@@ -7,14 +8,18 @@
   (setq treesit-language-source-alist
         (treesit-auto--build-treesit-source-alist))
   (dolist (source treesit-language-source-alist)
-    (let ((lang (nth 0 source)))
-      (unless (or (treesit-ready-p lang t)
-                  (member lang treesit-ignore-langs))
-        (apply 'treesit--install-language-grammar-1
-               treesit-user-load-path source)))))
+    (let ((lang (nth 0 source))
+          (outdir treesit-user-load-path))
+      (unless (or (member lang treesit-ignore-langs)
+                  (treesit-language-available-p lang))
+        (let ((message-log-max nil)
+              (inhibit-message t))
+          (apply 'treesit--install-language-grammar-1 outdir source))
+        (when-let (library (directory-files outdir t (symbol-name lang)))
+          (message "Built tree-sitter library %s" (nth 0 library)))))))
 
 (add-to-list 'treesit-extra-load-path treesit-user-load-path)
-;; (add-to-list 'dots-deploy-hook 'treesit-ensure-all)
+(add-to-list 'dots-deploy-hook 'treesit-ensure-all)
 
 (setq compilation-ask-about-save nil
       compile-command nil)
@@ -26,12 +31,12 @@
 	      c-ts-mode-indent-offset c-basic-offset)
 
 (use-package magit
-  :defer  
   :config
   (when global-auto-revert-mode
     (magit-auto-revert-mode 0)))
 
 (use-package editorconfig
+  :demand
   :config
   (editorconfig-mode))
 

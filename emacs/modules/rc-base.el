@@ -36,7 +36,14 @@ If NOBREAK is non-nil, do not break line afterwards."
      (erase-buffer)
      ,@body))
 
+(defmacro rc-shell (command &optional success error)
+  (declare (indent 1))
+  `(if (= (call-process-shell-command ,command) 0)
+       ,success
+     ,error))
+
 (setq use-short-answers t
+      suggest-key-bindings nil
       vc-follow-symlinks t
       auth-source-save-behavior nil)
 
@@ -58,8 +65,6 @@ If optional PREFIX is non-nil, do not run hooks."
   (unless prefix
     (run-hooks 'rc-after-load-font-hook)))
 
-(rc-load-font t)
-
 (defun rc-install-font ()
   "Download and install user font from nerd-fonts repo."
   (interactive)
@@ -70,10 +75,10 @@ If optional PREFIX is non-nil, do not run hooks."
 		"https://github.com/ryanoasis/nerd-fonts/releases/latest/download/"
 		font-archive)))
     (make-directory default-directory t)
-    (call-process-shell-command (rc-join "curl -sLO" link
-                                         "&& tar xJf" font-archive
-                                         "&& fc-cache -f"
-                                         "&& rm" font-archive))
-    (message "Extracted archive %s to %s" font-archive default-directory)))
+    (rc-shell (rc-join "curl -sLO" link "&&"
+                       "tar xJf" font-archive "&&"
+                       "fc-cache -f" "&&"
+                       "rm" font-archive)
+      (message "Extracted archive %s to %s" font-archive default-directory))))
 
 (provide 'rc-base)

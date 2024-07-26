@@ -4,36 +4,34 @@
       enable-recursive-minibuffers t)
 
 (use-package orderless
+  :demand
   :custom
   (completion-styles '(orderless))
   (completion-category-defaults nil))
 
 (use-package vertico
+  :demand
   :custom
   (vertico-cycle t)
   :config
   (vertico-mode))
 
 (use-package marginalia
+  :demand
   :config
   (marginalia-mode))
 
 (use-package consult
-  :defer
   :custom
   (consult-line-start-from-top t)
   (xref-show-xrefs-function 'consult-xref)
   (xref-show-definitions-function 'consult-xref))
 
 (use-package embark
-  :defer
   :custom
   (prefix-help-command 'embark-prefix-help-command))
 
 (use-package embark-consult
-  :defer
-  :after
-  embark
   :hook
   (embark-collect-mode . consult-preview-at-point-mode))
 
@@ -44,6 +42,7 @@
            (eq (current-local-map) read-passwd-map))))
 
 (use-package corfu
+  :demand
   :custom
   (corfu-cycle t)
   (corfu-auto t)
@@ -52,5 +51,14 @@
   (global-corfu-minibuffer 'corfu-minibuffer-p)
   :config
   (global-corfu-mode))
+
+(use-package which-key
+  :demand
+  :custom
+  (which-key-idle-delay 1.5)
+  :config
+  (which-key-mode))
+
+(use-package helpful)
 
 (provide 'rc-minibuffer)
