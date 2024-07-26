@@ -69,6 +69,11 @@
   (general-def corfu-map
     "RET" nil)
 
+  (general-def lsp-mode-map
+    "M-?" 'consult-lsp-symbols
+    "C-h ." 'lsp-ui-doc-toggle
+    "M-g I" 'lsp-ui-imenu)
+
   (general-def vterm-mode-map
     "C-j" 'vterm-send-C-c))
 

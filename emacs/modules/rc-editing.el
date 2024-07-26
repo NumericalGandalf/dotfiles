@@ -16,7 +16,7 @@
       display-line-numbers-grow-only t
       display-line-numbers-type 'relative)
 
-(dolist (mode '(conf text prog dired vterm))
+(dolist (mode '(conf text prog dired vterm helpful))
   (add-hook
    (intern (concat (symbol-name mode) "-mode-hook"))
    'display-line-numbers-mode))

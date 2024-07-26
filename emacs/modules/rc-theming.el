@@ -27,6 +27,16 @@
   :hook
   (marginalia-mode . nerd-icons-completion-marginalia-setup))
 
+(use-package all-the-icons)
+
+(defun icons-install-fonts ()
+  "Install fonts for `nerd-icons' and `all-the-icons'."
+  (interactive)
+  (nerd-icons-install-fonts t)
+  (all-the-icons-install-fonts t))
+
+(add-hook 'dots-deploy-hook 'icons-install-fonts)
+
 (use-package doom-modeline
   :demand
   :init
@@ -35,6 +45,15 @@
   (doom-modeline-buffer-file-name-style 'file-name-with-project)
   (doom-modeline-buffer-modification-icon nil)
   (doom-modeline-highlight-modified-buffer-name nil))
+
+(use-package emojify
+  :demand
+  :custom
+  (emojify-display-style 'unicode)
+  (emojify-emoji-styles '(unicode))
+  (emojify-download-emojis-p t)
+  :config
+  (global-emojify-mode))
 
 (use-package dashboard
   :custom

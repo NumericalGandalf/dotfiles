@@ -40,22 +40,26 @@
   :config
   (editorconfig-mode))
 
-(dolist (mode '(c c++ rust java))
-  (add-hook (intern (concat (symbol-name mode) "-ts-mode-hook")) 'eglot-ensure))
+(use-package yasnippet)
 
-(with-eval-after-load 'eglot
-  (setq eglot-ignored-server-capabilities
-        '(:documentHighlightProvider
-          :codeLensProvider
-          :documentOnTypeFormattingProvider
-          :colorProvider
-          :foldingRangeProvider
-          :inlayHintProvider))
-  (define-key eglot-mode-map (kbd "C-c l d") 'eglot-find-declaration)
-  (define-key eglot-mode-map (kbd "C-c l t") 'eglot-find-typeDefinition)
-  (define-key eglot-mode-map (kbd "C-c l i") 'eglot-find-implementation)
-  (define-key eglot-mode-map (kbd "C-c l r") 'eglot-rename)
-  (define-key eglot-mode-map (kbd "C-c l f") 'eglot-format)
-  (define-key eglot-mode-map (kbd "C-c l a") 'eglot-code-actions))
+(use-package lsp-mode
+  :hook
+  ((lsp-mode . lsp-enable-which-key-integration)
+   (c-ts-mode . lsp)
+   (cpp-ts-mode . lsp))
+  :custom
+  (lsp-keymap-prefix "C-c l")
+  (lsp-completion-provider :none)
+  (lsp-headerline-breadcrumb-enable nil)
+  (lsp-lens-enable nil))
+
+(use-package lsp-ui
+  :custom
+  (lsp-ui-imenu-auto-refresh t)
+  (lsp-ui-doc-position 'at-point))
+
+(use-package consult-lsp)
+
+(use-package dap-mode)
 
 (provide 'rc-programming)
