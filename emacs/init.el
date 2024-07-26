@@ -2,9 +2,7 @@
 
 (require 'rc-base)
 (require 'rc-dotfiles)
-
-(setq custom-file (rc-cache-file "custom.el"))
-
+(require 'rc-customs)
 (require 'rc-packages)
 (require 'rc-theming)
 (require 'rc-minibuffer)
@@ -12,5 +10,3 @@
 (require 'rc-editing)
 (require 'rc-programming)
 (require 'rc-keybindings)
-
-(load custom-file t t)

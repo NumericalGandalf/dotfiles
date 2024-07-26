@@ -1,11 +1,3 @@
-(defcustom treesit-ignore-langs '(latex markdown janet)
-  "List of languages to ignore in `treesit-ensure-all'."
-  :type '(repeat symbol))
-
-(defcustom treesit-user-load-path (rc-cache-file "tree-sitter/")
-  "User tree-sitter library load path."
-  :type 'string)
-
 (use-package treesit-auto
   :config
   (global-treesit-auto-mode))

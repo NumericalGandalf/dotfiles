@@ -1,46 +1,5 @@
 (require 'cl-lib)
 
-(defgroup dots nil
-  "Dotfile Management."
-  :group 'local
-  :prefix "dots-")
-
-(defcustom dots-deploy-hook nil
-  "Hooks to run on dotfiles deploy."
-  :type 'hook)
-
-(defcustom dots-sway-font-height-offset -3
-  "Offset of sway font height."
-  :type 'integer)
-
-(defcustom dots-gtk-font-height-offset -1
-  "Offset of gtk font height."
-  :type 'integer)
-
-(defcustom dots-waybar-font-height-offset 0
-  "Offset of gtk font height."
-  :type 'integer)
-
-(defcustom dots-stow-parents '(".config/")
-  "List of stow parent directories.
-
-The child directories of these are stowed as they are
-and will not be traversed any further.
-
-These directories are relative to the dotfiles dots directory."
-  :type '(repeat string))
-
-(defcustom dots-gsettings
-  '(("org.gnome.desktop.interface" "font-name" "@FONT")
-    ("org.gnome.desktop.interface" "monospace-font-name" "@FONT")
-    ("org.gnome.desktop.interface" "gtk-key-theme" "Emacs")
-    ("org.gnome.desktop.interface" "color-scheme" "prefer-dark"))
-  "List of gsettings in form SCHEME, KEY, VALUE.
-
-Expansions [@]:
-    FONT -> concatenated font string."
-  :type '(list string string string))
-
 (defun dots-expand-file (&optional file)
   "Expand FILE from the dotfiles dots directory."
   (expand-file-name (or file "./")

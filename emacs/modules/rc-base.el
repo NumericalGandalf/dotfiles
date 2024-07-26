@@ -1,24 +1,3 @@
-(defgroup rc nil
-  "User Emacs utilities."
-  :group 'local
-  :prefix "rc-")
-
-(defcustom rc-font "Hack Nerd Font"
-  "User nerd font."
-  :type 'string)
-
-(defcustom rc-font-asset-name "Hack"
-  "Asset name of user font in the nerd-fonts repo."
-  :type 'string)
-
-(defcustom rc-font-height 13
-  "Default height of the user font."
-  :type 'natnum)
-
-(defcustom rc-after-load-font-hook nil
-  "Hooks to run after user font gets loaded."
-  :type 'hook)
-
 (defun rc-cache-file (&optional file)
   "Expand FILE from emacs cache directory.
 

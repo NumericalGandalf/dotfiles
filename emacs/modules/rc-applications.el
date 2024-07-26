@@ -1,7 +1,3 @@
-(defcustom app-launcher-frame-height 20
-  "Height of `app-launcher' frame."
-  :type 'natnum)
-
 (use-package app-launcher
   :straight (:host github :repo "SebastienWae/app-launcher")
   :commands (app-launcher))
