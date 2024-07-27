@@ -20,7 +20,7 @@
     (load bootstrap-file nil 'nomessage)))
 
 (setq package-user-dir (rc-cache-file "elpa/")
-      package-gnupghome-dir (expand-file-name "gnupg/" package-user-dir))
+      package-gnupghome-dir (rc-expand "gnupg/" package-user-dir))
 
 (setq use-package-always-ensure t
       use-package-always-defer t
@@ -36,8 +36,8 @@
 (use-package no-littering
   :demand
   :init
-  (setq no-littering-var-directory (rc-cache-file)
-	no-littering-etc-directory user-emacs-directory))
+  (setq no-littering-etc-directory (rc-expand)
+        no-littering-var-directory (rc-cache-file)))
 
 (use-package diminish)
 (use-package delight)

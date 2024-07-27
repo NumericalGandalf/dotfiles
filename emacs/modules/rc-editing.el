@@ -29,21 +29,20 @@
 
 (defun rc-sudo-buffer (&optional prefix)
   "Open current buffer as root.
-If PREFIX is non-nil, free current buffer from root."
+If current buffer is already opened as root,
+open buffer as normal user again.
+If PREFIX is non-nil, do not kill current buffer."
   (interactive "P")
-  (let* ((buf (current-buffer))
-	 (file (or (buffer-file-name)
-		   (when (derived-mode-p 'dired-mode)
-		     default-directory)))
-	 (match (string-match "^/sudo:" file)))
-    (when file
-      (if prefix
-	  (when match
-	    (find-file (tramp-file-local-name file))
-	    (kill-buffer buf))
-	(unless match
-	  (find-file (concat "/sudo::" file))
-	  (kill-buffer buf))))))
+  (when-let ((buf (current-buffer))
+	     (file (or (buffer-file-name)
+		       (when (derived-mode-p 'dired-mode)
+                         (rc-expand default-directory)))))
+    (save-buffer)
+    (if (string-match "^/sudo:" file)
+        (find-file (tramp-file-local-name file))
+      (find-file (concat "/sudo::" file)))
+    (unless prefix
+      (kill-buffer buf))))
 
 (defun rc-duplicate-line (&optional n)
   "Duplicate the current line N times."

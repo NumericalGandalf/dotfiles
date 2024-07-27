@@ -49,8 +49,6 @@
 (use-package emojify
   :demand
   :custom
-  (emojify-display-style 'unicode)
-  (emojify-emoji-styles '(unicode))
   (emojify-download-emojis-p t)
   :config
   (global-emojify-mode))

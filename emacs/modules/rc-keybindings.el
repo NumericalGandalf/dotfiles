@@ -39,13 +39,6 @@
    "b" 'ibuffer)
 
   (general-define-key
-   :prefix "M-o"
-   "m" 'consult-man
-   "f" 'consult-find
-   "y" 'consult-grep
-   "g" 'consult-git-grep)
-
-  (general-define-key
    :prefix "C-c"
    "C->" 'mc/mark-all-like-this
    "C-<" 'mc/edit-lines
@@ -57,7 +50,15 @@
    "o y" 'dashboard-force
 
    "r t" 'vterm
-   "f r" 'recentf)
+   "r m" 'consult-man
+   "r f" 'consult-find
+   "r y" 'consult-grep
+   "r g" 'consult-git-grep
+   "r !" 'shell-command
+   "r &" 'async-shell-command
+   
+   "f r" 'recentf
+   "f l" 'find-library)
 
   (general-def minibuffer-local-map
     "M-r" 'consult-history
@@ -65,6 +66,9 @@
     "C-." 'embark-act
     "C-;" 'embark-dwin
     "C-h B" 'embark-bindings)
+
+  (general-def grep-mode-map
+    "C-c C-p" 'wgrep-change-to-wgrep-mode)
 
   (general-def corfu-map
     "RET" nil)

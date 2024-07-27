@@ -1,4 +1,6 @@
-(add-to-list 'load-path (locate-user-emacs-file "modules/"))
+(add-to-list 'load-path
+             (file-truename
+              (locate-user-emacs-file "modules/")))
 
 (require 'rc-base)
 (require 'rc-dotfiles)

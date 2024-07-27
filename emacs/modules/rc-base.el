@@ -1,22 +1,27 @@
+(defun rc-expand (&optional file directory)
+  "Expands FILE to canonical path from DIRECTORY."
+  (file-truename
+   (expand-file-name (or file "./")
+                     (or directory
+                         (file-truename user-emacs-directory)))))
+
 (defun rc-cache-file (&optional file)
   "Expand FILE from emacs cache directory.
 
 Cache directories are system dependent:
     gnu/linux -> ~/.cache/emacs"
-  (expand-file-name (or file "./")
-		    (if (eq system-type 'gnu/linux)
-			"~/.cache/emacs/"
-		      (locate-user-emacs-file "var/"))))
+  (rc-expand file (cond ((eq system-type 'gnu/linux)
+		         "~/.cache/emacs/"))))
 
 (defun rc-open-init-file ()
   "Open `user-init-file'."
   (interactive)
-  (find-file (file-truename user-init-file)))
+  (find-file (rc-expand user-init-file)))
 
 (defun rc-open-cache-dir ()
   "Open `rc-cache-file' root in dired."
   (interactive)
-  (find-file (file-truename (rc-cache-file))))
+  (find-file (rc-cache-file)))
 
 (defun rc-join (&rest strings)
   "Join STRINGS with space as seperator."
@@ -69,7 +74,8 @@ If optional PREFIX is non-nil, do not run hooks."
   "Download and install user font from nerd-fonts repo."
   (interactive)
   (let* ((asset-name rc-font-asset-name)
-	 (default-directory (concat "~/.local/share/fonts/" asset-name "/"))
+	 (default-directory
+          (rc-expand (concat "~/.local/share/fonts/" asset-name "/")))
 	 (font-archive (concat asset-name ".tar.xz"))
 	 (link (concat
 		"https://github.com/ryanoasis/nerd-fonts/releases/latest/download/"

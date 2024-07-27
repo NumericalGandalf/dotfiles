@@ -2,23 +2,21 @@
 
 (defun dots-expand-file (&optional file)
   "Expand FILE from the dotfiles dots directory."
-  (expand-file-name (or file "./")
-		    (concat (file-truename user-emacs-directory) "../dots/")))
+  (rc-expand file (rc-expand "../dots/")))
 
 (defun dots-expand-asset (&optional file)
   "Expand FILE from the dotfiles asset directory."
-  (expand-file-name (or file "./")
-                    (dots-expand-file "../assets/")))
+  (rc-expand file (rc-expand "../assets/")))
 
 (defun dots-open-files ()
   "Open `dots-expand-file' in dired."
   (interactive)
-  (find-file (file-truename (dots-expand-file))))
+  (find-file (dots-expand-file)))
 
 (defun dots-open-assets ()
   "Open `dots-expand-asset' in dired."
   (interactive)
-  (find-file (file-truename (dots-expand-asset))))
+  (find-file (dots-expand-asset)))
 
 (defun dots-stow-destination (&optional file)
   "Get stow destination of FILE.
@@ -32,11 +30,11 @@ FILE may be absolute or relative to the dotfiles dots directory."
 If UNSTOW is non-nil, unstow entry."
   (let ((dest (dots-stow-destination entry)))
     (when (file-exists-p dest)
-      (if (f-symlink-p dest)
-          (delete-file dest)
-        (if (f-directory-p dest)
-	    (delete-directory dest t)
-          (delete-file dest))))
+      (cond ((f-symlink-p dest)
+             (delete-file dest))
+            ((f-directory-p dest)
+             (delete-directory dest t))
+            (t (delete-file dest))))
     (if unstow
         (message "Unstowed %s" entry)
       (progn
