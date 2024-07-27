@@ -49,8 +49,12 @@ If NOBREAK is non-nil, do not break line afterwards."
 
 (setq use-short-answers t
       suggest-key-bindings nil
-      vc-follow-symlinks t
-      auth-source-save-behavior nil)
+      vc-follow-symlinks t)
+
+(setq warning-minimum-level :emergency
+      warning-minimum-log-level :debug)
+
+(setq auth-source-save-behavior nil)
 
 (setq dired-listing-switches "-lah"
       dired-free-space 'separate
@@ -86,5 +90,14 @@ If optional PREFIX is non-nil, do not run hooks."
                        "fc-cache -f" "&&"
                        "rm" font-archive)
       (message "Extracted archive %s to %s" font-archive default-directory))))
+
+(defun rc-use-package-toggle-defer (&optional prefix)
+  "Toggle use-package deferred loading.
+If PREFIX is non-nil, set to its numeric value."
+  (interactive "p")
+  (
+        (if (and prefix (eq prefix 0))
+            nil
+          (not use-package-always-defer))))
 
 (provide 'rc-base)

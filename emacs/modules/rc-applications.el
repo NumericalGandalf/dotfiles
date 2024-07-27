@@ -10,9 +10,11 @@
                     (minibuffer . only)
 		    (height . ,app-launcher-frame-height)))
     (unwind-protect
-	(let ((vertico-count app-launcher-frame-height))
+	(let ((vertico-count (- app-launcher-frame-height 1)))
 	  (app-launcher-run-app))
       (delete-frame))))
+
+(use-package guix)
 
 (use-package vterm
   :defer

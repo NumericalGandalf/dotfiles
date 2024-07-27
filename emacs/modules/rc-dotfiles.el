@@ -36,10 +36,10 @@ If UNSTOW is non-nil, unstow entry."
              (delete-directory dest t))
             (t (delete-file dest))))
     (if unstow
-        (message "Unstowed %s" entry)
+        (message "Unstowing %s" entry)
       (progn
-        (make-symbolic-link entry dest)
-        (message "Stowed %s" dest)))))
+        (message "Stowing %s" dest)
+        (make-symbolic-link entry dest)))))
 
 (defun dots-stow-all (&optional prefix dir)
   "Recursively iterate over DIR and stow files.
@@ -76,20 +76,23 @@ If PREFIX is non-nil, reset the scheme keys."
                                dots-gtk-font-height-offset))))
                          (t unwrapped)))))
       (if prefix
-          (rc-shell (rc-join "gsettings reset" scheme key)
-            (message "Reset %s %s" scheme key))
-        (rc-shell (rc-join "gsettings set" scheme key value)
-          (message "Set %s %s %s" scheme key value))))))
+          (progn 
+            (message "Resetting %s %s" scheme key)
+            (rc-shell (rc-join "gsettings reset" scheme key)))
+        (progn
+          (message "Setting %s %s %s" scheme key value)
+          (rc-shell (rc-join "gsettings set" scheme key value)))))))
 
 (defun dots-sway-reload ()
   "Reload sway."
   (interactive)
-  (rc-shell "swaymsg reload"
-    (message "Reloaded sway")))
+  (message "Reloading sway")
+  (rc-shell "swaymsg reload"))
 
 (defun dots-sway-write-wallpaper ()
   "Write wallpaper into sway config."
   (interactive)
+  (message "Writing sway wallpaper")
   (rc-with-file (dots-expand-file ".config/sway/wallpaper")
     (insert (rc-join "set $wallpaper"
                      (dots-expand-asset "butterfly.png")))))
@@ -97,6 +100,7 @@ If PREFIX is non-nil, reset the scheme keys."
 (defun dots-sway-write-font ()
   "Write `rc-font' into sway config."
   (interactive)
+  (message "Writing sway font.")
   (rc-with-file (dots-expand-file ".config/sway/font")
     (insert (rc-join (concat "font pango:" rc-font)
 		     (int-to-string
@@ -105,6 +109,7 @@ If PREFIX is non-nil, reset the scheme keys."
 (defun dots-waybar-write-font ()
   "Write `rc-font' into waybar config."
   (interactive)
+  (message "Writing waybar font.")
   (rc-with-file (dots-expand-file ".config/waybar/font.css")
     (css-mode)
     (rc-insert "* {")
@@ -140,9 +145,12 @@ If PREFIX is non-nil, reset the scheme keys."
 (defun dots-deploy-all ()
   "Deploy dotfiles and run hooks `dots-deploy-hook'."
   (interactive)
+  (message "Deploying dotfiles")
   (dots-sway-write-font)
   (dots-sway-write-wallpaper)
-  (dots-waybar-write-font))
+  (dots-waybar-write-font)
+  (run-hooks 'dots-deploy-hook)
+  (load user-init-file))
 
 (defun dots-bluetooth-connect (&optional prefix)
   "Connect AirPods Max via bluez bluetoothctl.

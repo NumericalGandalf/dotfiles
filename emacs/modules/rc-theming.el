@@ -38,7 +38,6 @@
 (add-hook 'dots-deploy-hook 'icons-install-fonts)
 
 (use-package doom-modeline
-  :demand
   :init
   (doom-modeline-mode)
   :custom
@@ -46,22 +45,14 @@
   (doom-modeline-buffer-modification-icon nil)
   (doom-modeline-highlight-modified-buffer-name nil))
 
-(use-package emojify
-  :demand
-  :custom
-  (emojify-download-emojis-p t)
-  :config
-  (global-emojify-mode))
-
 (use-package dashboard
   :custom
-  (inhibit-startup-message t)
   (dashboard-icon-type 'nerd-icons)
   (dashboard-display-icons-p t)
   (dashboard-set-heading-icons t)
   (dashboard-set-file-icons t)
   (dashboard-center-content t)
-  (dashboard-heading-shorcut-format "")
+  (dashboard-show-shortcuts nil)
   (dashboard-startup-banner (dots-expand-asset "banner.txt"))
   (dashboard-items '((recents   . 5)
 		     (projects  . 5)
@@ -78,6 +69,11 @@
 			  ("Bookmarks:" . "Bookmarks")
 			  ("Agenda for the coming week:" . "Agenda")
 			  ("Registers:" . "Registers")))
+  (dashboard-heading-icons '((recents   . "nf-oct-history")
+                             (bookmarks . "nf-oct-bookmark")
+                             (agenda    . "nf-oct-calendar")
+                             (projects  . "nf-oct-rocket")
+                             (registers . "nf-oct-database")))
   :config
   (add-hook 'window-size-change-functions 'dashboard-resize-on-hook)
   (add-hook 'window-setup-hook 'dashboard-resize-on-hook))
@@ -97,5 +93,12 @@
 
 (add-hook 'emacs-startup-hook 'dashboard-ensure)
 (add-hook 'server-after-make-frame-hook 'dashboard-ensure)
+
+(use-package emojify
+  :demand
+  :custom
+  (emojify-download-emojis-p t)
+  :config
+  (global-emojify-mode))
 
 (provide 'rc-theming)

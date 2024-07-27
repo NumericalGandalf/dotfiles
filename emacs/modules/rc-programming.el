@@ -1,9 +1,22 @@
+(setq compilation-ask-about-save nil
+      compile-command nil)
+
+(electric-pair-mode)
+
+(setq-default indent-tabs-mode nil
+	      c-basic-offset 4)
+
+(add-to-list 'auto-mode-alist '("\\.jsonc\\'" . js-json-mode))
+
 (use-package treesit-auto
+  :if
+  (treesit-available-p)
   :demand
   :config
   (global-treesit-auto-mode))
 
 (defun treesit-ensure-all ()
+  "Ensure all available tree-sitter libraries."
   (interactive)
   (setq treesit-language-source-alist
         (treesit-auto--build-treesit-source-alist))
@@ -16,29 +29,20 @@
               (inhibit-message t))
           (apply 'treesit--install-language-grammar-1 outdir source))
         (when-let (library (directory-files outdir t (symbol-name lang)))
-          (message "Built tree-sitter library %s" (nth 0 library)))))))
+          (message "Building tree-sitter library %s" (nth 0 library)))))))
 
-(add-to-list 'treesit-extra-load-path treesit-user-load-path)
-(add-to-list 'dots-deploy-hook 'treesit-ensure-all)
-
-(setq compilation-ask-about-save nil
-      compile-command nil)
-
-(electric-pair-mode)
-
-(setq-default indent-tabs-mode nil
-	      c-basic-offset 4
-	      c-ts-mode-indent-offset c-basic-offset)
+(when (treesit-available-p)
+  (setq-default c-ts-mode-indent-offset c-basic-offset
+                json-ts-mode-indent-offset c-basic-offset)
+  (add-to-list 'treesit-extra-load-path treesit-user-load-path)
+  (add-to-list 'dots-deploy-hook 'treesit-ensure-all))
 
 (use-package magit
   :config
   (when global-auto-revert-mode
     (magit-auto-revert-mode 0)))
 
-(use-package editorconfig
-  :demand
-  :config
-  (editorconfig-mode))
+(use-package editorconfig)
 
 (use-package yasnippet)
 

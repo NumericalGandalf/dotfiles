@@ -60,7 +60,7 @@ Expansions [@]:
     FONT -> concatenated font string."
   :type '(list string string string))
 
-(defcustom app-launcher-frame-height 20
+(defcustom app-launcher-frame-height 21
   "Height of `app-launcher' frame."
   :type 'natnum)
 

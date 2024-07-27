@@ -49,14 +49,18 @@
    "o ?" 'dots-open-assets
    "o y" 'dashboard-force
 
-   "r t" 'vterm
+
    "r m" 'consult-man
    "r f" 'consult-find
    "r y" 'consult-grep
    "r g" 'consult-git-grep
+   
    "r !" 'shell-command
    "r &" 'async-shell-command
    
+   "r a" 'guix
+   "r t" 'vterm
+
    "f r" 'recentf
    "f l" 'find-library)
 

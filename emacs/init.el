@@ -8,7 +8,7 @@
 (require 'rc-packages)
 (require 'rc-theming)
 (require 'rc-minibuffer)
-(require 'rc-applications)
 (require 'rc-editing)
 (require 'rc-programming)
+(require 'rc-applications)
 (require 'rc-keybindings)
