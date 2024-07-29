@@ -1,17 +1,10 @@
-(defgroup rc nil
-  "User Emacs utilities."
-  :group 'local
-  :prefix "rc-")
+(defvar rc-font "UbuntuMono Nerd Font"
+  "User nerd font.")
 
-(defcustom rc-font "Hack Nerd Font"
-  "User nerd font."
-  :type 'string)
+(defvar rc-font-height 15
+  "Default height of the user font.")
 
-(defcustom rc-font-height 13
-  "Default height of the user font."
-  :type 'natnum)
-
-(defcustom rc-after-load-font-hook nil
+(defcustom rc-load-font-hook nil
   "Hooks to run after user font gets loaded."
   :type 'hook)
 
@@ -28,7 +21,8 @@
 Cache directories are system dependent:
     gnu/linux -> ~/.cache/emacs"
   (rc-expand file (cond ((eq system-type 'gnu/linux)
-		         "~/.cache/emacs/"))))
+		         "~/.cache/emacs/")
+                        (t (locate-user-emacs-file "var/")))))
 
 (defun rc-open-init-file ()
   "Open `user-init-file'."
@@ -64,51 +58,22 @@ If NOBREAK is non-nil, do not break line afterwards."
        ,success
      ,error))
 
-(setq custom-file (rc-cache-file "custom.el"))
+(defun rc-font-height (&optional offset)
+  "Get font height by OFFSET."
+  (+ rc-font-height (floor (* (or offset 0) (/ rc-font-height 13)))))
 
-(setq use-short-answers t
-      suggest-key-bindings nil
-      vc-follow-symlinks t)
-
-(setq warning-minimum-level :emergency
-      warning-minimum-log-level :debug
-      ad-redefinition-action 'accept)
-
-(setq auth-source-save-behavior nil)
-
-(setq dired-listing-switches "-lah"
-      dired-free-space 'separate
-      dired-recursive-deletes 'always
-      dired-dwim-target t
-      dired-auto-revert-buffer t
-      dired-clean-confirm-killing-deleted-buffers nil)
-
-;; (setq mode-line-percent-position "%P")
-
-(defun rc-load-font (&optional prefix)
-  "Load user font and run `rc-after-load-font-hook'.
-If optional PREFIX is non-nil, do not run hooks."
-  (interactive "P")
-  (let ((height (* rc-font-height 10)))
-    (set-face-attribute 'default nil :font rc-font :height height)
-    (set-face-attribute 'fixed-pitch nil :family rc-font  :height height)
-    (set-face-attribute 'fixed-pitch-serif nil :family rc-font :height height)
-    (set-face-attribute 'variable-pitch nil :family rc-font :height height))
-  (unless prefix
-    (run-hooks 'rc-after-load-font-hook)))
-
-(defun rc-fetch-font-asset-name ()
-  "Fetch asset name of `rc-font' from nerd-font repo."
+(defun rc-fetch-font-asset-name (font)
+  "Fetch asset name of `FONT' from nerd-font repo."
   (with-current-buffer
       (url-retrieve-synchronously "https://www.nerdfonts.com/font-downloads")
-    (re-search-forward (concat "/assets/img/previews/" rc-font))
+    (re-search-forward (concat "/assets/img/previews/" font))
     (re-search-forward "nerd-font-invisible-text...")
     (current-word)))
 
 (defun rc-install-font ()
   "Download and install user font from nerd-fonts repo."
   (interactive)
-  (let* ((asset-name (rc-fetch-font-asset-name))
+  (let* ((asset-name (rc-fetch-font-asset-name rc-font))
 	 (default-directory
           (rc-expand (concat "~/.local/share/fonts/" asset-name "/")))
 	 (font-archive (concat asset-name ".tar.xz"))
@@ -118,8 +83,22 @@ If optional PREFIX is non-nil, do not run hooks."
     (make-directory default-directory t)
     (rc-shell (rc-join "curl -sLO" link "&&"
                        "tar xJf" font-archive "&&"
-                       "fc-cache -f" "&&"
+                       "fc-cache -f &&"
                        "rm" font-archive)
       (message "Extracted archive %s to %s" font-archive default-directory))))
 
-(provide 'rc-base)
+(defun rc-load-font (&optional prefix)
+  "Load user font and run `rc-load-font-hook'.
+If PREFIX is non-nil, do not run hooks."
+  (interactive)
+  (let ((height (* rc-font-height 10)))
+    (set-face-attribute 'default nil :font rc-font :height height)
+    (set-face-attribute 'fixed-pitch nil :family rc-font  :height height)
+    (set-face-attribute 'fixed-pitch-serif nil :family rc-font :height height)
+    (set-face-attribute 'variable-pitch nil :family rc-font :height height))
+  (unless prefix
+    (run-hooks 'rc-load-font-hook)))
+
+(setq custom-file (rc-cache-file "custom.el"))
+
+(provide 'rc-utils)

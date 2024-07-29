@@ -1,26 +1,5 @@
 (require 'cl-lib)
 
-(defgroup dots nil
-  "Dotfile Management."
-  :group 'local
-  :prefix "dots-")
-
-(defcustom dots-deploy-hook nil
-  "Hooks to run on dotfiles deploy."
-  :type 'hook)
-
-(defcustom dots-sway-font-height-offset -3
-  "Offset of sway font height."
-  :type 'integer)
-
-(defcustom dots-gtk-font-height-offset -1
-  "Offset of gtk font height."
-  :type 'integer)
-
-(defcustom dots-waybar-font-height-offset 0
-  "Offset of gtk font height."
-  :type 'integer)
-
 (defcustom dots-stow-parents '(".config/")
   "List of stow parent directories.
 
@@ -40,6 +19,14 @@ These directories are relative to the dotfiles dots directory."
 Expansions [@]:
     FONT -> concatenated font string."
   :type '(list string string string))
+
+(defcustom dots-stow-hook nil
+  "Hooks to run when stowing dotfiles."
+  :type 'hook)
+
+(defcustom dots-deploy-hook nil
+  "Hooks to run when deploying dotfiles."
+  :type 'hook)
 
 (defun dots-expand-file (&optional file)
   "Expand FILE from the dotfiles dots directory."
@@ -82,11 +69,13 @@ If UNSTOW is non-nil, unstow entry."
         (message "Stowing %s" dest)
         (make-symbolic-link entry dest)))))
 
-(defun dots-stow-all (&optional prefix dir)
+(defun dots-stow (&optional prefix dir)
   "Recursively iterate over DIR and stow files.
 If PREFIX is non-nil, unstow files.
 
-Whether a child dir is stowed depends on `dots-stow-parents'."
+Whether a child dir is stowed depends on `dots-stow-parents'.
+
+Also run `dots-stow-hook' when stowing files."
   (interactive "P")
   (dolist (entry (cdr (cdr (directory-files (dots-expand-file dir) t))))
     (if (or (file-regular-p entry)
@@ -96,7 +85,12 @@ Whether a child dir is stowed depends on `dots-stow-parents'."
 			   (not (file-equal-p entry parent)))
 		  (cl-return entry)))))
 	(dots-stow-entry entry prefix)
-      (dots-stow-all prefix entry))))
+      (dots-stow prefix entry)))
+  (unless prefix
+    (run-hooks 'dots-stow-hooks)))
+
+(add-hook 'dots-stow-hook 'rc-load-font)
+(add-hook 'dots-deploy-hook 'dots-stow)
 
 (defun dots-gsettings-apply (&optional prefix)
   "Applies gsettings specified in `dots-gsettings'.
@@ -111,10 +105,7 @@ If PREFIX is non-nil, reset the scheme keys."
            (value (prin1-to-string
                    (cond ((string= unwrapped "@FONT")
                           (rc-join
-                           rc-font
-                           (int-to-string
-                            (+ rc-font-height
-                               dots-gtk-font-height-offset))))
+                           rc-font (int-to-string (rc-font-height -1))))
                          (t unwrapped)))))
       (if prefix
           (progn 
@@ -124,11 +115,7 @@ If PREFIX is non-nil, reset the scheme keys."
           (message "Setting %s %s %s" scheme key value)
           (rc-shell (rc-join "gsettings set" scheme key value)))))))
 
-(defun dots-sway-reload ()
-  "Reload sway."
-  (interactive)
-  (message "Reloading sway")
-  (rc-shell "swaymsg reload"))
+(add-hook 'rc-load-font-hook 'dots-gsettings-apply)
 
 (defun dots-sway-write-wallpaper ()
   "Write wallpaper into sway config."
@@ -138,41 +125,32 @@ If PREFIX is non-nil, reset the scheme keys."
     (insert (rc-join "set $wallpaper"
                      (dots-expand-asset "butterfly.png")))))
 
-(defun dots-sway-write-font ()
-  "Write `rc-font' into sway config."
+(add-hook 'dots-deploy-hook 'dots-sway-write-wallpaper)
+
+(defun dots-desktop-write-font ()
+  "Write `rc-font' into sway config and waybar config."
   (interactive)
-  (message "Writing sway font")
+  (message "Writing desktop fonts")
   (rc-with-file (dots-expand-file ".config/sway/font")
     (insert (rc-join (concat "font pango:" rc-font)
-		     (int-to-string
-                      (+ rc-font-height dots-sway-font-height-offset))))))
-
-(defun dots-waybar-write-font ()
-  "Write `rc-font' into waybar config."
-  (interactive)
-  (message "Writing waybar font")
+		     (int-to-string (rc-font-height -3)))))
   (rc-with-file (dots-expand-file ".config/waybar/font.css")
     (css-mode)
     (rc-insert "* {")
     (rc-insert (rc-join "font-family:"
 			(concat (prin1-to-string rc-font) ";")))
-    (rc-insert (rc-join "font-size:"
-			(concat
-                         (int-to-string
-                          dots-waybar-font-height-offset)
-                         "px;")))
+    (rc-insert (rc-join "font-size:" (int-to-string (rc-font-height))))
     (insert "}")
-    (indent-region (point-min) (point-max))))
+    (indent-region (point-min) (point-max)))
+  (rc-shell "swaymsg reload"))
+
+(add-hook 'rc-load-font-hook 'dots-desktop-write-font)
 
 (defun dots-deploy ()
-  "Deploy dotfiles and run hooks `dots-deploy-hook'."
+  "Deploy dotfiles. Run `dots-deploy-hook'."
   (interactive)
   (message "Deploying dotfiles")
-  (dots-sway-write-font)
-  (dots-sway-write-wallpaper)
-  (dots-waybar-write-font)
-  (run-hooks 'dots-deploy-hook)
-  (dots-sway-reload))
+  (run-hooks 'dots-deploy-hook))
 
 (defun dots-bluetooth-connect (&optional prefix)
   "Connect AirPods Max via bluez bluetoothctl.

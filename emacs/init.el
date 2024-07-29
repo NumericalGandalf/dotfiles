@@ -1,6 +1,23 @@
+(setq use-short-answers t
+      suggest-key-bindings nil
+      vc-follow-symlinks t)
+
+(setq warning-minimum-level :emergency
+      warning-minimum-log-level :debug
+      ad-redefinition-action 'accept)
+
+(setq auth-source-save-behavior nil)
+
+(setq dired-listing-switches "-lah"
+      dired-free-space 'separate
+      dired-recursive-deletes 'always
+      dired-dwim-target t
+      dired-auto-revert-buffer t
+      dired-clean-confirm-killing-deleted-buffers nil)
+
 (add-to-list 'load-path (locate-user-emacs-file "modules/"))
 
-(require 'rc-base)
+(require 'rc-utils)
 (require 'rc-dotfiles)
 (require 'rc-packages)
 (require 'rc-theming)
@@ -10,4 +27,5 @@
 (require 'rc-applications)
 (require 'rc-keybindings)
 
-(load custom-file t t)
+(when (and custom-file (file-exists-p custom-file)
+  (load custom-file :nomessage))
