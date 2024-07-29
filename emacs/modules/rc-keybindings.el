@@ -47,13 +47,15 @@
    "o ," 'rc-open-cache-dir
    "o /" 'dots-open-files
    "o ?" 'dots-open-assets
-   "o y" 'dashboard-force
 
+   "o y" 'dashboard-force
+   "o p" 'list-packages
+   "o P" 'use-package-report
 
    "r m" 'consult-man
    "r f" 'consult-find
-   "r y" 'consult-grep
-   "r g" 'consult-git-grep
+   "r g" 'consult-grep
+   "r y" 'consult-git-grep
    
    "r !" 'shell-command
    "r &" 'async-shell-command

@@ -1,5 +1,46 @@
 (require 'cl-lib)
 
+(defgroup dots nil
+  "Dotfile Management."
+  :group 'local
+  :prefix "dots-")
+
+(defcustom dots-deploy-hook nil
+  "Hooks to run on dotfiles deploy."
+  :type 'hook)
+
+(defcustom dots-sway-font-height-offset -3
+  "Offset of sway font height."
+  :type 'integer)
+
+(defcustom dots-gtk-font-height-offset -1
+  "Offset of gtk font height."
+  :type 'integer)
+
+(defcustom dots-waybar-font-height-offset 0
+  "Offset of gtk font height."
+  :type 'integer)
+
+(defcustom dots-stow-parents '(".config/")
+  "List of stow parent directories.
+
+The child directories of these are stowed as they are
+and will not be traversed any further.
+
+These directories are relative to the dotfiles dots directory."
+  :type '(repeat string))
+
+(defcustom dots-gsettings
+  '(("org.gnome.desktop.interface" "font-name" "@FONT")
+    ("org.gnome.desktop.interface" "monospace-font-name" "@FONT")
+    ("org.gnome.desktop.interface" "gtk-key-theme" "Emacs")
+    ("org.gnome.desktop.interface" "color-scheme" "prefer-dark"))
+  "List of gsettings in form SCHEME, KEY, VALUE.
+
+Expansions [@]:
+    FONT -> concatenated font string."
+  :type '(list string string string))
+
 (defun dots-expand-file (&optional file)
   "Expand FILE from the dotfiles dots directory."
   (rc-expand file (rc-expand "../dots/")))
@@ -123,26 +164,7 @@ If PREFIX is non-nil, reset the scheme keys."
     (insert "}")
     (indent-region (point-min) (point-max))))
 
-(defun dots-kitty-write-font ()
-  "Write `rc-font' into kitty config."
-  (interactive)
-  (rc-with-file (dots-expand-file ".config/kitty/font.conf")
-    (rc-insert (rc-join "font_family" rc-font))
-    (rc-insert "bold_font auto")
-    (rc-insert "italic_font auto")
-    (rc-insert "bold_italic_font auto")
-    (insert (rc-join "font_size" (int-to-string rc-font-height)))))
-
-(defun dots-alacritty-write-font ()
-  "Write `rc-font' into alacritty config."
-  (interactive)
-  (rc-with-file (dots-expand-file ".config/alacritty/font.toml")
-    (rc-insert "[font]")
-    (rc-insert (rc-join "normal" "=" "{" "family" "="
-			(prin1-to-string rc-font) "}"))
-    (insert (rc-join "size" "=" (int-to-string rc-font-height)))))
-
-(defun dots-deploy-all ()
+(defun dots-deploy ()
   "Deploy dotfiles and run hooks `dots-deploy-hook'."
   (interactive)
   (message "Deploying dotfiles")
@@ -150,7 +172,7 @@ If PREFIX is non-nil, reset the scheme keys."
   (dots-sway-write-wallpaper)
   (dots-waybar-write-font)
   (run-hooks 'dots-deploy-hook)
-  (load user-init-file))
+  (dots-sway-reload))
 
 (defun dots-bluetooth-connect (&optional prefix)
   "Connect AirPods Max via bluez bluetoothctl.

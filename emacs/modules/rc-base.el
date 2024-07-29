@@ -1,3 +1,24 @@
+(defgroup rc nil
+  "User Emacs utilities."
+  :group 'local
+  :prefix "rc-")
+
+(defcustom rc-font "Hack Nerd Font"
+  "User nerd font."
+  :type 'string)
+
+(defcustom rc-font-asset-name "Hack"
+  "Asset name of user font in the nerd-fonts repo."
+  :type 'string)
+
+(defcustom rc-font-height 13
+  "Default height of the user font."
+  :type 'natnum)
+
+(defcustom rc-after-load-font-hook nil
+  "Hooks to run after user font gets loaded."
+  :type 'hook)
+
 (defun rc-expand (&optional file directory)
   "Expands FILE to canonical path from DIRECTORY."
   (file-truename
@@ -47,12 +68,15 @@ If NOBREAK is non-nil, do not break line afterwards."
        ,success
      ,error))
 
+(setq custom-file (rc-cache-file "custom.el"))
+
 (setq use-short-answers t
       suggest-key-bindings nil
       vc-follow-symlinks t)
 
 (setq warning-minimum-level :emergency
-      warning-minimum-log-level :debug)
+      warning-minimum-log-level :debug
+      ad-redefinition-action 'accept)
 
 (setq auth-source-save-behavior nil)
 
@@ -60,7 +84,8 @@ If NOBREAK is non-nil, do not break line afterwards."
       dired-free-space 'separate
       dired-recursive-deletes 'always
       dired-dwim-target t
-      dired-auto-revert-buffer t)
+      dired-auto-revert-buffer t
+      dired-clean-confirm-killing-deleted-buffers nil)
 
 (defun rc-load-font (&optional prefix)
   "Load user font and run `rc-after-load-font-hook'.
@@ -90,14 +115,5 @@ If optional PREFIX is non-nil, do not run hooks."
                        "fc-cache -f" "&&"
                        "rm" font-archive)
       (message "Extracted archive %s to %s" font-archive default-directory))))
-
-(defun rc-use-package-toggle-defer (&optional prefix)
-  "Toggle use-package deferred loading.
-If PREFIX is non-nil, set to its numeric value."
-  (interactive "p")
-  (
-        (if (and prefix (eq prefix 0))
-            nil
-          (not use-package-always-defer))))
 
 (provide 'rc-base)

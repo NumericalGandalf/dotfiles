@@ -4,7 +4,6 @@
 
 (require 'rc-base)
 (require 'rc-dotfiles)
-(require 'rc-customs)
 (require 'rc-packages)
 (require 'rc-theming)
 (require 'rc-minibuffer)
@@ -12,3 +11,5 @@
 (require 'rc-programming)
 (require 'rc-applications)
 (require 'rc-keybindings)
+
+(load custom-file t t)

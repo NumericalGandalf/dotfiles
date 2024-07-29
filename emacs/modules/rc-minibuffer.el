@@ -13,7 +13,9 @@
   :demand
   :custom
   (vertico-cycle t)
+  (vertico-count 18)
   :config
+  (vertico-multiform-mode)
   (vertico-mode))
 
 (use-package marginalia

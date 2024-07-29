@@ -1,18 +1,21 @@
 (use-package app-launcher
-  :straight (:host github :repo "SebastienWae/app-launcher")
+  :straight (:host github :repo "NumericalGandalf/app-launcher")
   :commands (app-launcher))
 
 (defun app-launcher ()
   "Create new minibuffer-only frame and call `app-launcher-run-app'."
   (interactive)
-  (with-selected-frame
-      (make-frame `((name . "app-launcher")
-                    (minibuffer . only)
-		    (height . ,app-launcher-frame-height)))
-    (unwind-protect
-	(let ((vertico-count (- app-launcher-frame-height 1)))
-	  (app-launcher-run-app))
-      (delete-frame))))
+  (let* ((height 25)
+         (vertico-count (1- height))
+         (ivy-height height))
+    (with-selected-frame
+        (make-frame `((name . "app-launcher")
+                      (minibuffer . only)
+		      (height . ,height)
+                      (width . ,(* height 4))))
+      (unwind-protect
+	  (app-launcher-run-app t)
+        (delete-frame)))))
 
 (use-package guix)
 

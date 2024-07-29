@@ -3,15 +3,10 @@
 
 (rc-load-font t)
 
-(use-package catppuccin-theme
+(use-package doom-themes
   :demand
-  :custom
-  (catppuccin-flavor 'macchiato)
-  (catppuccin-italic-comments t)
-  (catppuccin-italic-blockquotes t)
-  (catppuccin-italic-variables t)
   :config
-  (load-theme 'catppuccin t))
+  (load-theme 'doom-palenight t))
 
 (use-package nerd-icons-dired
   :hook
