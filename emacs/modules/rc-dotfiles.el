@@ -141,7 +141,7 @@ If PREFIX is non-nil, reset the scheme keys."
 (defun dots-sway-write-font ()
   "Write `rc-font' into sway config."
   (interactive)
-  (message "Writing sway font.")
+  (message "Writing sway font")
   (rc-with-file (dots-expand-file ".config/sway/font")
     (insert (rc-join (concat "font pango:" rc-font)
 		     (int-to-string
@@ -150,7 +150,7 @@ If PREFIX is non-nil, reset the scheme keys."
 (defun dots-waybar-write-font ()
   "Write `rc-font' into waybar config."
   (interactive)
-  (message "Writing waybar font.")
+  (message "Writing waybar font")
   (rc-with-file (dots-expand-file ".config/waybar/font.css")
     (css-mode)
     (rc-insert "* {")

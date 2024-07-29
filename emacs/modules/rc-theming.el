@@ -36,6 +36,7 @@
   :init
   (doom-modeline-mode)
   :custom
+  (doom-modeline-percent-position '(6 "%q"))
   (doom-modeline-buffer-file-name-style 'file-name-with-project)
   (doom-modeline-buffer-modification-icon nil)
   (doom-modeline-highlight-modified-buffer-name nil))

@@ -7,10 +7,6 @@
   "User nerd font."
   :type 'string)
 
-(defcustom rc-font-asset-name "Hack"
-  "Asset name of user font in the nerd-fonts repo."
-  :type 'string)
-
 (defcustom rc-font-height 13
   "Default height of the user font."
   :type 'natnum)
@@ -45,8 +41,8 @@ Cache directories are system dependent:
   (find-file (rc-cache-file)))
 
 (defun rc-join (&rest strings)
-  "Join STRINGS with space as seperator."
-  (s-join " " strings))
+  "Join STRINGS with char space as seperator."
+  (s-join (char-to-string ?\s) strings))
 
 (defun rc-insert (string &optional nobreak)
   "Insert STRING into current buffer.
@@ -87,6 +83,8 @@ If NOBREAK is non-nil, do not break line afterwards."
       dired-auto-revert-buffer t
       dired-clean-confirm-killing-deleted-buffers nil)
 
+;; (setq mode-line-percent-position "%P")
+
 (defun rc-load-font (&optional prefix)
   "Load user font and run `rc-after-load-font-hook'.
 If optional PREFIX is non-nil, do not run hooks."
@@ -99,16 +97,24 @@ If optional PREFIX is non-nil, do not run hooks."
   (unless prefix
     (run-hooks 'rc-after-load-font-hook)))
 
+(defun rc-fetch-font-asset-name ()
+  "Fetch asset name of `rc-font' from nerd-font repo."
+  (with-current-buffer
+      (url-retrieve-synchronously "https://www.nerdfonts.com/font-downloads")
+    (re-search-forward (concat "/assets/img/previews/" rc-font))
+    (re-search-forward "nerd-font-invisible-text...")
+    (current-word)))
+
 (defun rc-install-font ()
   "Download and install user font from nerd-fonts repo."
   (interactive)
-  (let* ((asset-name rc-font-asset-name)
+  (let* ((asset-name (rc-fetch-font-asset-name))
 	 (default-directory
           (rc-expand (concat "~/.local/share/fonts/" asset-name "/")))
 	 (font-archive (concat asset-name ".tar.xz"))
 	 (link (concat
-		"https://github.com/ryanoasis/nerd-fonts/releases/latest/download/"
-		font-archive)))
+                "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/"
+                font-archive)))
     (make-directory default-directory t)
     (rc-shell (rc-join "curl -sLO" link "&&"
                        "tar xJf" font-archive "&&"

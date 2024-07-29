@@ -16,8 +16,10 @@
 
   (general-define-key
    :prefix "C-x"
+   "C-b" 'ibuffer-other-window
+   
    "M-:" 'consult-complex-command
-   "C-b" 'consult-buffer
+   "b" 'consult-buffer
    "4 b" 'consult-buffer-other-window
    "5 b" 'consult-buffer-other-frame
    "r b" 'consult-bookmark)
@@ -32,11 +34,8 @@
   (general-define-key
    :prefix "M-g"
    "e" 'consult-compile-error
-   "f" 'consult-flymake
    "o" 'consult-outline
-   "i" 'consult-imenu
-
-   "b" 'ibuffer)
+   "i" 'consult-imenu)
 
   (general-define-key
    :prefix "C-c"
@@ -59,6 +58,7 @@
    
    "r !" 'shell-command
    "r &" 'async-shell-command
+   "r c" 'compile
    
    "r a" 'guix
    "r t" 'vterm
@@ -82,7 +82,8 @@
   (general-def lsp-mode-map
     "M-?" 'consult-lsp-symbols
     "C-h ." 'lsp-ui-doc-toggle
-    "M-g I" 'lsp-ui-imenu)
+    "M-g i" 'lsp-ui-imenu
+    "M-g f" 'lsp-ui-flycheck-list)
 
   (general-def vterm-mode-map
     "C-j" 'vterm-send-C-c))

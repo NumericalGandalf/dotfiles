@@ -48,10 +48,13 @@
 
 (use-package yasnippet)
 
+(use-package flycheck)
+
 (use-package lsp-mode
   :hook
   ((lsp-mode . lsp-enable-which-key-integration)
-   (prog-mode . lsp-deferred))
+   (prog-mode . lsp-deferred)
+   (lsp-mode . flycheck-mode))
   :custom
   (lsp-keymap-prefix "C-c l")
   (lsp-warn-no-matched-clients nil)
@@ -65,6 +68,8 @@
   (lsp-ui-doc-position 'at-point))
 
 (use-package consult-lsp)
+
+(use-package lsp-java)
 
 (use-package dap-mode)
 
