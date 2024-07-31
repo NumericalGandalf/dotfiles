@@ -18,6 +18,7 @@
 (add-to-list 'load-path (locate-user-emacs-file "modules/"))
 
 (require 'rc-utils)
+(require 'rc-font)
 (require 'rc-dotfiles)
 (require 'rc-packages)
 (require 'rc-theming)

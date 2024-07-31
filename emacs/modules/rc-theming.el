@@ -1,8 +1,6 @@
 (tool-bar-mode 0)
 (scroll-bar-mode 0)
 
-(rc-load-font t)
-
 (use-package doom-themes
   :demand
   :config

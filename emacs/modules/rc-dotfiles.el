@@ -1,4 +1,7 @@
-(require 'cl-lib)
+(defgroup dotfiles nil
+  "Dotfiles Management"
+  :prefix "dots-"
+  :group 'emacs)
 
 (defcustom dots-stow-parents '(".config/")
   "List of stow parent directories.
