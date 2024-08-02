@@ -13,14 +13,9 @@ These directories are relative to the dotfiles dots directory."
   :type '(repeat string))
 
 (defcustom dots-gsettings
-  '(("org.gnome.desktop.interface" "font-name" "@FONT")
-    ("org.gnome.desktop.interface" "monospace-font-name" "@FONT")
-    ("org.gnome.desktop.interface" "gtk-key-theme" "Emacs")
+  '(("org.gnome.desktop.interface" "gtk-key-theme" "Emacs")
     ("org.gnome.desktop.interface" "color-scheme" "prefer-dark"))
-  "List of gsettings in form SCHEME, KEY, VALUE.
-
-Expansions [@]:
-    FONT -> concatenated font string."
+  "List of gsettings in form SCHEME, KEY, VALUE."
   :type '(list string string string))
 
 (defcustom dots-stow-hook nil
@@ -30,6 +25,9 @@ Expansions [@]:
 (defcustom dots-deploy-hook nil
   "Hooks to run when deploying dotfiles."
   :type 'hook)
+
+(defcustom dots-load-font-hook nil
+  "Hooks to run when loading font.")
 
 (defun dots-expand-file (&optional file)
   "Expand FILE from the dotfiles dots directory."
@@ -92,33 +90,44 @@ Also run `dots-stow-hook' when stowing files."
   (unless prefix
     (run-hooks 'dots-stow-hooks)))
 
-(add-hook 'dots-stow-hook 'rc-load-font)
 (add-hook 'dots-deploy-hook 'dots-stow)
 
 (defun dots-gsettings-apply (&optional prefix)
   "Applies gsettings specified in `dots-gsettings'.
 If PREFIX is non-nil, reset the scheme keys."
   (interactive "P")
-  (dolist (tuple dots-gsettings)
-    (let* ((scheme (nth 0 tuple))
+  (mapcar
+   (lambda (tuple)
+     (let ((scheme (nth 0 tuple))
            (key (nth 1 tuple))
-           (raw (nth 2 tuple))
-           (unwrapped (if (functionp raw)
-                          (funcall raw) raw))
-           (value (prin1-to-string
-                   (cond ((string= unwrapped "@FONT")
-                          (rc-join
-                           rc-font (int-to-string (rc-font-height -1))))
-                         (t unwrapped)))))
-      (if prefix
-          (progn 
-            (message "Resetting %s %s" scheme key)
-            (rc-shell (rc-join "gsettings reset" scheme key)))
-        (progn
-          (message "Setting %s %s %s" scheme key value)
-          (rc-shell (rc-join "gsettings set" scheme key value)))))))
+           (value (nth 2 tuple)))
+       (if prefix
+           (rc-shell (rc-join "gsettings reset" scheme key)
+             (message "Resetting %s %s" scheme key))
+         (rc-shell (rc-join "gsettings set" scheme key value)
+           (message "Setting %s %s %s" scheme key value)))))
+   dots-gsettings))
 
-(add-hook 'rc-load-font-hook 'dots-gsettings-apply)
+(add-hook 'dots-stow-hook 'dots-gsettings-apply)
+
+(defun dots-gsettings-load-font (&optional prefix)
+  "Load `font-name' for gsettings.
+If PREFIX is non-nil, reset gsettings font."
+  (interactive "P")
+  (let ((scheme "org.gnome.desktop.interface")
+        (keys '("font-name" "monospace-font-name" "document-font-name"))
+        (font (prin1-to-string
+               (rc-join font-name (int-to-string (font-height -1))))))
+    (mapcar
+     (lambda (key)
+       (if prefix
+           (rc-shell (rc-join "gsettings reset" scheme key)
+             (message "Resetting font %s %s" scheme key))
+         (rc-shell (rc-join "gsettings set" scheme key font)
+           (message "Setting font %s %s %s" scheme key font))))
+     keys)))
+
+(add-hook 'dots-load-font-hook 'dots-gsettings-load-font)
 
 (defun dots-sway-write-wallpaper ()
   "Write wallpaper into sway config."
@@ -128,26 +137,36 @@ If PREFIX is non-nil, reset the scheme keys."
     (insert (rc-join "set $wallpaper"
                      (dots-expand-asset "butterfly.png")))))
 
-(add-hook 'dots-deploy-hook 'dots-sway-write-wallpaper)
+(add-hook 'dots-stow-hook 'dots-sway-write-wallpaper)
 
-(defun dots-desktop-write-font ()
-  "Write `rc-font' into sway config and waybar config."
+(defun dots-desktop-load-font ()
+  "Load `font-name' for sway and waybar config."
   (interactive)
-  (message "Writing desktop fonts")
+  (message "Loading desktop font")
   (rc-with-file (dots-expand-file ".config/sway/font")
-    (insert (rc-join (concat "font pango:" rc-font)
-		     (int-to-string (rc-font-height -3)))))
+    (insert (rc-join (concat "font pango:" font-name)
+		     (int-to-string (font-height -3)))))
   (rc-with-file (dots-expand-file ".config/waybar/font.css")
     (css-mode)
     (rc-insert "* {")
     (rc-insert (rc-join "font-family:"
-			(concat (prin1-to-string rc-font) ";")))
-    (rc-insert (rc-join "font-size:" (int-to-string (rc-font-height))))
+			(concat (prin1-to-string font-name) ";")))
+    (rc-insert (rc-join "font-size:" (int-to-string (font-height))))
     (insert "}")
     (indent-region (point-min) (point-max)))
   (rc-shell "swaymsg reload"))
 
-(add-hook 'rc-load-font-hook 'dots-desktop-write-font)
+(add-hook 'dots-load-font-hook 'dots-desktop-load-font)
+
+(defun dots-load-font (&optional prefix)
+  "Load dotfiles font. Run `dots-load-font-hook'.
+If PREFIX is non-nil, prompt for the font"
+  (interactive "P")
+  (when prefix
+    (call-interactively 'font-load))
+  (run-hooks 'dots-load-font-hook))
+
+(add-hook 'dots-deploy-hook 'dots-load-font)
 
 (defun dots-deploy ()
   "Deploy dotfiles. Run `dots-deploy-hook'."

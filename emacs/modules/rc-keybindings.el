@@ -47,7 +47,6 @@
    "o /" 'dots-open-files
    "o ?" 'dots-open-assets
 
-   "o y" 'dashboard-force
    "o p" 'list-packages
    "o P" 'use-package-report
 
@@ -58,6 +57,7 @@
    
    "r !" 'shell-command
    "r &" 'async-shell-command
+   "r %" 'query-replace-regexp
    "r c" 'compile
    
    "r a" 'guix

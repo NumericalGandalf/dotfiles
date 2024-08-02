@@ -23,8 +23,7 @@
 (defun treesit-ensure-all ()
   "Ensure all available tree-sitter libraries."
   (interactive)
-  (when-let ((_ (treesit-available-p))
-             (outdir (nth 0 treesit-extra-load-path)))
+  (when-let ((outdir (nth 0 treesit-extra-load-path)))
     (dolist (source (treesit-auto--build-treesit-source-alist))
       (let ((lang (nth 0 source)))
         (unless (or (member lang '(latex markdown janet))
@@ -42,18 +41,13 @@
   (setq magit-auto-revert-mode nil))
 
 (use-package editorconfig
-  :demand
-  :config
-  (editorconfig-mode 1))
-
-(use-package yasnippet)
-
-(use-package flycheck)
+  :hook
+  (prog-mode . editorconfig-mode))
 
 (use-package lsp-mode
   :hook
-  ((lsp-mode . lsp-enable-which-key-integration)
-   (prog-mode . lsp-deferred)
+  ((prog-mode . lsp-deferred)
+   (lsp-mode . lsp-enable-which-key-integration)
    (lsp-mode . flycheck-mode))
   :custom
   (lsp-keymap-prefix "C-c l")
@@ -61,6 +55,10 @@
   (lsp-completion-provider :none)
   (lsp-headerline-breadcrumb-enable nil)
   (lsp-lens-enable nil))
+
+(use-package yasnippet)
+
+(use-package flycheck)
 
 (use-package lsp-ui
   :custom

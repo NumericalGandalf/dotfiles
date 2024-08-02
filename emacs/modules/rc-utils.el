@@ -44,11 +44,9 @@ If NOBREAK is non-nil, do not break line afterwards."
 
 (defmacro rc-shell (command &optional success error)
   "Run shell command COMMAND and evaluate SUCCESS or ERROR."
-  (declare (indent 1))
+  (declare (indent 0))
   `(if (= (call-process-shell-command ,command) 0)
        ,success
      ,error))
-
-(defconst custom-file (rc-cache-file "custom.el"))
 
 (provide 'rc-utils)

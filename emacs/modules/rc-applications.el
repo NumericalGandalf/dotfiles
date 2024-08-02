@@ -20,7 +20,6 @@
 (use-package guix)
 
 (use-package vterm
-  :defer
   :custom
   (vterm-timer-delay 0.01)
   (vterm-max-scrollback 10000)

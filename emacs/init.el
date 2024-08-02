@@ -3,7 +3,7 @@
       vc-follow-symlinks t)
 
 (setq warning-minimum-level :emergency
-      warning-minimum-log-level :debug
+      warning-minimum-log-level :warning
       ad-redefinition-action 'accept)
 
 (setq auth-source-save-behavior nil)
@@ -28,5 +28,6 @@
 (require 'rc-applications)
 (require 'rc-keybindings)
 
-(when (and custom-file (file-exists-p custom-file)
-  (load custom-file :nomessage))
+(defconst custom-file (rc-cache-file "custom.el"))
+(when (file-exists-p custom-file)
+  (load custom-file :noerror :nomessage))

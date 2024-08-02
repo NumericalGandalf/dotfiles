@@ -15,11 +15,17 @@
 (setq display-line-numbers-width-start t
       display-line-numbers-grow-only t
       display-line-numbers-type 'relative)
+(global-display-line-numbers-mode)
 
-(dolist (mode '(conf text prog dired vterm helpful))
+(defun display-line-numbers-disable ()
+  (interactive)
+  "Disables line numbers in current buffer."
+  (display-line-numbers-mode 0))
+
+(dolist (mode '(image))
   (add-hook
    (intern (concat (symbol-name mode) "-mode-hook"))
-   'display-line-numbers-mode))
+   'display-line-numbers-disable))
 
 (column-number-mode)
 (global-visual-line-mode)

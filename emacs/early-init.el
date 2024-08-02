@@ -1,10 +1,9 @@
-(when (native-comp-available-p)
-  (when-let ((cache-dir
-              (cond ((eq system-type 'gnu/linux)
-                     (file-truename
-                      (expand-file-name
-                       "~/.cache/emacs/eln/"))))))
-    (startup-redirect-eln-cache cache-dir)))
+(when-let ((_ (native-comp-available-p))
+           (cache-dir
+            (pcase system-type
+              (`gnu/linux (file-truename
+                           (expand-file-name "~/.cache/emacs/eln/"))))))
+  (startup-redirect-eln-cache cache-dir))
 
 (require 'server)
 (unless (or (server-running-p) (daemonp))

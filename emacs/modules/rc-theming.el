@@ -79,12 +79,6 @@
 	     (= (length (window-list)) 1))
     (dashboard-open)))
 
-(defun dashboard-force ()
-  "Force dashboard and delete all other windows."
-  (interactive)
-  (delete-other-windows)
-  (dashboard-open))
-
 (add-hook 'emacs-startup-hook 'dashboard-ensure)
 (add-hook 'server-after-make-frame-hook 'dashboard-ensure)
 
