@@ -4,7 +4,8 @@
 (electric-pair-mode)
 
 (setq-default indent-tabs-mode nil
-	      c-basic-offset 4)
+              tab-width 4
+	          c-basic-offset tab-width)
 
 (use-package rust-mode)
 (use-package cmake-mode)
@@ -20,7 +21,8 @@
   :config
   (global-treesit-auto-mode))
 
-(defun treesit-ensure-all ()
+(rc-fun (treesit-ensure-all)
+    (treesit-available-p)
   "Ensure all available tree-sitter libraries."
   (interactive)
   (when-let ((outdir (nth 0 treesit-extra-load-path)))
@@ -33,7 +35,7 @@
 (when (treesit-available-p)
   (setq-default c-ts-mode-indent-offset c-basic-offset
                 json-ts-mode-indent-offset c-basic-offset)
-  (add-to-list 'treesit-extra-load-path (rc-cache-file "tree-sitter/"))
+  (add-to-list 'treesit-extra-load-path (rc-cache "tree-sitter/"))
   (add-hook 'dots-deploy-hook 'treesit-ensure-all))
 
 (use-package magit

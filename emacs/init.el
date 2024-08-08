@@ -28,6 +28,10 @@
 (require 'rc-applications)
 (require 'rc-keybindings)
 
-(defconst custom-file (rc-cache-file "custom.el"))
-(when (file-exists-p custom-file)
-  (load custom-file :noerror :nomessage))
+(setq custom-file (rc-cache "custom.el"))
+(load custom-file :noerror :nomessage)
+
+(define-advice custom-save-all (:around (fun &rest args) silent)
+  "Save all custom variables silently."
+  (let ((save-silently t))
+    (apply fun args)))

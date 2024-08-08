@@ -1,7 +1,11 @@
+(defcustom package-auto-upgrade-interval 7
+  "Interval in days for package auto upgrading."
+  :type 'natnum)
+
 (require 'package)
 (require 'use-package)
 
-(setq package-user-dir (rc-cache-file "elpa/")
+(setq package-user-dir (rc-cache "elpa/")
       package-gnupghome-dir (rc-expand "gnupg/" package-user-dir))
 
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
@@ -16,16 +20,8 @@
       use-package-always-defer t
       use-package-compute-statistics t)
 
-(use-package no-littering
-  :demand
-  :init
-  (setq no-littering-etc-directory (rc-expand)
-        no-littering-var-directory (rc-cache-file)))
-
-(use-package diminish)
-(use-package delight)
-
-(setq straight-base-dir (rc-cache-file))
+(setq straight-base-dir (rc-cache)
+      straight-enable-package-integration nil)
 (defvar bootstrap-version)
 (let ((bootstrap-file
        (expand-file-name
@@ -41,5 +37,34 @@
       (goto-char (point-max))
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
+
+(use-package no-littering
+  :demand
+  :init
+  (setq no-littering-etc-directory (rc-expand)
+        no-littering-var-directory (rc-cache)))
+
+(use-package diminish)
+(use-package delight)
+
+(defun package-auto-upgrade (&optional prefix)
+  "Upgrade packages if `package-auto-upgrade-interval' has passed.
+If PREFIX is non-nil, force upgrade."
+  (interactive "P")
+  (let ((file (rc-cache "last-upgrade"))
+        (day (time-to-days (current-time))))
+    (when (or prefix
+              (not (file-exists-p file))
+              (<= package-auto-upgrade-interval
+                  (- day (string-to-number
+                          (with-temp-buffer
+                            (insert-file-contents file)
+                            (buffer-string))))))
+      (package-upgrade-all nil)
+      (straight-pull-all)
+      (rc-file file
+        (insert (int-to-string day))))))
+
+(add-hook 'after-init-hook 'package-auto-upgrade)
 
 (provide 'rc-packages)

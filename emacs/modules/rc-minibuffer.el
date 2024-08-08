@@ -13,7 +13,7 @@
   :demand
   :custom
   (vertico-cycle t)
-  (vertico-count 18)
+  (vertico-count 15)
   :config
   (vertico-multiform-mode)
   (vertico-mode))

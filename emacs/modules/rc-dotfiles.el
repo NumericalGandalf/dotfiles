@@ -133,7 +133,7 @@ If PREFIX is non-nil, reset gsettings font."
   "Write wallpaper into sway config."
   (interactive)
   (message "Writing sway wallpaper")
-  (rc-with-file (dots-expand-file ".config/sway/wallpaper")
+  (rc-file (dots-expand-file ".config/sway/wallpaper")
     (insert (rc-join "set $wallpaper"
                      (dots-expand-asset "butterfly.png")))))
 
@@ -143,10 +143,10 @@ If PREFIX is non-nil, reset gsettings font."
   "Load `font-name' for sway and waybar config."
   (interactive)
   (message "Loading desktop font")
-  (rc-with-file (dots-expand-file ".config/sway/font")
+  (rc-file (dots-expand-file ".config/sway/font")
     (insert (rc-join (concat "font pango:" font-name)
 		     (int-to-string (font-height -3)))))
-  (rc-with-file (dots-expand-file ".config/waybar/font.css")
+  (rc-file (dots-expand-file ".config/waybar/font.css")
     (css-mode)
     (rc-insert "* {")
     (rc-insert (rc-join "font-family:"

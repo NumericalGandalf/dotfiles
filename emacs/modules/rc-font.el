@@ -24,7 +24,7 @@
 Values are relative to and normalized for `font-ref-height'."
   (+ font-height (floor (* (or offset 0) (/ font-height 13)))))
 
-(defun font-ensure-linux (font)
+(defun font-ensure (font)
   "Ensure nerd-font FONT is installed."
   (let* ((file (plist-get (gethash font font--list) :file))
 	 (default-directory
@@ -33,21 +33,19 @@ Values are relative to and normalized for `font-ref-height'."
           (concat
            "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/" file)))
     (make-directory default-directory t)
-    (rc-shell
-      (rc-join "fc-list : file family | grep"
-               default-directory "| grep -q" (prin1-to-string font))
-      nil
-      (progn
-        (message "Downloading font %s" font)
-        (rc-shell (rc-join "curl -sLO" link "&&"
-                           "unzip -qo" file "&&"
-                           "fc-cache -f &&"
-                           "rm" file)
-                  (message "Extracted %s to %s" file default-directory))))))
-
-(defun font-ensure (font)
-  (pcase system-type
-    ('gnu/linux (font-ensure-linux font))))
+    (cond (rc-posix-p
+           (rc-shell (rc-join
+                      "fc-list : file family | grep"
+                      default-directory "| grep -q" (prin1-to-string font))
+             nil
+             (progn
+               (message "Downloading font %s" (prin1-to-string font))
+               (rc-shell (rc-join "curl -sLO" link "&&"
+                                  "unzip -qo" file "&&"
+                                  "fc-cache -f &&"
+                                  "rm" file)
+                 (message "Extracted %s to %s" file default-directory)))))
+          (t (message "Assuming font %s is installed" (prin1-to-string font))))))
 
 (defun font-fetch-list ()
   "Fetch list of available nerd-fonts."

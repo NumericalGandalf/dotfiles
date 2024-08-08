@@ -17,15 +17,12 @@
       display-line-numbers-type 'relative)
 (global-display-line-numbers-mode)
 
-(defun display-line-numbers-disable ()
-  (interactive)
-  "Disables line numbers in current buffer."
-  (display-line-numbers-mode 0))
-
 (dolist (mode '(image))
   (add-hook
    (intern (concat (symbol-name mode) "-mode-hook"))
-   'display-line-numbers-disable))
+   (lambda ()
+     (interactive)
+     (display-line-numbers-mode 0))))
 
 (column-number-mode)
 (global-visual-line-mode)
@@ -61,18 +58,19 @@ If PREFIX is non-nil, do not kill current buffer."
     (next-line 1)
     (yank)))
 
-(defun move-text-indent-after (&rest _)
-  "Indent region after move text."
+(use-package move-text
+  :config
+  (advice-add 'move-text-up :after 'move-text@indent)
+  (advice-add 'move-text-down :after 'move-text@indent))
+
+(defun move-text@indent (&rest args)
+  "Indent region after move text and return ARGS."
   (let ((deactivate deactivate-mark))
     (if (region-active-p)
         (indent-region (region-beginning) (region-end))
       (indent-region (line-beginning-position) (line-end-position)))
-    (setq deactivate-mark deactivate)))
-
-(use-package move-text
-  :config
-  (advice-add 'move-text-up :after 'move-text-indent-after)
-  (advice-add 'move-text-down :after 'move-text-indent-after))
+    (setq deactivate-mark deactivate))
+  args)
 
 (use-package multiple-cursors)
 

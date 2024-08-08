@@ -1,6 +1,3 @@
-(tool-bar-mode 0)
-(scroll-bar-mode 0)
-
 (use-package doom-themes
   :demand
   :config
