@@ -1,4 +1,6 @@
 (use-package evil
+  :init
+  (setq evil-want-keybinding nil)
   :custom
   (evil-toggle-key "C-x C-z")
   (evil-want-C-u-scroll t)
@@ -10,6 +12,7 @@
 (use-package evil-collection
   :after
   evil
+  :demand
   :config
   (evil-collection-init))
 

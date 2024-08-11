@@ -47,6 +47,8 @@
   :config 
   (editorconfig-mode 1))
 
+(use-package flycheck)
+
 (use-package lsp-mode
   :hook
   ((prog-mode . lsp-deferred)
@@ -61,25 +63,23 @@
 
 (use-package yasnippet
   :after
-  lsp)
-
-(use-package flycheck
-  :after
-  lsp)
+  lsp-mode)
 
 (use-package lsp-ui
   :after
-  lsp
+  lsp-mode
   :custom
   (lsp-ui-imenu-auto-refresh t)
   (lsp-ui-doc-position 'at-point))
 
 (use-package consult-lsp
   :after
-  (consult lsp))
+  (consult lsp-mode))
 
 (use-package lsp-java
   :after
-  lsp)
+  lsp-mode)
 
-(use-package dap-mode)
+(use-package dap-mode
+  :after
+  lsp-mode)

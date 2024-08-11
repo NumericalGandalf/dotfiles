@@ -1,3 +1,6 @@
+(unless rc-posix-p
+  (cl-return-from 'this))
+
 (defgroup dotfiles nil
   "Dotfiles Management"
   :prefix "dots-"

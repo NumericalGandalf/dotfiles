@@ -24,7 +24,7 @@
     (file
      (directory-files
       (file-truename (locate-user-emacs-file "lisp/")) t ".el$"))
-  (cl-block 'file
+  (cl-block 'this
     (load file t t)))
 
 (setq custom-file (rc-cache "custom.el"))
