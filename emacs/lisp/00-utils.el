@@ -10,7 +10,8 @@
   "Pred whether system is windows.")
 
 (defun rc-expand (&optional file directory)
-  "Expands FILE to canonical path from DIRECTORY."
+  "Expands FILE to canonical path from DIRECTORY.
+If DIRECTORY is nil, expand from `user-emacs-directory'."
   (file-truename
    (expand-file-name (or file "./")
                      (or directory
@@ -23,16 +24,6 @@ Cache directories are system dependent:
     gnu/linux -> ~/.cache/emacs"
   (rc-expand file (cond (rc-posix-p "~/.cache/emacs/")
                         (t (locate-user-emacs-file "var/")))))
-
-(defun rc-open-init-file ()
-  "Open `user-init-file'."
-  (interactive)
-  (find-file (rc-expand user-init-file)))
-
-(defun rc-open-cache-dir ()
-  "Open `rc-cache' root in dired."
-  (interactive)
-  (find-file (rc-cache)))
 
 (defun rc-join (&rest strings)
   "Join STRINGS with char space as seperator."
@@ -65,5 +56,3 @@ If NOBREAK is non-nil, do not break line afterwards."
   `(when ,pred
      (defun ,(car head) ,(or (cdr head) ())
        ,@body)))
-
-(provide 'rc-utils)

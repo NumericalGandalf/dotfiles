@@ -111,5 +111,3 @@ If this command is called interactively, prompt for the values."
     (set-face-attribute 'variable-pitch nil :family font-name :height height)))
 
 (add-hook 'after-init-hook 'font-load)
-
-(provide 'rc-font)

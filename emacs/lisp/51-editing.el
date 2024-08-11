@@ -20,9 +20,7 @@
 (dolist (mode '(image))
   (add-hook
    (intern (concat (symbol-name mode) "-mode-hook"))
-   (lambda ()
-     (interactive)
-     (display-line-numbers-mode 0))))
+   (lambda () (display-line-numbers-mode 0))))
 
 (column-number-mode)
 (global-visual-line-mode)
@@ -77,5 +75,3 @@ If PREFIX is non-nil, do not kill current buffer."
 (use-package wgrep
   :custom
   (wgrep-auto-save-buffer t))
-
-(provide 'rc-editing)

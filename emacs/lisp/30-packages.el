@@ -66,5 +66,3 @@ If PREFIX is non-nil, force upgrade."
         (insert (int-to-string day))))))
 
 (add-hook 'after-init-hook 'package-auto-upgrade)
-
-(provide 'rc-packages)

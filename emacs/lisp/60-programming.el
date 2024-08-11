@@ -43,8 +43,9 @@
   (setq magit-auto-revert-mode nil))
 
 (use-package editorconfig
-  :hook
-  (prog-mode . editorconfig-mode))
+  :demand
+  :config 
+  (editorconfig-mode 1))
 
 (use-package lsp-mode
   :hook
@@ -58,19 +59,27 @@
   (lsp-headerline-breadcrumb-enable nil)
   (lsp-lens-enable nil))
 
-(use-package yasnippet)
+(use-package yasnippet
+  :after
+  lsp)
 
-(use-package flycheck)
+(use-package flycheck
+  :after
+  lsp)
 
 (use-package lsp-ui
+  :after
+  lsp
   :custom
   (lsp-ui-imenu-auto-refresh t)
   (lsp-ui-doc-position 'at-point))
 
-(use-package consult-lsp)
+(use-package consult-lsp
+  :after
+  (consult lsp))
 
-(use-package lsp-java)
+(use-package lsp-java
+  :after
+  lsp)
 
 (use-package dap-mode)
-
-(provide 'rc-programming)

@@ -29,30 +29,16 @@ These directories are relative to the dotfiles dots directory."
 (defcustom dots-load-font-hook nil
   "Hooks to run when loading font.")
 
-(defun dots-expand-file (&optional file)
+(defun dots-expand (&optional file)
   "Expand FILE from the dotfiles dots directory."
   (rc-expand file (rc-expand "../dots/")))
-
-(defun dots-expand-asset (&optional file)
-  "Expand FILE from the dotfiles asset directory."
-  (rc-expand file (rc-expand "../assets/")))
-
-(defun dots-open-files ()
-  "Open `dots-expand-file' in dired."
-  (interactive)
-  (find-file (dots-expand-file)))
-
-(defun dots-open-assets ()
-  "Open `dots-expand-asset' in dired."
-  (interactive)
-  (find-file (dots-expand-asset)))
 
 (defun dots-stow-destination (&optional file)
   "Get stow destination of FILE.
 
 FILE may be absolute or relative to the dotfiles dots directory."
   (expand-file-name
-   (file-relative-name (dots-expand-file file) (dots-expand-file)) "~/"))
+   (file-relative-name (dots-expand file) (dots-expand)) "~/"))
 
 (defun dots-stow-entry (entry &optional unstow)
   "Stow ENTRY.
@@ -78,14 +64,14 @@ Whether a child dir is stowed depends on `dots-stow-parents'.
 
 Also run `dots-stow-hook' when stowing files."
   (interactive "P")
-  (dolist (entry (cdr (cdr (directory-files (dots-expand-file dir) t))))
+  (dolist (entry (cdr (cdr (directory-files (dots-expand dir) t))))
     (if (or (file-regular-p entry)
-	    (cl-dolist (parent dots-stow-parents)
-	      (let ((parent (dots-expand-file parent)))
-		(when (and (file-in-directory-p entry parent)
-			   (not (file-equal-p entry parent)))
-		  (cl-return entry)))))
-	(dots-stow-entry entry prefix)
+	        (cl-dolist (parent dots-stow-parents)
+	          (let ((parent (dots-expand parent)))
+		        (when (and (file-in-directory-p entry parent)
+			               (not (file-equal-p entry parent)))
+		          (cl-return entry)))))
+	    (dots-stow-entry entry prefix)
       (dots-stow prefix entry)))
   (unless prefix
     (run-hooks 'dots-stow-hooks)))
@@ -133,9 +119,9 @@ If PREFIX is non-nil, reset gsettings font."
   "Write wallpaper into sway config."
   (interactive)
   (message "Writing sway wallpaper")
-  (rc-file (dots-expand-file ".config/sway/wallpaper")
+  (rc-file (dots-expand ".config/sway/wallpaper")
     (insert (rc-join "set $wallpaper"
-                     (dots-expand-asset "butterfly.png")))))
+                     (dots-expand ".config/sway/butterfly.png")))))
 
 (add-hook 'dots-stow-hook 'dots-sway-write-wallpaper)
 
@@ -143,14 +129,14 @@ If PREFIX is non-nil, reset gsettings font."
   "Load `font-name' for sway and waybar config."
   (interactive)
   (message "Loading desktop font")
-  (rc-file (dots-expand-file ".config/sway/font")
+  (rc-file (dots-expand ".config/sway/font")
     (insert (rc-join (concat "font pango:" font-name)
-		     (int-to-string (font-height -3)))))
-  (rc-file (dots-expand-file ".config/waybar/font.css")
+		             (int-to-string (font-height -3)))))
+  (rc-file (dots-expand ".config/waybar/font.css")
     (css-mode)
     (rc-insert "* {")
     (rc-insert (rc-join "font-family:"
-			(concat (prin1-to-string font-name) ";")))
+			            (concat (prin1-to-string font-name) ";")))
     (rc-insert (rc-join "font-size:" (int-to-string (font-height))))
     (insert "}")
     (indent-region (point-min) (point-max)))
@@ -179,7 +165,5 @@ If PREFIX is non-nil, prompt for the font"
 If PREFIX is non-nil, run disconnection."
   (interactive "P")
   (let ((method (if prefix "disconnect" "connect"))
-	(addr "90:9C:4A:DA:5C:9F"))
+	    (addr "90:9C:4A:DA:5C:9F"))
     (message (rc-join "bluetoothctl" method addr "&> /dev/null"))))
-
-(provide 'rc-dotfiles)

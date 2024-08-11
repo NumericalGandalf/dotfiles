@@ -12,8 +12,6 @@
   (ibuffer-mode . nerd-icons-ibuffer-mode))
 
 (use-package nerd-icons-completion
-  :straight
-  (:host github :repo "maxecharel/nerd-icons-completion" :branch "contrib")
   :hook
   (marginalia-mode . nerd-icons-completion-marginalia-setup))
 
@@ -33,7 +31,6 @@
   :custom
   (doom-modeline-percent-position '(6 "%q"))
   (doom-modeline-buffer-file-name-style 'file-name-with-project)
-  (doom-modeline-buffer-modification-icon nil)
   (doom-modeline-highlight-modified-buffer-name nil))
 
 (use-package dashboard
@@ -44,7 +41,7 @@
   (dashboard-set-file-icons t)
   (dashboard-center-content t)
   (dashboard-show-shortcuts nil)
-  (dashboard-startup-banner (dots-expand-asset "banner.txt"))
+  (dashboard-startup-banner (rc-expand "banner.txt"))
   (dashboard-items '((recents   . 5)
 		     (projects  . 5)
 		     (bookmarks . 5)
@@ -69,21 +66,22 @@
   (add-hook 'window-size-change-functions 'dashboard-resize-on-hook)
   (add-hook 'window-setup-hook 'dashboard-resize-on-hook))
 
-(defun dashboard-ensure ()
-  "Open dashboard if window is not splitted and current buffer is scratch."
-  (interactive)
-  (when (and (string= (buffer-name) "*scratch*")
-	     (= (length (window-list)) 1))
+(defun dashboard-ensure (&optional prefix)
+  "Open dashboard if window is not splitted and current buffer is scratch.
+If PREFIX is non-nil, force dashboard."
+  (interactive "P")
+  (when (or prefix
+            (and (string= (buffer-name) "*scratch*")
+	             (= (length (window-list)) 1)))
+    (when prefix
+      (delete-other-windows))
     (dashboard-open)))
 
 (add-hook 'emacs-startup-hook 'dashboard-ensure)
 (add-hook 'server-after-make-frame-hook 'dashboard-ensure)
 
 (use-package emojify
-  :demand
   :custom
   (emojify-download-emojis-p t)
   :config
   (global-emojify-mode))
-
-(provide 'rc-theming)

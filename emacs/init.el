@@ -15,21 +15,20 @@
       dired-auto-revert-buffer t
       dired-clean-confirm-killing-deleted-buffers nil)
 
-(add-to-list 'load-path (locate-user-emacs-file "modules/"))
+(with-eval-after-load 'dired
+  (require 'dired-x)
+  (add-hook 'dired-mode-hook (lambda () (dired-omit-mode 1))))
 
-(require 'rc-utils)
-(require 'rc-font)
-(require 'rc-dotfiles)
-(require 'rc-packages)
-(require 'rc-theming)
-(require 'rc-minibuffer)
-(require 'rc-editing)
-(require 'rc-programming)
-(require 'rc-applications)
-(require 'rc-keybindings)
+(require 'cl-lib)
+(dolist
+    (file
+     (directory-files
+      (file-truename (locate-user-emacs-file "lisp/")) t ".el$"))
+  (cl-block 'file
+    (load file t t)))
 
 (setq custom-file (rc-cache "custom.el"))
-(load custom-file :noerror :nomessage)
+(load custom-file t t)
 
 (define-advice custom-save-all (:around (fun &rest args) silent)
   "Save all custom variables silently."

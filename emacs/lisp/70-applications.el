@@ -31,5 +31,3 @@
   (vterm-timer-delay 0.01)
   (vterm-clear-scrollback-when-clearing t)
   (vterm-always-compile-module t))
-
-(provide 'rc-applications)

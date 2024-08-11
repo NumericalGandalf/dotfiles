@@ -2,7 +2,8 @@
 
 [[ $0 != $SHELL ]] && cd $(dirname $0)
 
-emacs_dir="$HOME/.emacs.d"
+EMACS_DIR="$HOME/.emacs.d"
+REQ_EMACS="29"
 
 function fail()
 {
@@ -16,46 +17,29 @@ function require()
     [[ -z "$util" ]] && fail "Require utility" $1
 }
 
-function require_shell()
-{
-    local req=$(cat assets/shell)
-    require $req
-    [[ "$SHELL" != "/bin/${req}" ]] && fail "Require shell" $req
-}
-
 function require_emacs()
 {
     require emacs
-    local req=$(cat assets/emacs_version)
     local version=$(emacs --version | head -n 1 | awk '{print $3}')
-    [[ $(printf '%s\n' $req $version | sort -V | head -n1) != $req ]] &&
-	fail "Require at least Emacs version" $req
-}
-
-function require_mandatories()
-{
-    cat assets/mandatories | while read -r line
-    do
-        require $line
-    done
+    [[ $(printf '%s\n' $REQ_EMACS $version | sort -V | head -n1) != $REQ_EMACS ]] &&
+	fail "Require at least Emacs version" $REQ_EMACS
 }
 
 function unlink_emacs_dir()
 {
-    [[ -L $emacs_dir ]] && rm $emacs_dir
-    [[ -d $emacs_dir ]] && rm -rf $emacs_dir
+    [[ -L $EMACS_DIR ]] && rm $EMACS_DIR
+    [[ -d $EMACS_DIR ]] && rm -rf $EMACS_DIR
 }
 
 function link_emacs_dir()
 {
-    local emacs_file="$HOME/.emacs"
-    local dot_emacs_dir=$(realpath emacs)
-    [[ ! -d $dot_emacs_dir ]] && fail "Missing Emacs dotfiles"
+    local emacs_dir=$(realpath emacs)
+    [[ ! -d $emacs_dir ]] && fail "Missing Emacs dotfiles"
     
-    [[ -e $emacs_file ]] && rm $emacs_file
+    [[ -e "$HOME/.emacs" ]] && rm "$HOME/.emacs"
     unlink_emacs_dir
 
-    ln -s $dot_emacs_dir $emacs_dir
+    ln -s $emacs_dir $EMACS_DIR
 }
 
 if [[ $1 == "-d" ]]
@@ -64,8 +48,5 @@ then
     exit 0
 fi
 
-require_shell
 require_emacs
-require_mandatories
-
-# link_emacs_dir
+link_emacs_dir

@@ -1,9 +1,25 @@
+(use-package evil
+  :custom
+  (evil-toggle-key "C-x C-z")
+  (evil-want-C-u-scroll t)
+  (evil-want-C-i-jump t)
+  (evil-want-fine-undo t)
+  (evil-undo-system 'undo-redo)
+  (evil-insert-state-cursor nil))
+
+(use-package evil-collection
+  :after
+  evil
+  :config
+  (evil-collection-init))
+
 (use-package general
   :demand
   :config
   (general-define-key
    "M-y" 'consult-yank-pop
    "C-s" 'consult-line
+   "C-z" 'evil-mode
    
    "C-r" 'rc-sudo-buffer
    "C-q" 'rc-duplicate-line
@@ -17,9 +33,7 @@
   (general-define-key
    :prefix "C-x"
    "C-b" 'ibuffer-other-window
-   
-   "M-:" 'consult-complex-command
-   "b" 'consult-buffer
+   "b" 'consult-buffer   
    "4 b" 'consult-buffer-other-window
    "5 b" 'consult-buffer-other-frame
    "r b" 'consult-bookmark)
@@ -42,29 +56,38 @@
    "C->" 'mc/mark-all-like-this
    "C-<" 'mc/edit-lines
 
-   "o ." 'rc-open-init-file
-   "o ," 'rc-open-cache-dir
-   "o /" 'dots-open-files
-   "o ?" 'dots-open-assets
+   "o ." (lambda ()
+           (interactive)
+           (find-file (file-truename user-init-file)))
+   "o ," (lambda ()
+           (interactive)
+           (find-file (rc-cache)))
 
    "o p" 'list-packages
    "o P" 'use-package-report
-
-   "r m" 'consult-man
-   "r f" 'consult-find
-   "r g" 'consult-grep
-   "r y" 'consult-git-grep
    
    "r !" 'shell-command
    "r &" 'async-shell-command
    "r %" 'query-replace-regexp
    "r c" 'compile
-   
-   "r a" 'guix
-   "r t" 'vterm
 
    "f r" 'recentf
    "f l" 'find-library)
+
+  (when rc-posix-p
+    (general-define-key
+     :prefix "C-c"
+     "r m" 'consult-man
+     "r f" 'consult-find
+     "r g" 'consult-grep
+     "r y" 'consult-git-grep
+
+     "o /" (lambda ()
+             (interactive)
+             (find-file (dots-expand)))
+     
+     "r a" 'guix
+     "r t" 'vterm))
 
   (general-def minibuffer-local-map
     "M-r" 'consult-history
@@ -87,5 +110,3 @@
 
   (general-def vterm-mode-map
     "C-j" 'vterm-send-C-c))
-
-(provide 'rc-keybindings)
