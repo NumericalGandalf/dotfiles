@@ -37,7 +37,7 @@
   :after
   embark
   :hook
-  (embark-collect-mode . consult-preview-at-point-mode))
+  (embark-collect-mode-hook . consult-preview-at-point-mode))
 
 (defun corfu-minibuffer-p ()
   "Predicate whether corfu should be enabled in the minibuffer."

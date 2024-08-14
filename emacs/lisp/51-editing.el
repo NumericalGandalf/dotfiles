@@ -28,23 +28,6 @@
 (setq scroll-step 1
       scroll-preserve-screen-position t)
 
-(defun rc-sudo-buffer (&optional prefix)
-  "Open current buffer as root.
-If current buffer is already opened as root,
-open buffer as normal user again.
-If PREFIX is non-nil, do not kill current buffer."
-  (interactive "P")
-  (when-let ((buf (current-buffer))
-	     (file (or (buffer-file-name)
-		       (when (derived-mode-p 'dired-mode)
-                         (rc-expand default-directory)))))
-    (save-buffer)
-    (if (string-match "^/sudo:" file)
-        (find-file (tramp-file-local-name file))
-      (find-file (concat "/sudo::" file)))
-    (unless prefix
-      (kill-buffer buf))))
-
 (defun rc-duplicate-line (&optional n)
   "Duplicate the current line N times."
   (interactive "p")
@@ -56,19 +39,9 @@ If PREFIX is non-nil, do not kill current buffer."
     (next-line 1)
     (yank)))
 
-(use-package move-text
-  :config
-  (advice-add 'move-text-up :after 'move-text@indent)
-  (advice-add 'move-text-down :after 'move-text@indent))
+(use-package sudo-edit)
 
-(defun move-text@indent (&rest args)
-  "Indent region after move text and return ARGS."
-  (let ((deactivate deactivate-mark))
-    (if (region-active-p)
-        (indent-region (region-beginning) (region-end))
-      (indent-region (line-beginning-position) (line-end-position)))
-    (setq deactivate-mark deactivate))
-  args)
+(use-package move-text)
 
 (use-package multiple-cursors)
 

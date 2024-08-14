@@ -1,5 +1,5 @@
 (unless rc-posix-p
-  (cl-return-from 'this))
+  (throw 'return t))
 
 (defgroup dotfiles nil
   "Dotfiles Management"
@@ -85,7 +85,7 @@ Also run `dots-stow-hook' when stowing files."
   "Applies gsettings specified in `dots-gsettings'.
 If PREFIX is non-nil, reset the scheme keys."
   (interactive "P")
-  (mapcar
+  (mapc
    (lambda (tuple)
      (let ((scheme (nth 0 tuple))
            (key (nth 1 tuple))
@@ -107,7 +107,7 @@ If PREFIX is non-nil, reset gsettings font."
         (keys '("font-name" "monospace-font-name" "document-font-name"))
         (font (prin1-to-string
                (rc-join font-name (int-to-string (font-height -1))))))
-    (mapcar
+    (mapc
      (lambda (key)
        (if prefix
            (rc-shell (rc-join "gsettings reset" scheme key)

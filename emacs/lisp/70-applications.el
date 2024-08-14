@@ -1,11 +1,11 @@
 (unless rc-posix-p
-  (cl-return-from 'this))
+  (throw 'return t))
 
 (use-package app-launcher
   :straight
   (:host github :repo "NumericalGandalf/app-launcher")
   :commands
-  (app-launcher))
+  app-launcher)
 
 (defun app-launcher ()
   "Create new minibuffer-only frame and call `app-launcher-run-app'."

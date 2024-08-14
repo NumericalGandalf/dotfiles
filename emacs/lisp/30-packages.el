@@ -18,6 +18,7 @@
 
 (setq use-package-always-ensure t
       use-package-always-defer t
+      use-package-hook-name-suffix nil
       use-package-compute-statistics t)
 
 (setq straight-base-dir (rc-cache)
@@ -43,9 +44,6 @@
   :init
   (setq no-littering-etc-directory (rc-expand)
         no-littering-var-directory (rc-cache)))
-
-(use-package diminish)
-(use-package delight)
 
 (defun package-auto-upgrade (&optional prefix)
   "Upgrade packages if `package-auto-upgrade-interval' has passed.

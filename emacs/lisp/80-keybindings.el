@@ -24,7 +24,6 @@
    "C-s" 'consult-line
    "C-z" 'evil-mode
    
-   "C-r" 'rc-sudo-buffer
    "C-q" 'rc-duplicate-line
    
    "M-P" 'move-text-up
@@ -68,16 +67,22 @@
 
    "o p" 'list-packages
    "o P" 'use-package-report
-   
+  
+   "r c" 'compile
+   "r e" 'eshell
    "r !" 'shell-command
    "r &" 'async-shell-command
    "r %" 'query-replace-regexp
-   "r c" 'compile
 
    "f r" 'recentf
-   "f l" 'find-library)
+   "f l" 'find-library
+   "f z" 'load-file)
 
   (when rc-posix-p
+    (general-define-key
+     "C-r" 'sudo-edit
+     "C-S-r" 'sudo-edit-find-file)
+    
     (general-define-key
      :prefix "C-c"
      "r m" 'consult-man
@@ -98,6 +103,9 @@
     "C-." 'embark-act
     "C-;" 'embark-dwin
     "C-h B" 'embark-bindings)
+
+  (general-def use-package-statistics-mode-map
+    "g" 'use-package-report)
 
   (general-def grep-mode-map
     "C-c C-p" 'wgrep-change-to-wgrep-mode)

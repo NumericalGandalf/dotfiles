@@ -49,10 +49,3 @@ If NOBREAK is non-nil, do not break line afterwards."
   `(if (= (call-process-shell-command ,command) 0)
        ,success
      ,error))
-
-(defmacro rc-fun (head pred &rest body)
-  "If PRED is non-nil, define function with HEAD and BODY."
-  (declare (indent 2) (doc-string 3))
-  `(when ,pred
-     (defun ,(car head) ,(or (cdr head) ())
-       ,@body)))

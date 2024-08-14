@@ -3,7 +3,6 @@
       vc-follow-symlinks t)
 
 (setq warning-minimum-level :emergency
-      warning-minimum-log-level :warning
       ad-redefinition-action 'accept)
 
 (setq auth-source-save-behavior nil)
@@ -19,13 +18,11 @@
   (require 'dired-x)
   (add-hook 'dired-mode-hook (lambda () (dired-omit-mode 1))))
 
-(require 'cl-lib)
-(dolist
-    (file
-     (directory-files
-      (file-truename (locate-user-emacs-file "lisp/")) t ".el$"))
-  (cl-block 'this
-    (load file t t)))
+(mapc
+ (lambda (file)
+   (catch 'return
+     (load (file-truename file) t t)))
+ (directory-files (locate-user-emacs-file "lisp/") t ".el$"))
 
 (setq custom-file (rc-cache "custom.el"))
 (load custom-file t t)
