@@ -27,9 +27,9 @@ Values are relative to and normalized for `font-ref-height'."
 (defun font-ensure (font)
   "Ensure nerd-font FONT is installed."
   (let* ((file (plist-get (gethash font font--list) :file))
-	 (default-directory
+	     (default-directory
           (rc-expand (concat (file-name-base file) "/") "~/.local/share/fonts/rc/"))
-	 (link
+	     (link
           (concat
            "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/" file)))
     (make-directory default-directory t)
@@ -94,13 +94,13 @@ If this command is called interactively, prompt for the values."
     (customize-save-variable
      'font-name (completing-read
                  "Load font: "
-	         (lambda (str pred flag)
+	             (lambda (str pred flag)
                    (pcase flag
                      ('metadata
                       `(metadata
                         (annotation-function . font-load--annotation)))
                      (_ (all-completions str font--list pred))))
-	         nil t nil 'font-load-name nil nil))
+	             nil t nil 'font-load-name nil nil))
     (let ((height (round (read-number "Font height: " nil 'font-load-height))))
       (customize-save-variable 'font-height (if (>= height 0) height (font-height))))
     (font-ensure font-name))
@@ -111,3 +111,5 @@ If this command is called interactively, prompt for the values."
     (set-face-attribute 'variable-pitch nil :family font-name :height height)))
 
 (add-hook 'after-init-hook 'font-load)
+
+(provide 'fonts)

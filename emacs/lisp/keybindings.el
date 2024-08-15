@@ -6,8 +6,7 @@
   (evil-want-C-u-scroll t)
   (evil-want-C-i-jump t)
   (evil-want-fine-undo t)
-  (evil-undo-system 'undo-redo)
-  (evil-insert-state-cursor nil))
+  (evil-undo-system 'undo-redo))
 
 (use-package evil-collection
   :after
@@ -23,6 +22,9 @@
    "M-y" 'consult-yank-pop
    "C-s" 'consult-line
    "C-z" 'evil-mode
+
+   "C-S-N" 'next-buffer
+   "C-S-P" 'previous-buffer
    
    "C-q" 'rc-duplicate-line
    
@@ -67,16 +69,26 @@
 
    "o p" 'list-packages
    "o P" 'use-package-report
-  
+   
    "r c" 'compile
    "r e" 'eshell
-   "r !" 'shell-command
+   "r !" 'shell-command+
    "r &" 'async-shell-command
-   "r %" 'query-replace-regexp
+   
+   "r %" 'query-replace-w-options
 
    "f r" 'recentf
    "f l" 'find-library
-   "f z" 'load-file)
+   "f z" 'load-file
+
+   "b r" (lambda ()
+           (interactive)
+           (revert-buffer t t))
+
+   "w h" 'buf-move-left
+   "w j" 'buf-move-down
+   "w k" 'buf-move-up
+   "w l" 'buf-move-right)
 
   (when rc-posix-p
     (general-define-key
@@ -121,3 +133,5 @@
 
   (general-def vterm-mode-map
     "C-j" 'vterm-send-C-c))
+
+(provide 'keybindings)

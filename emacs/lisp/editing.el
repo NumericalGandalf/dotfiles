@@ -48,3 +48,7 @@
 (use-package wgrep
   :custom
   (wgrep-auto-save-buffer t))
+
+(use-package buffer-move)
+
+(provide 'editing)

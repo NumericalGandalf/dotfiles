@@ -7,22 +7,28 @@
 
 (setq auth-source-save-behavior nil)
 
-(setq dired-listing-switches "-lah"
-      dired-free-space 'separate
-      dired-recursive-deletes 'always
-      dired-dwim-target t
-      dired-auto-revert-buffer t
-      dired-clean-confirm-killing-deleted-buffers nil)
+(add-to-list
+ 'load-path (file-truename (locate-user-emacs-file "lisp/")))
 
-(with-eval-after-load 'dired
-  (require 'dired-x)
-  (add-hook 'dired-mode-hook (lambda () (dired-omit-mode 1))))
+(require 'utils)
+(require 'packages)
 
-(mapc
- (lambda (file)
-   (catch 'return
-     (load (file-truename file) t t)))
- (directory-files (locate-user-emacs-file "lisp/") t ".el$"))
+(when rc-posix-p
+  (require 'fonts)
+  (require 'dotfiles)
+  (require 'applications))
+
+(require 'theming)
+
+(require 'minibuf)
+(require 'enhancements)
+(require 'editing)
+
+(require 'programming)
+(when (treesit-available-p)
+  (require 'treesitter))
+
+(require 'keybindings)
 
 (setq custom-file (rc-cache "custom.el"))
 (load custom-file t t)

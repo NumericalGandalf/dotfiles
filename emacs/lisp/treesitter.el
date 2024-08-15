@@ -1,6 +1,3 @@
-(unless (treesit-available-p)
-  (throw 'return t))
-
 (use-package treesit-auto
   :demand
   :config
@@ -23,3 +20,5 @@
 
 (add-to-list 'treesit-extra-load-path (rc-cache "tree-sitter/"))
 (add-hook 'dots-deploy-hook 'treesit-ensure-all)
+
+(provide 'treesitter)

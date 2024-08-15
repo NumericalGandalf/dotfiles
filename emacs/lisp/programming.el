@@ -23,19 +23,23 @@
   :config 
   (editorconfig-mode 1))
 
-(use-package flycheck)
-
 (use-package lsp-mode
   :hook
   ((prog-mode-hook . lsp-deferred)
-   (lsp-mode-hook . lsp-enable-which-key-integration)
-   (lsp-mode-hook . flycheck-mode))
+   (lsp-mode-hook . lsp-enable-which-key-integration))
   :custom
   (lsp-keymap-prefix "C-c l")
   (lsp-warn-no-matched-clients nil)
   (lsp-completion-provider :none)
   (lsp-headerline-breadcrumb-enable nil)
+  (lsp-enable-symbol-highlighting nil)
   (lsp-lens-enable nil))
+
+(use-package flycheck
+  :after
+  lsp-mode
+  :hook
+  (lsp-mode-hook . flycheck-mode))
 
 (use-package yasnippet
   :after
@@ -59,3 +63,5 @@
 (use-package dap-mode
   :after
   lsp-mode)
+
+(provide 'programming)

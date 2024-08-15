@@ -6,7 +6,7 @@
 (require 'use-package)
 
 (setq package-user-dir (rc-cache "elpa/")
-      package-gnupghome-dir (rc-expand "gnupg/" package-user-dir))
+      package-gnupghome-dir (rc-cache "elpa-gnupg/"))
 
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 
@@ -59,8 +59,12 @@ If PREFIX is non-nil, force upgrade."
                             (insert-file-contents file)
                             (buffer-string))))))
       (package-upgrade-all nil)
+      (package-autoremove)
       (straight-pull-all)
+      (straight-remove-unused-repos t)
       (rc-file file
         (insert (int-to-string day))))))
 
 (add-hook 'after-init-hook 'package-auto-upgrade)
+
+(provide 'packages)

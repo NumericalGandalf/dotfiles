@@ -39,12 +39,6 @@
   :hook
   (embark-collect-mode-hook . consult-preview-at-point-mode))
 
-(defun corfu-minibuffer-p ()
-  "Predicate whether corfu should be enabled in the minibuffer."
-  (not (or (bound-and-true-p mct--active)
-           (bound-and-true-p vertico--input)
-           (eq (current-local-map) read-passwd-map))))
-
 (use-package corfu
   :demand
   :custom
@@ -52,7 +46,11 @@
   (corfu-auto t)
   (corfu-quit-no-match 'separator)
   (tab-always-indent 'complete)
-  (global-corfu-minibuffer 'corfu-minibuffer-p)
+  (global-corfu-minibuffer
+   (lambda ()
+     (not (or (bound-and-true-p mct--active)
+              (bound-and-true-p vertico--input)
+              (eq (current-local-map) read-passwd-map)))))
   :config
   (global-corfu-mode))
 
@@ -64,3 +62,5 @@
   (which-key-mode))
 
 (use-package helpful)
+
+(provide 'minibuf)

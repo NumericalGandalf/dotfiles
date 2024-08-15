@@ -1,6 +1,6 @@
 set $emacs emacsclient -ca emacs
 set $client emacsclient -c 
-set $app-launcher $client -F "((visibility . nil))" -e "(app-launcher)"
+set $launcher $client -F "((visibility . nil))" -e "(app-launcher-frame t)"
 set $terminal $client -e "(vterm)"
 
 exec --no-startup-id $emacs
@@ -64,7 +64,7 @@ for_window [title="^app-launcher$"] floating enable
 
 bindsym $mod+Shift+q kill
 bindsym $mod+Shift+e exec --no-startup-id $emacs
-bindsym $mod+Shift+d exec --no-startup-id $app-launcher
+bindsym $mod+Shift+d exec --no-startup-id $launcher
 bindsym $mod+Shift+t exec --no-startup-id $terminal
 bindsym $mod+Shift+w exec --no-startup-id firefox
 

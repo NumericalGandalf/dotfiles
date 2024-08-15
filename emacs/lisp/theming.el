@@ -12,7 +12,9 @@
 (use-package doom-themes
   :demand
   :config
-  (load-theme 'doom-palenight t))
+  (load-theme 'doom-palenight t)
+  (doom-themes-org-config)
+  (doom-themes-treemacs-config))
 
 (use-package all-the-icons
   :hook
@@ -94,3 +96,5 @@
   (emojify-download-emojis-p t))
 
 (use-package colorful-mode)
+
+(provide 'theming)

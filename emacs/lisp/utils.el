@@ -36,6 +36,11 @@ If NOBREAK is non-nil, do not break line afterwards."
   (unless nobreak
     (newline)))
 
+(defun rc-load (file)
+  "Load FILE within block 'return."
+  (catch 'return
+    (load file (file-truename file) t t)))
+
 (defmacro rc-file (file &rest body)
   "Erase contents of FILE and evaluate BODY."
   (declare (indent 1))
@@ -49,3 +54,5 @@ If NOBREAK is non-nil, do not break line afterwards."
   `(if (= (call-process-shell-command ,command) 0)
        ,success
      ,error))
+
+(provide 'utils)

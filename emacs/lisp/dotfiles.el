@@ -1,6 +1,3 @@
-(unless rc-posix-p
-  (throw 'return t))
-
 (defgroup dotfiles nil
   "Dotfiles Management"
   :prefix "dots-"
@@ -170,3 +167,5 @@ If PREFIX is non-nil, run disconnection."
   (let ((method (if prefix "disconnect" "connect"))
 	    (addr "90:9C:4A:DA:5C:9F"))
     (message (rc-join "bluetoothctl" method addr "&> /dev/null"))))
+
+(provide 'dotfiles)
