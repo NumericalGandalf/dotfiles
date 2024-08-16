@@ -25,8 +25,7 @@
 
 (use-package lsp-mode
   :hook
-  ((prog-mode-hook . lsp-deferred)
-   (lsp-mode-hook . lsp-enable-which-key-integration))
+  (prog-mode-hook . lsp-deferred)
   :custom
   (lsp-keymap-prefix "C-c l")
   (lsp-warn-no-matched-clients nil)

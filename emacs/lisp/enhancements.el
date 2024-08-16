@@ -57,4 +57,13 @@
   info
   :demand)
 
+(use-package bookmark+
+  :straight
+  (:host github :repo "emacsmirror/bookmark-plus")
+  :after
+  bookmark
+  :demand)
+
+(use-package helpful)
+
 (provide 'enhancements)

@@ -1,11 +1,6 @@
 (use-package app-launcher
   :straight
-  (:host github :repo "NumericalGandalf/app-launcher")
-  :config
-  (define-advice app-launcher-frame
-      (:around (fun &rest args) completion-heights)
-    (let ((vertico-count (1- app-launcher-frame-height)))
-      (apply fun args))))
+  (:host github :repo "NumericalGandalf/app-launcher"))
 
 (use-package guix)
 
@@ -14,5 +9,14 @@
   (vterm-timer-delay 0.01)
   (vterm-clear-scrollback-when-clearing t)
   (vterm-always-compile-module t))
+
+(defun browser-run ()
+  "Run XDG default web browser."
+  (interactive)
+  (let ((browser
+         "gtk-launch $(xdg-settings get default-web-browser)"))
+    (call-process-shell-command browser nil 0 nil)))
+
+(use-package chess)
 
 (provide 'applications)

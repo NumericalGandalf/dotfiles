@@ -15,9 +15,20 @@
   :config
   (evil-collection-init))
 
+(use-package which-key
+  :hook
+  (lsp-mode-hook . lsp-enable-which-key-integration)
+  :custom
+  (which-key-idle-delay 1.5)
+  :config
+  (which-key-mode))
+
 (use-package general
   :demand
   :config
+  (require 'bookmark)
+  (require 'which-key)
+  
   (general-define-key
    "M-y" 'consult-yank-pop
    "C-s" 'consult-line
@@ -107,7 +118,9 @@
              (find-file (dots-expand)))
      
      "r a" 'guix
-     "r t" 'vterm))
+     "r t" 'vterm
+     "r d" 'app-launcher-run-app
+     "r w" 'browser-run))
 
   (general-def minibuffer-local-map
     "M-r" 'consult-history
@@ -123,7 +136,8 @@
     "C-c C-p" 'wgrep-change-to-wgrep-mode)
 
   (general-def corfu-map
-    "RET" nil)
+    "RET" nil
+    "SPC" 'corfu-insert-separator)
 
   (general-def lsp-mode-map
     "M-?" 'consult-lsp-symbols

@@ -3,11 +3,23 @@
 (setq resize-mini-windows t
       enable-recursive-minibuffers t)
 
+(setq tab-always-indent 'complete)
+
+(setq read-extended-command-predicate
+      'command-completion-default-include-p)
+
 (use-package orderless
-  :demand
+  :init
+  (setq completion-styles '(orderless))
   :custom
-  (completion-styles '(orderless))
   (completion-category-defaults nil))
+
+(use-package marginalia
+  :after
+  orderless
+  :demand
+  :config
+  (marginalia-mode))
 
 (use-package vertico
   :demand
@@ -15,13 +27,15 @@
   (vertico-cycle t)
   (vertico-count 15)
   :config
-  (vertico-multiform-mode)
   (vertico-mode))
 
-(use-package marginalia
-  :demand
-  :config
-  (marginalia-mode))
+(use-package vertico-posframe
+  :after
+  vertico
+  :custom
+  (vertico-posframe-border-width 1))
+
+(use-package helm)
 
 (use-package consult
   :custom
@@ -35,32 +49,25 @@
 
 (use-package embark-consult
   :after
-  embark
+  (embark consult)
   :hook
   (embark-collect-mode-hook . consult-preview-at-point-mode))
 
 (use-package corfu
-  :demand
+  :hook
+  ((prog-mode-hook . corfu-mode)
+   (shell-mode-hook . corfu-mode)
+   (eshell-mode-hook . corfu-mode)
+   (minibuffer-mode-hook . corfu-mode))
   :custom
   (corfu-cycle t)
   (corfu-auto t)
-  (corfu-quit-no-match 'separator)
-  (tab-always-indent 'complete)
+  (corfu-separator ?\s)
+  (corfu-quit-no-match t)
   (global-corfu-minibuffer
    (lambda ()
      (not (or (bound-and-true-p mct--active)
               (bound-and-true-p vertico--input)
-              (eq (current-local-map) read-passwd-map)))))
-  :config
-  (global-corfu-mode))
-
-(use-package which-key
-  :demand
-  :custom
-  (which-key-idle-delay 1.5)
-  :config
-  (which-key-mode))
-
-(use-package helpful)
+              (eq (current-local-map) read-passwd-map))))))
 
 (provide 'minibuf)
