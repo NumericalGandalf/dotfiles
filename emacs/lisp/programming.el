@@ -19,9 +19,12 @@
   (setq magit-auto-revert-mode nil))
 
 (use-package editorconfig
-  :demand
-  :config 
-  (editorconfig-mode 1))
+  :hook
+  (emacs-startup-hook . editorconfig-mode))
+
+(use-package flycheck
+  :hook
+  (lsp-mode-hook . flycheck-mode))
 
 (use-package lsp-mode
   :hook
@@ -34,12 +37,6 @@
   (lsp-enable-symbol-highlighting nil)
   (lsp-lens-enable nil))
 
-(use-package flycheck
-  :after
-  lsp-mode
-  :hook
-  (lsp-mode-hook . flycheck-mode))
-
 (use-package yasnippet
   :after
   lsp-mode)
@@ -50,10 +47,6 @@
   :custom
   (lsp-ui-imenu-auto-refresh t)
   (lsp-ui-doc-position 'at-point))
-
-(use-package consult-lsp
-  :after
-  (consult lsp-mode))
 
 (use-package lsp-java
   :after

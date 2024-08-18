@@ -2,27 +2,26 @@
   "Interval in days for package auto upgrading."
   :type 'natnum)
 
-(require 'package)
-(require 'use-package)
+(with-eval-after-load 'package
+  (setq package-user-dir (rc-cache "packages/")
+	    package-gnupghome-dir (rc-cache "gnupg/")
+	    package-check-signature nil)
+  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+  (unless package-archive-contents
+    (package-refresh-contents))
+  (unless package-enable-at-startup
+    (package-initialize)))
 
-(setq package-user-dir (rc-cache "elpa/")
-      package-gnupghome-dir (rc-cache "elpa-gnupg/"))
-
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
-
-(unless package-enable-at-startup
-  (package-initialize))
-
-(unless package-archive-contents
-  (package-refresh-contents))
-
-(setq use-package-always-ensure t
-      use-package-always-defer t
-      use-package-hook-name-suffix nil
-      use-package-compute-statistics t)
+(with-eval-after-load 'use-package-core
+  (require 'use-package)
+  (setq use-package-always-ensure t
+        use-package-always-defer t
+        use-package-hook-name-suffix nil
+        use-package-compute-statistics t))
 
 (setq straight-base-dir (rc-cache)
       straight-enable-package-integration nil)
+
 (defvar bootstrap-version)
 (let ((bootstrap-file
        (expand-file-name

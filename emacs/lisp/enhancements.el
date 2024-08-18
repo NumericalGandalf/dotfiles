@@ -1,11 +1,9 @@
 (use-package dired+
+  :straight
+  (:host github :repo "emacsmirror/dired-plus")
   :after
   dired
   :demand
-  :straight
-  (:host github :repo "emacsmirror/dired-plus")
-  :hook
-  (dired-mode-hook . (lambda () (dired-omit-mode 1)))
   :custom
   (dired-listing-switches "-lah")
   (dired-free-space 'separate)
@@ -31,7 +29,8 @@
   thingatpt
   :demand
   :config
-  (tap-put-thing-at-point-props))
+  (tap-put-thing-at-point-props)
+  (tap-redefine-std-fns))
 
 (use-package replace+
   :straight
@@ -43,12 +42,10 @@
 (use-package shell-command-x
   :straight
   (:host github :repo "elizagamedev/shell-command-x.el")
-  :init
-  (shell-command-x-mode 1))
+  :hook
+  (emacs-startup-hook . shell-command-x-mode))
 
-(use-package shell-command+
-  :custom
-  (shell-command+-prompt "Extended shell command: "))
+(use-package shell-command+)
 
 (use-package info+
   :straight
@@ -60,8 +57,6 @@
 (use-package bookmark+
   :straight
   (:host github :repo "emacsmirror/bookmark-plus")
-  :after
-  bookmark
   :demand)
 
 (use-package helpful)

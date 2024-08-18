@@ -22,26 +22,21 @@
   (marginalia-mode))
 
 (use-package vertico
-  :demand
+  :hook
+  (emacs-startup-hook . vertico-mode)
   :custom
   (vertico-cycle t)
-  (vertico-count 15)
-  :config
-  (vertico-mode))
-
-(use-package vertico-posframe
-  :after
-  vertico
-  :custom
-  (vertico-posframe-border-width 1))
-
-(use-package helm)
+  (vertico-count 15))
 
 (use-package consult
   :custom
   (consult-line-start-from-top t)
   (xref-show-xrefs-function 'consult-xref)
   (xref-show-definitions-function 'consult-xref))
+
+(use-package consult-lsp
+  :after
+  (consult lsp-mode))
 
 (use-package embark
   :custom
@@ -62,6 +57,7 @@
   :custom
   (corfu-cycle t)
   (corfu-auto t)
+  (corfu-min-width 45)
   (corfu-separator ?\s)
   (corfu-quit-no-match t)
   (global-corfu-minibuffer

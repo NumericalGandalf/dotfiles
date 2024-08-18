@@ -1,34 +1,13 @@
-(use-package evil
-  :init
-  (setq evil-want-keybinding nil)
-  :custom
-  (evil-toggle-key "C-x C-z")
-  (evil-want-C-u-scroll t)
-  (evil-want-C-i-jump t)
-  (evil-want-fine-undo t)
-  (evil-undo-system 'undo-redo))
-
-(use-package evil-collection
-  :after
-  evil
-  :demand
-  :config
-  (evil-collection-init))
-
 (use-package which-key
   :hook
-  (lsp-mode-hook . lsp-enable-which-key-integration)
+  ((emacs-startup-hook . which-key-mode)
+   (lsp-mode-hook . lsp-enable-which-key-integration))
   :custom
-  (which-key-idle-delay 1.5)
-  :config
-  (which-key-mode))
+  (which-key-idle-delay 1.5))
 
 (use-package general
   :demand
   :config
-  (require 'bookmark)
-  (require 'which-key)
-  
   (general-define-key
    "M-y" 'consult-yank-pop
    "C-s" 'consult-line
@@ -118,8 +97,8 @@
              (find-file (dots-expand)))
      
      "r a" 'guix
+     "r r" 'app-launcher-run-app
      "r t" 'vterm
-     "r d" 'app-launcher-run-app
      "r w" 'browser-run))
 
   (general-def minibuffer-local-map

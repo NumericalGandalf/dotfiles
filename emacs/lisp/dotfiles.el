@@ -26,9 +26,6 @@ These directories are relative to the dotfiles dots directory."
   "Hooks to run when deploying dotfiles."
   :type 'hook)
 
-(defcustom dots-load-font-hook nil
-  "Hooks to run when loading font.")
-
 (defun dots-expand (&optional file)
   "Expand FILE from the dotfiles dots directory."
   (rc-expand file (rc-expand "../dots/")))
@@ -74,27 +71,23 @@ Also run `dots-stow-hook' when stowing files."
 	    (dots-stow-entry entry prefix)
       (dots-stow prefix entry)))
   (unless prefix
+    (dots-gsettings-apply)
+    (dots-sway-write-wallpaper)
     (run-hooks 'dots-stow-hooks)))
-
-(add-hook 'dots-deploy-hook 'dots-stow)
 
 (defun dots-gsettings-apply (&optional prefix)
   "Applies gsettings specified in `dots-gsettings'.
 If PREFIX is non-nil, reset the scheme keys."
   (interactive "P")
-  (mapc
-   (lambda (tuple)
-     (let ((scheme (nth 0 tuple))
-           (key (nth 1 tuple))
-           (value (nth 2 tuple)))
-       (if prefix
-           (rc-shell (rc-join "gsettings reset" scheme key)
-             (message "Resetting %s %s" scheme key))
-         (rc-shell (rc-join "gsettings set" scheme key value)
-           (message "Setting %s %s %s" scheme key value)))))
-   dots-gsettings))
-
-(add-hook 'dots-stow-hook 'dots-gsettings-apply)
+  (dolist (tuple dots-gsettings)
+    (let ((scheme (nth 0 tuple))
+          (key (nth 1 tuple))
+          (value (nth 2 tuple)))
+      (if prefix
+          (rc-shell (rc-join "gsettings reset" scheme key)
+            (message "Resetting %s %s" scheme key))
+        (rc-shell (rc-join "gsettings set" scheme key value)
+          (message "Setting %s %s %s" scheme key value))))))
 
 (defun dots-gsettings-load-font (&optional prefix)
   "Load `font-name' for gsettings.
@@ -104,16 +97,12 @@ If PREFIX is non-nil, reset gsettings font."
         (keys '("font-name" "monospace-font-name" "document-font-name"))
         (font (prin1-to-string
                (rc-join font-name (int-to-string (font-height -1))))))
-    (mapc
-     (lambda (key)
-       (if prefix
-           (rc-shell (rc-join "gsettings reset" scheme key)
-             (message "Resetting font %s %s" scheme key))
-         (rc-shell (rc-join "gsettings set" scheme key font)
-           (message "Setting font %s %s %s" scheme key font))))
-     keys)))
-
-(add-hook 'dots-load-font-hook 'dots-gsettings-load-font)
+    (dolist (key keys)
+      (if prefix
+          (rc-shell (rc-join "gsettings reset" scheme key)
+            (message "Resetting font %s %s" scheme key))
+        (rc-shell (rc-join "gsettings set" scheme key font)
+          (message "Setting font %s %s %s" scheme key font))))))
 
 (defun dots-sway-write-wallpaper ()
   "Write wallpaper into sway config."
@@ -122,8 +111,6 @@ If PREFIX is non-nil, reset gsettings font."
   (rc-file (dots-expand ".config/sway/wallpaper")
     (insert (rc-join "set $wallpaper"
                      (dots-expand ".config/sway/butterfly.png")))))
-
-(add-hook 'dots-stow-hook 'dots-sway-write-wallpaper)
 
 (defun dots-desktop-load-font ()
   "Load `font-name' for sway and waybar config."
@@ -137,27 +124,25 @@ If PREFIX is non-nil, reset gsettings font."
     (rc-insert "* {")
     (rc-insert (rc-join "font-family:"
 			            (concat (prin1-to-string font-name) ";")))
-    (rc-insert (rc-join "font-size:" (int-to-string (font-height))))
+    (rc-insert (rc-join "font-size:" (int-to-string font-height)))
     (insert "}")
     (indent-region (point-min) (point-max)))
   (rc-shell "swaymsg reload"))
 
-(add-hook 'dots-load-font-hook 'dots-desktop-load-font)
-
 (defun dots-load-font (&optional prefix)
-  "Load dotfiles font. Run `dots-load-font-hook'.
-If PREFIX is non-nil, prompt for the font"
+  "Load dotfiles font.
+If PREFIX is non-nil, prompt for the font."
   (interactive "P")
-  (when prefix
-    (call-interactively 'font-load))
-  (run-hooks 'dots-load-font-hook))
-
-(add-hook 'dots-deploy-hook 'dots-load-font)
+  (font-load prefix)
+  (dots-gsettings-load-font)
+  (dots-desktop-load-font))
 
 (defun dots-deploy ()
-  "Deploy dotfiles. Run `dots-deploy-hook'."
+  "Deploy dotfiles and run `dots-deploy-hook'."
   (interactive)
   (message "Deploying dotfiles")
+  (dots-load-font)
+  (dots-stow)
   (run-hooks 'dots-deploy-hook))
 
 (defun dots-bluetooth-connect (&optional prefix)

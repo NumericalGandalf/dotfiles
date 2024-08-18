@@ -36,6 +36,12 @@
   :hook
   (marginalia-mode-hook . nerd-icons-completion-marginalia-setup))
 
+(use-package nerd-icons-corfu
+  :after
+  corfu 
+  :init
+  (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
+
 (use-package doom-modeline
   :init
   (doom-modeline-mode)

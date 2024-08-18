@@ -107,8 +107,6 @@ mode "Audio" {
 
 bar {
     swaybar_command waybar
-    mode hide
-    hidden_state hide
 }
 
 input * {
