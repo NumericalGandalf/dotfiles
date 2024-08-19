@@ -49,7 +49,8 @@
 (add-hook 'after-init-hook #'elpaca-process-queues)
 (elpaca `(,@elpaca-order))
 
-(elpaca-no-symlink-mode)
+(when rc-windows-p
+  (elpaca-no-symlink-mode))
 
 (elpaca elpaca-use-package
   (elpaca-use-package-mode)
