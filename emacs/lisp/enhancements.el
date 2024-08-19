@@ -1,3 +1,5 @@
+(use-package helpful)
+
 (use-package dired+
   :ensure
   (:host github :repo "emacsmirror/dired-plus")
@@ -58,6 +60,6 @@
   (:host github :repo "emacsmirror/bookmark-plus")
   :demand)
 
-(use-package helpful)
+(use-package transient)
 
 (provide 'enhancements)
