@@ -1,6 +1,22 @@
 (use-package app-launcher
   :ensure
-  (:host github :repo "NumericalGandalf/app-launcher"))
+  (:host github :repo "NumericalGandalf/app-launcher")
+  :after
+  vertico
+  :init
+  (defun app-launcher (&optional prefix)
+    "Create minibuffer-only frame for `app-launcher-run-app'."
+    (interactive "P")
+    (let* ((height 25)
+           (vertico-count (1- height)))
+      (with-selected-frame
+          (make-frame `((name . "app-launcher")
+                        (minibuffer . only)
+		                (height . ,height)
+                        (width . ,(* height 4))))
+        (unwind-protect
+	        (app-launcher-run-app prefix)
+          (delete-frame))))))
 
 (use-package vterm
   :custom
@@ -11,7 +27,7 @@
 (use-package guix)
 
 (defun browser-run ()
-  "Run XDG default web browser."
+  "Run default XDG web browser."
   (interactive)
   (let ((browser
          "gtk-launch $(xdg-settings get default-web-browser)"))

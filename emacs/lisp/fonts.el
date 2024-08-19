@@ -115,7 +115,7 @@ If optional FORCE is non-nil, fetch even if `font--list' is not empty."
                                               height font-ref-height))))
 
 (defun font-load (&optional prefix)
-  "Load `font-name' and `font-height'.
+  "Load `font-name' with `font-height'.
 If any of these are nil, run `font-query' and `font-ensure' first.
 If optional PREFIX is non-nil, query anyways."
   (interactive "P")
@@ -130,6 +130,6 @@ If optional PREFIX is non-nil, query anyways."
       (font-ensure font-name)
       (font-load))))
 
-(add-hook 'emacs-startup-hook 'font-load 90)
+(add-hook 'elpaca-after-init-hook 'font-load)
 
 (provide 'fonts)

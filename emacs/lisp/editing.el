@@ -7,6 +7,8 @@
 (setq make-backup-files nil
       create-lockfiles nil)
 
+(setq auth-source-save-behavior nil)
+
 (setq global-auto-revert-non-file-buffers t
       auto-revert-remote-files t
       auto-revert-verbose nil)
@@ -25,6 +27,8 @@
 (column-number-mode)
 (global-visual-line-mode)
 
+(pixel-scroll-mode 1)
+(pixel-scroll-precision-mode 1)
 (setq scroll-step 1
       scroll-preserve-screen-position t)
 
@@ -46,8 +50,6 @@
 (use-package multiple-cursors)
 
 (use-package wgrep
-  :hook
-  (grep-mode-hook . wgrep-change-to-wgrep-mode)
   :custom
   (wgrep-auto-save-buffer t))
 

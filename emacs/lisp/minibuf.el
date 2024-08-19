@@ -8,6 +8,10 @@
 (setq read-extended-command-predicate
       'command-completion-default-include-p)
 
+(setq completion-ignore-case  t
+      read-file-name-completion-ignore-case t
+      read-buffer-completion-ignore-case t)
+
 (use-package orderless
   :init
   (setq completion-styles '(orderless))
@@ -22,11 +26,12 @@
   (marginalia-mode))
 
 (use-package vertico
-  :hook
-  (emacs-startup-hook . vertico-mode)
+  :init
+  (vertico-mode)
+  (vertico-multiform-mode)
   :custom
   (vertico-cycle t)
-  (vertico-count 15))
+  (vertico-count 17))
 
 (use-package consult
   :custom

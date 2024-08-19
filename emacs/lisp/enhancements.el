@@ -27,8 +27,7 @@
   (:host github :repo "emacsmirror/thingatpt-plus")
   :after
   thingatpt
-  :demand
-  :config
+  :init
   (tap-put-thing-at-point-props)
   (tap-redefine-std-fns))
 
@@ -42,8 +41,8 @@
 (use-package shell-command-x
   :ensure
   (:host github :repo "elizagamedev/shell-command-x.el")
-  :hook
-  (emacs-startup-hook . shell-command-x-mode))
+  :init
+  (shell-command-x-mode))
 
 (use-package shell-command+)
 

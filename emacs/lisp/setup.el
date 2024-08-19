@@ -71,7 +71,7 @@ If optional PREFIX is non-nil, force update."
                        (with-temp-buffer
                          (insert-file-contents file)
                          (buffer-string)))))
-      (elpaca-update-all t)
+      (elpaca-pull-all)
       (rc-file file
         (insert (int-to-string (+ day elpaca-auto-update-interval)))))))
 

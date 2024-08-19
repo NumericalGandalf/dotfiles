@@ -3,8 +3,9 @@
   :type '(repeat symbol))
 
 (use-package treesit-auto
-  :hook
-  (emacs-startup-hook . global-treesit-auto-mode))
+  :demand
+  :config
+  (global-treesit-auto-mode))
 
 (defun treesit-ensure-all (&optional prefix)
   "Ensure all available tree-sitter libraries.

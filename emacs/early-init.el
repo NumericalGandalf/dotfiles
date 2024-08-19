@@ -8,11 +8,10 @@
                 ('gnu/kfreebsd posix-dir))))
     (startup-redirect-eln-cache cache-dir)))
 
-(require 'server)
-(unless (or (server-running-p) (daemonp))
-  (server-start))
-
 (setq package-enable-at-startup nil)
+
+(setq frame-inhibit-implied-resize t
+      frame-resize-pixelwise t)
 
 (menu-bar-mode 0)
 (tool-bar-mode 0)

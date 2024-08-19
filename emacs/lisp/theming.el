@@ -2,17 +2,10 @@
       inhibit-startup-message t
       server-client-instructions nil)
 
-(add-hook
- 'elpaca-after-init-hook
- (lambda ()
-   (unless (string=
-            inhibit-startup-echo-area-message user-login-name)
-     (customize-save-variable
-      'inhibit-startup-echo-area-message user-login-name))))
+(defun display-startup-echo-area-message ())
 
 (use-package doom-themes
-  :demand
-  :config
+  :init
   (load-theme 'doom-palenight t)
   (doom-themes-org-config)
   (doom-themes-treemacs-config))
@@ -53,16 +46,16 @@
 
 (use-package dashboard
   :hook
-  (emacs-startup-hook
-   . (lambda ()
-       (when (and (string= (buffer-name) "*scratch*")
-	              (= (length (window-list)) 1))
-         (dashboard-open))
-       (setq initial-buffer-choice
-             (lambda ()
-               (get-buffer-create dashboard-buffer-name)))))
-  (window-size-change-functions . dashboard-resize-on-hook)
-  (window-setup-hook . dashboard-resize-on-hook)
+  ((window-size-change-functions . dashboard-resize-on-hook)
+   (window-setup-hook . dashboard-resize-on-hook)
+   (emacs-startup-hook
+    . (lambda ()
+        (when (and (string= (buffer-name) "*scratch*")
+	               (= (length (window-list)) 1))
+          (dashboard-open))
+        (setq initial-buffer-choice
+              (lambda ()
+                (get-buffer-create dashboard-buffer-name))))))
   :custom
   (dashboard-icon-type 'nerd-icons)
   (dashboard-display-icons-p t)

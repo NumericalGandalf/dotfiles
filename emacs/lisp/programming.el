@@ -19,8 +19,8 @@
   (setq magit-auto-revert-mode nil))
 
 (use-package editorconfig
-  :hook
-  (emacs-startup-hook . editorconfig-mode))
+  :init
+  (editorconfig-mode))
 
 (use-package flycheck
   :hook

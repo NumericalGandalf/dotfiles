@@ -2,10 +2,8 @@
       suggest-key-bindings nil
       vc-follow-symlinks t)
 
-(setq warning-minimum-level :error
-      ad-redefinition-action 'accept)
-
-(setq auth-source-save-behavior nil)
+(setq debug-on-error t
+      warning-minimum-level :error)
 
 (add-to-list
  'load-path (file-truename (locate-user-emacs-file "lisp/")))
@@ -17,8 +15,9 @@
 (add-hook
  'elpaca-after-init-hook (lambda () (load custom-file t t)) -90)
 
-(define-advice custom-save-all (:around (fun &rest args) silent)
-  "Save all custom variables silently."
+(define-advice custom-save-all
+    (:around (fun &rest args) silent)
+  "Save custom variables silently."
   (let ((save-silently t))
     (apply fun args)))
 
@@ -38,3 +37,8 @@
   (require 'treesitter))
 
 (require 'keybindings)
+
+(require 'server)
+(unless (or (daemonp)
+            (server-running-p))
+  (server-start))

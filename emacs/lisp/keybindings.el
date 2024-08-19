@@ -1,7 +1,8 @@
 (use-package which-key
   :hook
-  ((emacs-startup-hook . which-key-mode)
-   (lsp-mode-hook . lsp-enable-which-key-integration))
+  (lsp-mode-hook . lsp-enable-which-key-integration)
+  :init
+  (which-key-mode)
   :custom
   (which-key-idle-delay 1.5))
 
@@ -57,6 +58,7 @@
            (interactive)
            (find-file (rc-cache)))
 
+   "o p" 'elpaca-manager
    "o P" 'use-package-report
    
    "r c" 'compile

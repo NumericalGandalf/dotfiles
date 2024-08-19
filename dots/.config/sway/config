@@ -1,4 +1,6 @@
-exec --no-startup-id emacsclient -ca emacs
+set $emacs_run exec --no-startup-id emacsclient
+
+$emacs_run -ca emacs
 exec --no-startup-id swayidle -w before-sleep $lock lock $lock
 
 include "font"
@@ -58,7 +60,10 @@ for_window [shell="xwayland"] title_format "[XWayland] %title"
 for_window [title="^app-launcher$"] floating enable
 
 bindsym $mod+Shift+q kill
-bindsym $mod+Shift+e exec --no-startup-id emacsclient -ca emacs
+bindsym $mod+Shift+e $emacs_run -ca emacs
+bindsym $mod+Shift+d $emacs_run -e "(app-launcher t)"
+bindsym $mod+Shift+w $emacs_run -e "(browser-run)"
+bindsym $mod+Shift+t $emacs_run -ce "(vterm)"
 
 bindsym $mod+Shift+s mode "System"
 mode "System" {
