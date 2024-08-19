@@ -1,4 +1,4 @@
-(defcustom treesit-ignore '(janet latex markdown)
+(defcustom treesit-ignore-langs '(janet latex markdown)
   "Treesitter languages to ignore."
   :type '(repeat symbol))
 
@@ -16,7 +16,7 @@ If optional PREFIX is non-nil, force all builds."
       (let ((lang (nth 0 source)))
         (when (and (or prefix
                        (not (treesit-ready-p lang t)))
-                   (not (member lang treesit-ignore)))
+                   (not (member lang treesit-ignore-langs)))
           (message
            "Building tree-sitter library %s"
            (prin1-to-string (symbol-name lang)))

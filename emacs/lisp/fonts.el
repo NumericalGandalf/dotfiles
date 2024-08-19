@@ -15,7 +15,7 @@
   "Font refrence height."
   :type 'natnum)
 
-(defcustom font-ignore '("Symbols")
+(defcustom font-ignore-fonts '("Symbols")
   "List of nerd fonts to ignore."
   :type '(repeat string))
 
@@ -79,7 +79,7 @@ If optional FORCE is non-nil, fetch even if `font--list' is not empty."
                        (string-replace
                         "\342\200\231" "'"
                         (string-clean-whitespace (match-string 1 content))))))
-            (unless (member name font-ignore)
+            (unless (member name font-ignore-fonts)
               (puthash
                (rc-join name "Nerd Font")
                (list :file file :info info :len len)
