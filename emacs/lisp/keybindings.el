@@ -57,7 +57,6 @@
            (interactive)
            (find-file (rc-cache)))
 
-   "o p" 'list-packages
    "o P" 'use-package-report
    
    "r c" 'compile

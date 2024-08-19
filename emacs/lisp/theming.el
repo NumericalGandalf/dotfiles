@@ -1,8 +1,9 @@
-(setq inhibit-startup-message t
+(setq ring-bell-function 'ignore
+      inhibit-startup-message t
       server-client-instructions nil)
 
 (add-hook
- 'after-init-hook
+ 'elpaca-after-init-hook
  (lambda ()
    (unless (string=
             inhibit-startup-echo-area-message user-login-name)
@@ -40,7 +41,7 @@
   :after
   corfu 
   :init
-  (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
+  (add-to-list 'corfu-margin-formatters 'nerd-icons-corfu-formatter))
 
 (use-package doom-modeline
   :init

@@ -46,6 +46,8 @@
 (use-package multiple-cursors)
 
 (use-package wgrep
+  :hook
+  (grep-mode-hook . wgrep-change-to-wgrep-mode)
   :custom
   (wgrep-auto-save-buffer t))
 

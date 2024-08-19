@@ -1,5 +1,5 @@
 (use-package app-launcher
-  :straight
+  :ensure
   (:host github :repo "NumericalGandalf/app-launcher"))
 
 (use-package vterm

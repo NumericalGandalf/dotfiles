@@ -27,7 +27,7 @@ Cache directories are system dependent:
 
 (defun rc-join (&rest strings)
   "Join STRINGS with char space as seperator."
-  (s-join (char-to-string ?\s) strings))
+  (string-join strings (char-to-string ?\s)))
 
 (defun rc-insert (string &optional nobreak)
   "Insert STRING into current buffer.

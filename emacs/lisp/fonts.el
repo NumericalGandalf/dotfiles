@@ -130,6 +130,6 @@ If optional PREFIX is non-nil, query anyways."
       (font-ensure font-name)
       (font-load))))
 
-(add-hook 'after-init-hook 'font-load)
+(add-hook 'emacs-startup-hook 'font-load 90)
 
 (provide 'fonts)

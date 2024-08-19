@@ -1,5 +1,5 @@
 (use-package dired+
-  :straight
+  :ensure
   (:host github :repo "emacsmirror/dired-plus")
   :after
   dired
@@ -14,16 +14,16 @@
   (diredp-hide-details-initially-flag nil))
 
 (use-package files+
-  :straight
+  :ensure
   (:host github :repo "emacsmirror/files-plus"))
 
 (use-package ls-lisp+
-  :straight
+  :ensure
   (:host github :repo "emacsmirror/ls-lisp-plus")
   :demand)
 
 (use-package thingatpt+
-  :straight
+  :ensure
   (:host github :repo "emacsmirror/thingatpt-plus")
   :after
   thingatpt
@@ -33,14 +33,14 @@
   (tap-redefine-std-fns))
 
 (use-package replace+
-  :straight
+  :ensure
   (:host github :repo "emacsmirror/replace-plus")
   :custom-face
   (replacep-msg-emphasis ((t (:foreground "Red"))))
   (replacep-msg-emphasis2 ((t (:foreground "Green")))))
 
 (use-package shell-command-x
-  :straight
+  :ensure
   (:host github :repo "elizagamedev/shell-command-x.el")
   :hook
   (emacs-startup-hook . shell-command-x-mode))
@@ -48,14 +48,14 @@
 (use-package shell-command+)
 
 (use-package info+
-  :straight
+  :ensure
   (:host github :repo "emacsmirror/info-plus")
   :after
   info
   :demand)
 
 (use-package bookmark+
-  :straight
+  :ensure
   (:host github :repo "emacsmirror/bookmark-plus")
   :demand)
 
