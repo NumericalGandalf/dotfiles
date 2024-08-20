@@ -20,7 +20,9 @@
 
 (use-package nerd-icons-dired
   :hook
-  (dired-mode-hook . nerd-icons-dired-mode))
+  (dired-mode-hook . nerd-icons-dired-mode)
+  :config
+  (advice-add 'dired-do-rename :around 'nerd-icons-dired--refresh-advice))
 
 (use-package nerd-icons-ibuffer
   :hook

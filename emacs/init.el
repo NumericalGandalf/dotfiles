@@ -2,14 +2,16 @@
       suggest-key-bindings nil
       vc-follow-symlinks t)
 
-(setq debug-on-error t
-      warning-minimum-level :error)
+(setq warning-minimum-level :error)
 
 (add-to-list
  'load-path (file-truename (locate-user-emacs-file "lisp/")))
 
 (require 'utils)
-(require 'setup)
+(require 'packages)
+
+(require 'font)
+(font-nerds-mode rc-posix-p)
 
 (setq custom-file (rc-cache "custom.el"))
 (add-hook
@@ -22,7 +24,6 @@
     (apply fun args)))
 
 (when rc-posix-p
-  (require 'fonts)
   (require 'dotfiles)
   (require 'applications))
 

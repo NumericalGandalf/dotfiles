@@ -2,10 +2,6 @@
   "Interval in days for package auto upgrading."
   :type 'natnum)
 
-(defcustom elpaca-ignore-inbuilts '(transient)
-  "List of inbuilt packages to ignore."
-  :type '(repeat symbol))
-
 (defvar elpaca-installer-version 0.7)
 (defvar elpaca-directory (rc-cache "elpaca/"))
 (defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
@@ -53,10 +49,6 @@
 (add-hook 'after-init-hook #'elpaca-process-queues)
 (elpaca `(,@elpaca-order))
 
-(dolist (inbuilt elpaca-ignore-inbuilts)
-  (setq elpaca-ignored-dependencies
-        (remove inbuilt elpaca-ignored-dependencies)))
-
 (when rc-windows-p
   (elpaca-no-symlink-mode))
 
@@ -91,4 +83,4 @@ If optional PREFIX is non-nil, force update."
   (setq no-littering-etc-directory (rc-expand)
         no-littering-var-directory (rc-cache)))
 
-(provide 'setup)
+(provide 'packages)

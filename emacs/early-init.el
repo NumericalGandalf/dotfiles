@@ -8,7 +8,7 @@
                 ('gnu/kfreebsd posix-dir))))
     (startup-redirect-eln-cache cache-dir)))
 
-(setq package-enable-at-startup nil)
+(setq load-prefer-newer t)
 
 (setq frame-inhibit-implied-resize t
       frame-resize-pixelwise t)
@@ -16,3 +16,5 @@
 (menu-bar-mode 0)
 (tool-bar-mode 0)
 (scroll-bar-mode 0)
+
+(setq package-enable-at-startup nil)

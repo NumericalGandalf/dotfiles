@@ -90,13 +90,13 @@ If PREFIX is non-nil, reset the scheme keys."
           (message "Setting %s %s %s" scheme key value))))))
 
 (defun dots-gsettings-load-font (&optional prefix)
-  "Load `font-name' for gsettings.
+  "Load `font-name-def' for gsettings.
 If PREFIX is non-nil, reset gsettings font."
   (interactive "P")
   (let ((scheme "org.gnome.desktop.interface")
         (keys '("font-name" "monospace-font-name" "document-font-name"))
         (font (prin1-to-string
-               (rc-join font-name (int-to-string (font-height -1))))))
+               (rc-join font-name-def (int-to-string (1- font-height-def))))))
     (dolist (key keys)
       (if prefix
           (rc-shell (rc-join "gsettings reset" scheme key)
@@ -113,18 +113,18 @@ If PREFIX is non-nil, reset gsettings font."
                      (dots-expand ".config/sway/butterfly.png")))))
 
 (defun dots-desktop-load-font ()
-  "Load `font-name' for sway and waybar config."
+  "Load `font-name-def' for sway and waybar config."
   (interactive)
   (message "Loading desktop font")
   (rc-file (dots-expand ".config/sway/font")
-    (insert (rc-join (concat "font pango:" font-name)
-		             (int-to-string (font-height -3)))))
+    (insert (rc-join (concat "font pango:" font-name-def)
+		             (int-to-string (- font-height-def 3)))))
   (rc-file (dots-expand ".config/waybar/font.css")
     (css-mode)
     (rc-insert "* {")
     (rc-insert (rc-join "font-family:"
-			            (concat (prin1-to-string font-name) ";")))
-    (rc-insert (rc-join "font-size:" (int-to-string font-height)))
+			            (concat (prin1-to-string font-name-def) ";")))
+    (rc-insert (rc-join "font-size:" (int-to-string font-height-def)))
     (insert "}")
     (indent-region (point-min) (point-max)))
   (rc-shell "swaymsg reload"))

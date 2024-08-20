@@ -1,15 +1,4 @@
-set $emacs_run exec --no-startup-id emacsclient
-
-$emacs_run -ca emacs
-exec --no-startup-id swayidle -w before-sleep $lock lock $lock
-
-include "font"
-include "outputs"
-include "wallpaper"
-
 set $step 10
-set $lock "swaylock -i $wallpaper -s fit"
-
 set $mod Mod1
 floating_modifier $mod
 
@@ -60,6 +49,8 @@ for_window [shell="xwayland"] title_format "[XWayland] %title"
 for_window [title="^app-launcher$"] floating enable
 
 bindsym $mod+Shift+q kill
+
+set $emacs_run exec --no-startup-id emacsclient 
 bindsym $mod+Shift+e $emacs_run -ca emacs
 bindsym $mod+Shift+d $emacs_run -e "(app-launcher t)"
 bindsym $mod+Shift+w $emacs_run -e "(browser-run)"
@@ -119,4 +110,13 @@ input * {
     xkb_options grp:win_space_toggle
 }
 
+include "outputs"
+include "font"
+include "wallpaper"
+
 output * bg $wallpaper fit
+
+exec --no-startup-id emacsclient -ca emacs
+
+set $lock "swaylock -i $wallpaper -s fit"
+exec --no-startup-id swayidle -w before-sleep $lock lock $lock

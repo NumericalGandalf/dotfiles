@@ -60,4 +60,6 @@
   (:host github :repo "emacsmirror/bookmark-plus")
   :demand)
 
+(use-package transient)
+
 (provide 'enhancements)
