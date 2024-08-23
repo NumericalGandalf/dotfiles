@@ -8,7 +8,8 @@
 (setq read-extended-command-predicate
       'command-completion-default-include-p)
 
-(setq completion-ignore-case  t
+(setq completions-detailed t
+      completion-ignore-case  t
       read-file-name-completion-ignore-case t
       read-buffer-completion-ignore-case t)
 
@@ -19,10 +20,7 @@
   (completion-category-defaults nil))
 
 (use-package marginalia
-  :after
-  orderless
-  :demand
-  :config
+  :init
   (marginalia-mode))
 
 (use-package vertico
@@ -54,21 +52,14 @@
   (embark-collect-mode-hook . consult-preview-at-point-mode))
 
 (use-package corfu
-  :hook
-  ((prog-mode-hook . corfu-mode)
-   (shell-mode-hook . corfu-mode)
-   (eshell-mode-hook . corfu-mode)
-   (minibuffer-mode-hook . corfu-mode))
+  :init
+  (global-corfu-mode)
   :custom
   (corfu-cycle t)
   (corfu-auto t)
+  (corfu-auto-prefix 1)
   (corfu-min-width 45)
   (corfu-separator ?\s)
-  (corfu-quit-no-match t)
-  (global-corfu-minibuffer
-   (lambda ()
-     (not (or (bound-and-true-p mct--active)
-              (bound-and-true-p vertico--input)
-              (eq (current-local-map) read-passwd-map))))))
+  (corfu-quit-no-match t))
 
 (provide 'minibuf)

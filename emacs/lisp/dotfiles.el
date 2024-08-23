@@ -37,72 +37,21 @@ FILE may be absolute or relative to the dotfiles dots directory."
   (expand-file-name
    (file-relative-name (dots-expand file) (dots-expand)) "~/"))
 
-(defun dots-stow-entry (entry &optional unstow)
-  "Stow ENTRY.
-If UNSTOW is non-nil, unstow entry."
-  (let ((dest (dots-stow-destination entry)))
-    (when (file-exists-p dest)
-      (cond ((f-symlink-p dest)
-             (delete-file dest))
-            ((f-directory-p dest)
-             (delete-directory dest t))
-            (t (delete-file dest))))
-    (if unstow
-        (message "Unstowing %s" entry)
-      (progn
-        (message "Stowing %s" dest)
-        (make-symbolic-link entry dest)))))
-
-(defun dots-stow (&optional prefix dir)
-  "Recursively iterate over DIR and stow files.
-If PREFIX is non-nil, unstow files.
-
-Whether a child dir is stowed depends on `dots-stow-parents'.
-
-Also run `dots-stow-hook' when stowing files."
-  (interactive "P")
-  (dolist (entry (cdr (cdr (directory-files (dots-expand dir) t))))
-    (if (or (file-regular-p entry)
-	        (cl-dolist (parent dots-stow-parents)
-	          (let ((parent (dots-expand parent)))
-		        (when (and (file-in-directory-p entry parent)
-			               (not (file-equal-p entry parent)))
-		          (cl-return entry)))))
-	    (dots-stow-entry entry prefix)
-      (dots-stow prefix entry)))
-  (unless prefix
-    (dots-gsettings-apply)
-    (dots-sway-write-wallpaper)
-    (run-hooks 'dots-stow-hooks)))
-
 (defun dots-gsettings-apply (&optional prefix)
   "Applies gsettings specified in `dots-gsettings'.
 If PREFIX is non-nil, reset the scheme keys."
   (interactive "P")
-  (dolist (tuple dots-gsettings)
-    (let ((scheme (nth 0 tuple))
-          (key (nth 1 tuple))
-          (value (nth 2 tuple)))
+  (dolist (item dots-gsettings)
+    (let* ((scheme (nth 0 item))
+           (scheme1 (prin1-to-string scheme))
+           (key (nth 1 item))
+           (key1 (prin1-to-string key))
+           (value (prin1-to-string (nth 2 item))))
       (if prefix
           (rc-shell (rc-join "gsettings reset" scheme key)
-            (message "Resetting %s %s" scheme key))
+            (message "Resetting %s at %s" key1 scheme1))
         (rc-shell (rc-join "gsettings set" scheme key value)
-          (message "Setting %s %s %s" scheme key value))))))
-
-(defun dots-gsettings-load-font (&optional prefix)
-  "Load `font-name-def' for gsettings.
-If PREFIX is non-nil, reset gsettings font."
-  (interactive "P")
-  (let ((scheme "org.gnome.desktop.interface")
-        (keys '("font-name" "monospace-font-name" "document-font-name"))
-        (font (prin1-to-string
-               (rc-join font-name-def (int-to-string (1- font-height-def))))))
-    (dolist (key keys)
-      (if prefix
-          (rc-shell (rc-join "gsettings reset" scheme key)
-            (message "Resetting font %s %s" scheme key))
-        (rc-shell (rc-join "gsettings set" scheme key font)
-          (message "Setting font %s %s %s" scheme key font))))))
+          (message "Setting %s for %s at %s" value key1 scheme1))))))
 
 (defun dots-sway-write-wallpaper ()
   "Write wallpaper into sway config."
@@ -112,19 +61,80 @@ If PREFIX is non-nil, reset gsettings font."
     (insert (rc-join "set $wallpaper"
                      (dots-expand ".config/sway/butterfly.png")))))
 
+(defun dots-stow-files (&optional prefix dir)
+  "Recursively iterate over DIR and stow files.
+If PREFIX is non-nil, unstow files.
+
+Whether a child dir is stowed depends on `dots-stow-parents'."
+  (dolist (entry (cdr (cdr (directory-files (dots-expand dir) t))))
+    (if (or (file-regular-p entry)
+	        (cl-dolist (parent dots-stow-parents)
+	          (let ((parent (dots-expand parent)))
+		        (when (and (file-in-directory-p entry parent)
+			               (not (file-equal-p entry parent)))
+		          (cl-return entry)))))
+        (let ((dest (dots-stow-destination entry)))
+          (when (file-exists-p dest)
+            (cond ((f-symlink-p dest)
+                   (delete-file dest))
+                  ((f-directory-p dest)
+                   (delete-directory dest t))
+                  (t (delete-file dest))))
+          (if prefix
+              (message "Unstowing %s" entry)
+            (progn
+              (message "Stowing %s" dest)
+              (make-symbolic-link entry dest))))
+      (dots-stow-files prefix entry))))
+
+(defun dots-stow (&optional prefix)
+  "Stow dotfiles.
+If PREFIX is non-nil, unstow dotfiles.
+
+Also run `dots-stow-hook' when stowing files."
+  (interactive "P")
+  (dots-stow-files prefix)
+  (dots-gsettings-apply prefix)
+  (unless prefix
+    (dots-sway-write-wallpaper)
+    (run-hooks 'dots-stow-hooks)))
+
+(defun dots-gsettings-load-font (&optional prefix)
+  "Load `font-name' for gsettings.
+If PREFIX is non-nil, reset gsettings font."
+  (interactive "P")
+  (let* ((scheme "org.gnome.desktop.interface")
+         (scheme1 (prin1-to-string scheme))
+         (list `(("font-name" . font-name)
+                 ("monospace-font-name" . font-name)
+                 ("document-font-name" . font-name-var))))
+    (dolist (item list)
+      (let* ((key (car item))
+             (key1 (prin1-to-string key))
+             (val (prin1-to-string
+                   (rc-join
+                    (symbol-value (cdr item))
+                    (int-to-string (1- font-height))))))
+        (if prefix
+            (rc-shell (rc-join "gsettings reset" scheme key)
+              (message "Resetting %s at %s" key1 scheme1)))
+        (rc-shell (rc-join "gsettings set" scheme key val)
+          (message
+           "Setting font %s for %s at %s" val key1 scheme1))))))
+
 (defun dots-desktop-load-font ()
-  "Load `font-name-def' for sway and waybar config."
+  "Load `font-name' for sway and waybar config."
   (interactive)
   (message "Loading desktop font")
   (rc-file (dots-expand ".config/sway/font")
-    (insert (rc-join (concat "font pango:" font-name-def)
-		             (int-to-string (- font-height-def 3)))))
+    (insert (rc-join (concat "font pango:" font-name)
+		             (int-to-string (- font-height 3)))))
   (rc-file (dots-expand ".config/waybar/font.css")
     (css-mode)
     (rc-insert "* {")
     (rc-insert (rc-join "font-family:"
-			            (concat (prin1-to-string font-name-def) ";")))
-    (rc-insert (rc-join "font-size:" (int-to-string font-height-def)))
+			            (concat (prin1-to-string font-name) ";")))
+    (rc-insert (rc-join "font-size:" (int-to-string font-height)))
     (insert "}")
     (indent-region (point-min) (point-max)))
   (rc-shell "swaymsg reload"))
@@ -133,7 +143,8 @@ If PREFIX is non-nil, reset gsettings font."
   "Load dotfiles font.
 If PREFIX is non-nil, prompt for the font."
   (interactive "P")
-  (font-load prefix)
+  (when prefix
+    (font-load t))
   (dots-gsettings-load-font)
   (dots-desktop-load-font))
 
@@ -141,16 +152,8 @@ If PREFIX is non-nil, prompt for the font."
   "Deploy dotfiles and run `dots-deploy-hook'."
   (interactive)
   (message "Deploying dotfiles")
-  (dots-load-font)
   (dots-stow)
+  (dots-load-font)
   (run-hooks 'dots-deploy-hook))
-
-(defun dots-bluetooth-connect (&optional prefix)
-  "Connect AirPods Max via bluez bluetoothctl.
-If PREFIX is non-nil, run disconnection."
-  (interactive "P")
-  (let ((method (if prefix "disconnect" "connect"))
-	    (addr "90:9C:4A:DA:5C:9F"))
-    (message (rc-join "bluetoothctl" method addr "&> /dev/null"))))
 
 (provide 'dotfiles)

@@ -36,10 +36,19 @@ If NOBREAK is non-nil, do not break line afterwards."
   (unless nobreak
     (newline)))
 
-(defun rc-load (file)
-  "Load FILE within block 'return."
-  (catch 'return
-    (load file (file-truename file) t t)))
+(defun rc-init-info ()
+  "Fetch emacs init info."
+  (interactive)
+  (let ((str (format
+              "%d packages loaded in %.2fs with %d GCs"
+              (length (elpaca--queued))
+              (float-time
+               (time-subtract
+                elpaca-after-init-time before-init-time))
+              gcs-done)))
+    (if (called-interactively-p 'interactive)
+        (message "%s" str)
+      str)))
 
 (defmacro rc-file (file &rest body)
   "Erase contents of FILE and evaluate BODY."

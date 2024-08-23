@@ -3,20 +3,16 @@
   :prefix "font-"
   :group 'emacs)
 
-(defcustom font-name-def nil
+(defcustom font-name nil
   "Default font name."
   :type 'string)
 
-(defcustom font-name-var nil
+(defcustom font-name-var (cond (rc-posix-p "DejaVu Sans"))
   "Variable pitch font name."
   :type 'string)
 
-(defcustom font-height-def nil
+(defcustom font-height nil
   "Default font height."
-  :type 'natnum)
-
-(defcustom font-height-var nil
-  "Variable pitch font height."
   :type 'natnum)
 
 (defcustom font-nerds-ignore-fonts '("Symbols")
@@ -29,24 +25,12 @@
 (defvar font-nerds--curr-max-name-len 0
   "Current maximum nerd-font name length.")
 
-(defun font-load ()
-  "Load current fonts."
-  (interactive)
-  (let* ((font-name-var (or font-name-var font-name-def))
-         (height-def (* font-height-def 10))
-         (height-var (if font-height-var
-                         (* font-height-var 10)
-                       height-def)))
-    (set-face-attribute
-     'default nil :font font-name-def :height height-def)
-    (set-face-attribute
-     'fixed-pitch nil :family font-name-def :height height-def)
-    (set-face-attribute
-     'fixed-pitch-serif nil :family font-name-def :height height-def)
-    (set-face-attribute
-     'variable-pitch nil :family font-name-var :height height-var)))
-
-(add-hook 'elpaca-after-init-hook 'font-load)
+(define-minor-mode font-nerds-mode
+  "Toggle usage of nerd-fonts."
+  :global t
+  :lighter nil
+  (unless rc-posix-p
+    (error "Can't use `font-nerds-mode' on non-posix systems")))
 
 (defun font-nerds-fetch-list ()
   "Fetch list of available nerd-fonts into `font-nerds--font-list'."
@@ -78,8 +62,33 @@
               (when (> len font-nerds--curr-max-name-len)
                 (setq font-nerds--curr-max-name-len len)))))))))
 
+(defun font-nerds-ensure-font ()
+  "Ensure `font-name' for posix systems."
+  (let* ((file (plist-get (gethash font-name font-nerds--font-list) :file))
+	     (default-directory
+          (rc-expand (concat (file-name-base file) "/") "~/.local/share/fonts/rc/"))
+	     (link
+          (concat
+           "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/" file)))
+    (make-directory default-directory t)
+    (cond
+     (rc-posix-p
+      (rc-shell (rc-join
+                 "fc-list : file family | grep"
+                 default-directory "| grep -q" (prin1-to-string font-name))
+        nil
+        (progn
+          (message "Downloading nerd-font %s" (prin1-to-string font-name))
+          (rc-shell (rc-join "curl -sLO" link "&&"
+                             "unzip -qo" file "&&"
+                             "fc-cache -f &&"
+                             "rm" file)
+            (message "Extracted %s to %s" file default-directory)))))
+     (t (message
+         "Assuming nerd-font %s is installed" (prin1-to-string font-name))))))
+
 (defun font-nerds-query-font ()
-  "Query for fonts and their heights."
+  "Query for the nerd-font and their height."
   (let ((name
          (completing-read
           "Default nerd-font: "
@@ -100,57 +109,33 @@
                           ?\s)
                          (propertize info 'face 'completions-annotations)))))))
               (_ (all-completions str font-nerds--font-list pred))))
-	      nil nil nil 'font-nerds-query-name nil nil))
+	      nil nil nil t nil nil))
         (height
          (round
-          (read-number "Default nerd-font height: " nil 'font-nerds-query-height))))
-    (customize-save-variable 'font-name-def name)
-    (customize-save-variable 'font-height-def height)))
+          (read-number "Default nerd-font height: " nil t))))
+    (customize-save-variable 'font-name name)
+    (customize-save-variable 'font-height height)
+    (unless font-name-var
+      (customize-save-variable 'font-name-var font-name))))
 
-(defun font-nerds-ensure-font ()
-  "Ensure `font-name-def' for posix systems."
-  (let* ((file (plist-get (gethash font-name-def font-nerds--font-list) :file))
-	     (default-directory
-          (rc-expand (concat (file-name-base file) "/") "~/.local/share/fonts/rc/"))
-	     (link
-          (concat
-           "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/" file)))
-    (make-directory default-directory t)
-    (cond
-     (rc-posix-p
-      (rc-shell (rc-join
-                 "fc-list : file family | grep"
-                 default-directory "| grep -q" (prin1-to-string font-name-def))
-        nil
-        (progn
-          (message "Downloading nerd-font %s" (prin1-to-string font-name-def))
-          (rc-shell (rc-join "curl -sLO" link "&&"
-                             "unzip -qo" file "&&"
-                             "fc-cache -f &&"
-                             "rm" file)
-            (message "Extracted %s to %s" file default-directory)))))
-     (t (message
-         "Assuming nerd-font %s is installed" (prin1-to-string font-name-def))))))
+(defun font-load (&optional prefix)
+  "Load current fonts.
 
-(defun font-load@nerds (fun &rest args)
-  "Include nerd-fonts in font loading."
-  (unless (and (not current-prefix-arg)
-               font-name-def font-height-def)
+If `font-nerds-mode' is active, handle nerd-font loading.
+If `font-name' or `font-height' is nil, query for them.
+If optional PREFIX is non-nil, query for them anyways."
+  (interactive "P")
+  (when (and font-nerds-mode
+             (or prefix
+                 (not (and font-name font-name-var font-height))))
     (font-nerds-fetch-list)
     (font-nerds-query-font)
     (font-nerds-ensure-font))
-  (apply fun args))
+  (set-face-attribute 'default nil :font font-name :height (* font-height 10))
+  (set-face-attribute 'fixed-pitch nil :family font-name)
+  (set-face-attribute 'fixed-pitch-serif nil :family font-name)
+  (set-face-attribute 'variable-pitch nil :family font-name-var))
 
-(define-minor-mode font-nerds-mode
-  "Toggle usage of nerd-fonts."
-  :global t
-  :lighter nil
-  (unless rc-posix-p
-    (error
-     "Can't use `font-nerds-mode' on system %s"
-     (prin1-to-string (symbol-name system-type))))
-  (if font-nerds-mode
-      (advice-add 'font-load :around 'font-load@nerds)
-    (advice-remove 'font-load 'font-load@nerds)))
+(add-hook 'elpaca-after-init-hook 'font-load)
 
 (provide 'font)

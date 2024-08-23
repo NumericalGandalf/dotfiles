@@ -1,5 +1,9 @@
 (use-package helpful)
 
+(use-package projectile
+  :init
+  (projectile-mode))
+
 (use-package dired+
   :ensure
   (:host github :repo "emacsmirror/dired-plus")
@@ -37,8 +41,8 @@
   :ensure
   (:host github :repo "emacsmirror/replace-plus")
   :custom-face
-  (replacep-msg-emphasis ((t (:foreground "Red"))))
-  (replacep-msg-emphasis2 ((t (:foreground "Green")))))
+  (replacep-msg-emphasis ((t (:inherit 'font-lock-constant-face))))
+  (replacep-msg-emphasis2 ((t (:inherit 'font-lock-string-face)))))
 
 (use-package shell-command-x
   :ensure

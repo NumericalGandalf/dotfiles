@@ -63,10 +63,8 @@
    
    "r c" 'compile
    "r e" 'eshell
-   "r !" 'shell-command+
-   "r &" 'async-shell-command
-   
-   "r %" 'query-replace-w-options
+   "r s" 'shell-command+
+   "r q" 'query-replace-w-options
 
    "f r" 'recentf
    "f l" 'find-library
@@ -80,6 +78,30 @@
    "w j" 'buf-move-down
    "w k" 'buf-move-up
    "w l" 'buf-move-right)
+
+  (general-def minibuffer-local-map
+    "M-r" 'consult-history
+    
+    "C-." 'embark-act
+    "C-;" 'embark-dwin
+    "C-h B" 'embark-bindings)
+
+  (general-def use-package-statistics-mode-map
+    "g" 'use-package-report)
+
+  (general-def corfu-map
+    "RET" nil
+    "SPC" 'corfu-insert-separator)
+
+  (general-def projectile-mode-map
+    "C-x p" 'projectile-command-map)
+
+  (setq lsp-keymap-prefix "C-c l")
+  (general-def lsp-mode-map
+    "M-?" 'consult-lsp-symbols
+    "C-h ." 'lsp-ui-doc-toggle
+    "M-g i" 'lsp-ui-imenu
+    "M-g f" 'lsp-ui-flycheck-list)
 
   (when rc-posix-p
     (general-define-key
@@ -97,35 +119,9 @@
              (interactive)
              (find-file (dots-expand)))
      
-     "r a" 'guix
-     "r r" 'app-launcher-run-app
-     "r t" 'vterm
-     "r w" 'browser-run))
+     "r I" 'guix)
 
-  (general-def minibuffer-local-map
-    "M-r" 'consult-history
-    
-    "C-." 'embark-act
-    "C-;" 'embark-dwin
-    "C-h B" 'embark-bindings)
-
-  (general-def use-package-statistics-mode-map
-    "g" 'use-package-report)
-
-  (general-def grep-mode-map
-    "C-c C-p" 'wgrep-change-to-wgrep-mode)
-
-  (general-def corfu-map
-    "RET" nil
-    "SPC" 'corfu-insert-separator)
-
-  (general-def lsp-mode-map
-    "M-?" 'consult-lsp-symbols
-    "C-h ." 'lsp-ui-doc-toggle
-    "M-g i" 'lsp-ui-imenu
-    "M-g f" 'lsp-ui-flycheck-list)
-
-  (general-def vterm-mode-map
-    "C-j" 'vterm-send-C-c))
+    (general-def vterm-mode-map
+      "C-j" 'vterm-send-C-c)))
 
 (provide 'keybindings)

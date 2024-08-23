@@ -11,19 +11,19 @@
 (require 'packages)
 
 (require 'font)
-(font-nerds-mode rc-posix-p)
 
 (setq custom-file (rc-cache "custom.el"))
 (add-hook
  'elpaca-after-init-hook (lambda () (load custom-file t t)) -90)
 
 (define-advice custom-save-all
-    (:around (fun &rest args) silent)
+    (:around (fun &rest args) silently)
   "Save custom variables silently."
   (let ((save-silently t))
     (apply fun args)))
 
 (when rc-posix-p
+  (font-nerds-mode 1)
   (require 'dotfiles)
   (require 'applications))
 

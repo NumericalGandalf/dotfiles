@@ -18,19 +18,14 @@
   :init
   (setq magit-auto-revert-mode nil))
 
-(use-package editorconfig
-  :init
-  (editorconfig-mode))
-
 (use-package flycheck
   :hook
   (lsp-mode-hook . flycheck-mode))
 
 (use-package lsp-mode
   :hook
-  (prog-mode-hook . lsp-deferred)
+  (prog-mode-hook . lsp)
   :custom
-  (lsp-keymap-prefix "C-c l")
   (lsp-warn-no-matched-clients nil)
   (lsp-completion-provider :none)
   (lsp-headerline-breadcrumb-enable nil)

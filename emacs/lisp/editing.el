@@ -43,6 +43,10 @@
     (next-line 1)
     (yank)))
 
+(use-package editorconfig
+  :init
+  (editorconfig-mode))
+
 (use-package sudo-edit)
 
 (use-package move-text)
