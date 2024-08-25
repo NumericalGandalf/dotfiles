@@ -37,17 +37,12 @@
   (xref-show-xrefs-function 'consult-xref)
   (xref-show-definitions-function 'consult-xref))
 
-(use-package consult-lsp
-  :after
-  (consult lsp-mode))
-
 (use-package embark
   :custom
   (prefix-help-command 'embark-prefix-help-command))
 
 (use-package embark-consult
-  :after
-  (embark consult)
+  :after (embark consult)
   :hook
   (embark-collect-mode-hook . consult-preview-at-point-mode))
 

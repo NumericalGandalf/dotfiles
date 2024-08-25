@@ -1,3 +1,5 @@
+exec --no-startup-id emacsclient -ca emacs
+
 set $step 10
 set $mod Mod1
 floating_modifier $mod
@@ -53,8 +55,8 @@ bindsym $mod+Shift+q kill
 set $emacs_run exec --no-startup-id emacsclient 
 bindsym $mod+Shift+e $emacs_run -ca emacs
 bindsym $mod+Shift+d $emacs_run -e "(app-launcher-frame t)"
-bindsym $mod+Shift+w $emacs_run -e "(run-browser)"
-bindsym $mod+Shift+t $emacs_run -e "(run-terminal)"
+bindsym $mod+Shift+w $emacs_run -e "(posix-browser)"
+bindsym $mod+Shift+t $emacs_run -e "(posix-terminal)"
 
 bindsym $mod+Shift+s mode "System"
 mode "System" {
@@ -110,13 +112,11 @@ input * {
     xkb_options grp:win_space_toggle
 }
 
-include "outputs"
 include "font"
 include "wallpaper"
+include "outputs"
 
 output * bg $wallpaper fit
-
-exec --no-startup-id emacsclient -ca emacs
 
 set $lock "swaylock -i $wallpaper -s fit"
 exec --no-startup-id swayidle -w before-sleep $lock lock $lock

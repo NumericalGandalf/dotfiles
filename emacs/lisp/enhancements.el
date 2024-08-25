@@ -6,9 +6,8 @@
 
 (use-package dired+
   :ensure
-  (:host github :repo "emacsmirror/dired-plus")
-  :after
-  dired
+  (:fetcher github :repo "emacsmirror/dired-plus")
+  :after dired
   :demand
   :custom
   (dired-listing-switches "-lah")
@@ -21,32 +20,28 @@
 
 (use-package files+
   :ensure
-  (:host github :repo "emacsmirror/files-plus"))
+  (:fetcher github :repo "emacsmirror/files-plus"))
 
 (use-package ls-lisp+
   :ensure
-  (:host github :repo "emacsmirror/ls-lisp-plus")
+  (:fetcher github :repo "emacsmirror/ls-lisp-plus")
   :demand)
 
 (use-package thingatpt+
   :ensure
-  (:host github :repo "emacsmirror/thingatpt-plus")
-  :after
-  thingatpt
+  (:fetcher github :repo "emacsmirror/thingatpt-plus")
+  :after thingatpt
   :init
   (tap-put-thing-at-point-props)
   (tap-redefine-std-fns))
 
 (use-package replace+
   :ensure
-  (:host github :repo "emacsmirror/replace-plus")
-  :custom-face
-  (replacep-msg-emphasis ((t (:inherit 'font-lock-constant-face))))
-  (replacep-msg-emphasis2 ((t (:inherit 'font-lock-string-face)))))
+  (:fetcher github :repo "emacsmirror/replace-plus"))
 
 (use-package shell-command-x
   :ensure
-  (:host github :repo "elizagamedev/shell-command-x.el")
+  (:fetcher github :repo "elizagamedev/shell-command-x.el")
   :init
   (shell-command-x-mode))
 
@@ -54,14 +49,13 @@
 
 (use-package info+
   :ensure
-  (:host github :repo "emacsmirror/info-plus")
-  :after
-  info
+  (:fetcher github :repo "emacsmirror/info-plus")
+  :after info
   :demand)
 
 (use-package bookmark+
   :ensure
-  (:host github :repo "emacsmirror/bookmark-plus")
+  (:fetcher github :repo "emacsmirror/bookmark-plus")
   :demand)
 
 (use-package transient)

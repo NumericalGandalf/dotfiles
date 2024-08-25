@@ -23,6 +23,7 @@ If DIRECTORY is nil, expand from `user-emacs-directory'."
 Cache directories are system dependent:
     gnu/linux -> ~/.cache/emacs"
   (rc-expand file (cond (rc-posix-p "~/.cache/emacs/")
+                        (rc-windows-p "~/../Local/emacs/")
                         (t (locate-user-emacs-file "var/")))))
 
 (defun rc-join (&rest strings)
@@ -63,5 +64,10 @@ If NOBREAK is non-nil, do not break line afterwards."
   `(if (= (call-process-shell-command ,command) 0)
        ,success
      ,error))
+
+(define-advice custom-save-all (:around (fun &rest args) silently)
+  "Save custom variables silently."
+  (let ((save-silently t))
+    (apply fun args)))
 
 (provide 'utils)

@@ -50,6 +50,7 @@
 (elpaca `(,@elpaca-order))
 
 (when rc-windows-p
+  (setq elpaca-queue-limit 20)
   (elpaca-no-symlink-mode))
 
 (elpaca elpaca-use-package
@@ -71,11 +72,11 @@ If optional PREFIX is non-nil, force update."
                        (with-temp-buffer
                          (insert-file-contents file)
                          (buffer-string)))))
-      (elpaca-pull-all)
+      (elpaca-update-all t)
       (rc-file file
         (insert (int-to-string (+ day elpaca-auto-update-interval)))))))
 
-(add-hook 'elpaca-after-init-hook 'elpaca-auto-update)
+(add-hook 'elpaca-after-init-hook 'elpaca-auto-update 90)
 
 (use-package no-littering
   :demand

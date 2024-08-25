@@ -1,17 +1,18 @@
 (defgroup font nil
-  "Font Management"
+  "Font Management."
   :prefix "font-"
   :group 'emacs)
 
-(defcustom font-name nil
+(defcustom font-name (cond (rc-windows-p "Cascadia Code"))
   "Default font name."
   :type 'string)
 
-(defcustom font-name-var (cond (rc-posix-p "DejaVu Sans"))
+(defcustom font-name-var (cond (rc-posix-p "DejaVu Sans")
+                               (rc-windows-p "Microsoft Sans Serif"))
   "Variable pitch font name."
   :type 'string)
 
-(defcustom font-height nil
+(defcustom font-height (cond (rc-windows-p 12))
   "Default font height."
   :type 'natnum)
 
@@ -27,6 +28,7 @@
 
 (define-minor-mode font-nerds-mode
   "Toggle usage of nerd-fonts."
+  :init-value rc-posix-p
   :global t
   :lighter nil
   (unless rc-posix-p

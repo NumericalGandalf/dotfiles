@@ -3,8 +3,9 @@
   :type '(repeat symbol))
 
 (use-package treesit-auto
-  :demand
-  :config
+  :ensure
+  (:fetcher github :repo "NumericalGandalf/treesit-auto")
+  :init
   (global-treesit-auto-mode))
 
 (defun treesit-ensure-all (&optional prefix)

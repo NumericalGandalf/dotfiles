@@ -7,8 +7,14 @@
 (use-package doom-themes
   :init
   (load-theme 'doom-palenight t)
+  :custom
+  (doom-themes-treemacs-theme "doom-colors")
+  :config
   (doom-themes-org-config)
-  (doom-themes-treemacs-config))
+  (doom-themes-treemacs-config)
+  (doom-themes-set-faces nil
+    '(replacep-msg-emphasis :inherit 'warning)
+    '(replacep-msg-emphasis2 :inherit 'success)))
 
 (use-package all-the-icons
   :hook
@@ -33,8 +39,7 @@
   (marginalia-mode-hook . nerd-icons-completion-marginalia-setup))
 
 (use-package nerd-icons-corfu
-  :after
-  corfu 
+  :after corfu 
   :init
   (add-to-list 'corfu-margin-formatters 'nerd-icons-corfu-formatter))
 

@@ -1,5 +1,5 @@
 (defgroup dotfiles nil
-  "Dotfiles Management"
+  "Dotfiles Management."
   :prefix "dots-"
   :group 'emacs)
 

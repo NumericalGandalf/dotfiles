@@ -32,23 +32,22 @@
   (lsp-enable-symbol-highlighting nil)
   (lsp-lens-enable nil))
 
+(use-package consult-lsp
+  :after (consult lsp-mode))
+
 (use-package yasnippet
-  :after
-  lsp-mode)
+  :after lsp-mode)
 
 (use-package lsp-ui
-  :after
-  lsp-mode
+  :after lsp-mode
   :custom
   (lsp-ui-imenu-auto-refresh t)
   (lsp-ui-doc-position 'at-point))
 
 (use-package lsp-java
-  :after
-  lsp-mode)
+  :after lsp-mode)
 
 (use-package dap-mode
-  :after
-  lsp-mode)
+  :after lsp-mode)
 
 (provide 'programming)

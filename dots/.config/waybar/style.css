@@ -1,52 +1,74 @@
+@import "font.css";
+@import "colors.css";
+
 * {
-    background: black;
     min-height: 0;
-    border: none;
-    border-radius: 0;
-    box-shadow: none;
-    text-shadow: none;
+    font-weight: bold;
 }
 
-@import url("font.css");
-
-#clock,
-#language,
-#cpu,
-#temperature,
-#disk,
-#memory,
-#pulseaudio,
-#bluetooth,
-#network, 
-#mode,
-#window,
-#workspaces {
-    padding: 0 15;    
+window#waybar {
+    background: transparent;
+    background-color: #1c1f2b;
 }
 
-#workspaces {
-    padding-left: 0;
-}
-
-#clock {
-    padding-right: 5;
+#window {
+    margin: 0;
+    padding-left: 8;
+    padding-right: 8;
 }
 
 tooltip,
 tooltip * {
-    padding: 0;
+    font-weight: normal;
+}
+
+button {
+    box-shadow: inset 0 -3px transparent;
+    border: none;
+    border-radius: 0;
 }
 
 #workspaces button {
-    padding: 0 5;
+    padding: 0 4px;
 }
 
+#workspaces button.active,
 #workspaces button.focused {
-    border-bottom: 2 solid green;
+    background-color: @focus;
 }
 
 #workspaces button.urgent {
-    border-bottom: 2 solid orange;
+    background-color: @red;
+}
+
+#pulseaudio,
+#bluetooth,
+#language,
+#clock,
+#battery,
+#cpu,
+#window,
+#memory,
+#disk,
+#temperature,
+#tray,
+#network,
+#mode {
+  margin-top: 2px;
+  margin-bottom: 2px;
+  margin-left: 4px;
+  margin-right: 4px;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#battery.charging,
+#idle_inhibitor {
+    color: @green;
+}
+
+#idle_inhibitor {
+    margin-right: 12px;
 }
 
 #battery.warning,
@@ -54,7 +76,7 @@ tooltip * {
 #memory.warning,
 #temperature.warning,
 #cpu.warning {
-    border-bottom: 2 solid orange;
+    color: @yellow
 }
 
 #mode,
@@ -62,10 +84,20 @@ tooltip * {
 #disk.critical,
 #memory.critical,
 #temperature.critical,
-#cpu.critical {
-    border-bottom: 2 solid red;
+#cpu.critical
+#idle_inhibitor.activated {
+    color: @red;
 }
 
-#battery.charging {
-    border-bottom: 2 solid green;
+#battery {
+    color: @green;
+    border-bottom: 2px solid @green;
+}
+
+.modules-left>widget:first-child>#workspaces {
+    margin-left: 0;
+}
+
+.modules-right>widget:last-child>#workspaces {
+    margin-right: 0;
 }

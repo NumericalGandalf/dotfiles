@@ -7,8 +7,7 @@
   (which-key-idle-delay 1.5))
 
 (use-package general
-  :demand
-  :config
+  :init
   (general-define-key
    "M-y" 'consult-yank-pop
    "C-s" 'consult-line
@@ -115,11 +114,14 @@
      "r g" 'consult-grep
      "r y" 'consult-git-grep
 
+     "r r" 'restart-emacs
+     "r R" 'restart-emacs-start-new-emacs
+
+     "r I" 'guix
+
      "o /" (lambda ()
              (interactive)
-             (find-file (dots-expand)))
-     
-     "r I" 'guix)
+             (find-file (dots-expand))))
 
     (general-def vterm-mode-map
       "C-j" 'vterm-send-C-c)))
