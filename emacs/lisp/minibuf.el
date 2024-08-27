@@ -14,17 +14,17 @@
       read-buffer-completion-ignore-case t)
 
 (use-package orderless
-  :init
+  :config
   (setq completion-styles '(orderless))
   :custom
   (completion-category-defaults nil))
 
 (use-package marginalia
-  :init
+  :config
   (marginalia-mode))
 
 (use-package vertico
-  :init
+  :config
   (vertico-mode)
   (vertico-multiform-mode)
   :custom
@@ -32,12 +32,36 @@
   (vertico-count 17))
 
 (use-package consult
+  :general
+  ("M-y" 'consult-yank-pop
+   "C-s" 'consult-line)
+  (:prefix "C-x"
+           "b" 'consult-buffer   
+           "4 b" 'consult-buffer-other-window
+           "5 b" 'consult-buffer-other-frame
+           "r b" 'consult-bookmark)
+  (:prefix "M-g"
+           "e" 'consult-compile-error
+           "o" 'consult-outline
+           "i" 'consult-imenu)
+  (minibuffer-local-map
+   "M-r" 'consult-history)
+  (:prefix "C-c r"
+           "m" 'consult-man
+           "f" 'consult-fd
+           "g" 'consult-ripgrep
+           "y" 'consult-git-grep)
   :custom
   (consult-line-start-from-top t)
   (xref-show-xrefs-function 'consult-xref)
   (xref-show-definitions-function 'consult-xref))
 
 (use-package embark
+  :general
+  (minibuffer-local-map   
+   "C-." 'embark-act
+   "C-;" 'embark-dwin
+   "C-h B" 'embark-bindings)
   :custom
   (prefix-help-command 'embark-prefix-help-command))
 
@@ -47,8 +71,12 @@
   (embark-collect-mode-hook . consult-preview-at-point-mode))
 
 (use-package corfu
-  :init
+  :config
   (global-corfu-mode)
+  :general
+  (corfu-map
+   "RET" nil
+   "SPC" 'corfu-insert-separator)
   :custom
   (corfu-cycle t)
   (corfu-auto t)

@@ -140,4 +140,10 @@ If optional PREFIX is non-nil, query for them anyways."
 
 (add-hook 'elpaca-after-init-hook 'font-load)
 
+(general-define-key
+ :prefix "C-c"
+ "o f" (lambda ()
+         (interactive)
+         (find-file (dots-expand))))
+
 (provide 'font)

@@ -1,7 +1,3 @@
-(defcustom elpaca-auto-update-interval 7
-  "Interval in days for package auto upgrading."
-  :type 'natnum)
-
 (defvar elpaca-installer-version 0.7)
 (defvar elpaca-directory (rc-cache "elpaca/"))
 (defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
@@ -56,32 +52,16 @@
 (elpaca elpaca-use-package
   (elpaca-use-package-mode)
   (setq use-package-always-ensure t
-        use-package-always-defer t
         use-package-hook-name-suffix nil
-        use-package-compute-statistics t))
+        use-package-compute-statistics init-file-debug))
 
-(defun elpaca-auto-update (&optional prefix)
-  "Update packages if `elpaca-auto-update-interval' has passed.
-If optional PREFIX is non-nil, force update."
-  (interactive "P")
-  (let ((file (rc-expand "update" elpaca-directory))
-        (day (time-to-days (current-time))))
-    (when (or prefix
-              (not (file-exists-p file))
-              (>= day (string-to-number
-                       (with-temp-buffer
-                         (insert-file-contents file)
-                         (buffer-string)))))
-      (elpaca-update-all t)
-      (rc-file file
-        (insert (int-to-string (+ day elpaca-auto-update-interval)))))))
-
-(add-hook 'elpaca-after-init-hook 'elpaca-auto-update 90)
+(use-package general)
 
 (use-package no-littering
-  :demand
   :init
   (setq no-littering-etc-directory (rc-expand)
-        no-littering-var-directory (rc-cache)))
+	    no-littering-var-directory (rc-cache)))
+
+(elpaca-wait)
 
 (provide 'packages)

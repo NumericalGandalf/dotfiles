@@ -1,14 +1,22 @@
-(use-package helpful)
+(use-package helpful
+  :general
+  (:prefix "C-h"
+           "f" 'helpful-callable
+           "v" 'helpful-variable
+           "k" 'helpful-key
+           "C-." 'helpful-at-point))
 
 (use-package projectile
-  :init
+  :general
+  (projectile-mode-map
+   "C-x p" 'projectile-command-map)
+  :config
   (projectile-mode))
 
 (use-package dired+
   :ensure
-  (:fetcher github :repo "emacsmirror/dired-plus")
+  (:host github :repo "emacsmirror/dired-plus")
   :after dired
-  :demand
   :custom
   (dired-listing-switches "-lah")
   (dired-free-space 'separate)
@@ -20,43 +28,44 @@
 
 (use-package files+
   :ensure
-  (:fetcher github :repo "emacsmirror/files-plus"))
+  (:host github :repo "emacsmirror/files-plus"))
 
 (use-package ls-lisp+
   :ensure
-  (:fetcher github :repo "emacsmirror/ls-lisp-plus")
-  :demand)
+  (:host github :repo "emacsmirror/ls-lisp-plus"))
 
 (use-package thingatpt+
   :ensure
-  (:fetcher github :repo "emacsmirror/thingatpt-plus")
+  (:host github :repo "emacsmirror/thingatpt-plus")
   :after thingatpt
-  :init
+  :config
   (tap-put-thing-at-point-props)
   (tap-redefine-std-fns))
 
 (use-package replace+
   :ensure
-  (:fetcher github :repo "emacsmirror/replace-plus"))
+  (:host github :repo "emacsmirror/replace-plus")
+  :general
+  ("C-c r q" 'query-replace-w-options))
 
 (use-package shell-command-x
   :ensure
-  (:fetcher github :repo "elizagamedev/shell-command-x.el")
-  :init
+  (:host github :repo "elizagamedev/shell-command-x.el")
+  :config
   (shell-command-x-mode))
 
-(use-package shell-command+)
+(use-package shell-command+
+  :general
+  ("C-c r s" 'shell-command+))
 
 (use-package info+
   :ensure
-  (:fetcher github :repo "emacsmirror/info-plus")
-  :after info
-  :demand)
+  (:host github :repo "emacsmirror/info-plus")
+  :after info)
 
 (use-package bookmark+
   :ensure
-  (:fetcher github :repo "emacsmirror/bookmark-plus")
-  :demand)
+  (:host github :repo "emacsmirror/bookmark-plus"))
 
 (use-package transient)
 

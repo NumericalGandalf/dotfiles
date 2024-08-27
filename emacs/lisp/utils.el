@@ -70,4 +70,14 @@ If NOBREAK is non-nil, do not break line afterwards."
   (let ((save-silently t))
     (apply fun args)))
 
+(with-eval-after-load 'general
+  (general-define-key
+   :prefix "C-c o"
+   "." (lambda ()
+         (interactive)
+         (find-file (file-truename user-init-file)))
+   "," (lambda ()
+         (interactive)
+         (find-file (rc-cache)))))
+
 (provide 'utils)

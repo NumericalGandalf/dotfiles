@@ -5,18 +5,29 @@
 
 (use-package app-launcher
   :ensure
-  (:fetcher github :repo "NumericalGandalf/app-launcher"))
+  (:host github :repo "NumericalGandalf/app-launcher"))
 
 (use-package vterm
+  :general
+  (vterm-mode-map
+   "C-j" (lambda ()
+           (interactive)
+           (vterm-send "C-c")))
+  :config
+  (setq vterm-timer-delay nil)
   :custom
   (vterm-clear-scrollback-when-clearing t)
-  (vterm-always-compile-module t)
-  :config
-  (setq vterm-timer-delay nil))
+  (vterm-always-compile-module t))
 
-(use-package guix)
+(use-package guix
+  :general
+  ("C-c I" 'guix))
 
-(use-package restart-emacs)
+(use-package restart-emacs
+  :general
+  (:prefix "C-c r"
+           "r" 'restart-emacs
+           "R" 'restart-emacs-start-new-emacs))
 
 (defun posix-browser ()
   "Run system browser."

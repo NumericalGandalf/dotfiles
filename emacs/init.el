@@ -25,7 +25,6 @@
 (require 'editing)
 
 (require 'programming)
+
 (when (treesit-available-p)
   (require 'treesitter))
-
-(require 'keybindings)

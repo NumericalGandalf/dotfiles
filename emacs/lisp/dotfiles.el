@@ -156,4 +156,10 @@ If PREFIX is non-nil, prompt for the font."
   (dots-load-font)
   (run-hooks 'dots-deploy-hook))
 
+(general-define-key
+ :prefix "C-c"
+ "o /" (lambda ()
+         (interactive)
+         (find-file (dots-expand))))
+
 (provide 'dotfiles)

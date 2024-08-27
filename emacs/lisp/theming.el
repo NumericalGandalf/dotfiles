@@ -1,20 +1,22 @@
-(setq ring-bell-function 'ignore
-      inhibit-startup-message t
+(setq use-short-answers t
+      suggest-key-bindings nil
+      ring-bell-function 'ignore)
+
+(setq inhibit-startup-message t
       server-client-instructions nil)
 
 (defun display-startup-echo-area-message ())
 
 (use-package doom-themes
-  :init
-  (load-theme 'doom-palenight t)
-  :custom
-  (doom-themes-treemacs-theme "doom-colors")
   :config
+  (load-theme 'doom-palenight t)
   (doom-themes-org-config)
   (doom-themes-treemacs-config)
   (doom-themes-set-faces nil
     '(replacep-msg-emphasis :inherit 'warning)
-    '(replacep-msg-emphasis2 :inherit 'success)))
+    '(replacep-msg-emphasis2 :inherit 'success))
+  :custom
+  (doom-themes-treemacs-theme "doom-colors"))
 
 (use-package all-the-icons
   :hook
@@ -40,7 +42,7 @@
 
 (use-package nerd-icons-corfu
   :after corfu 
-  :init
+  :config
   (add-to-list 'corfu-margin-formatters 'nerd-icons-corfu-formatter))
 
 (use-package doom-modeline
@@ -93,17 +95,5 @@
                              (agenda    . "nf-oct-calendar")
                              (projects  . "nf-oct-rocket")
                              (registers . "nf-oct-database"))))
-
-(use-package beacon
-  :custom
-  (beacon-blink-when-focused t)
-  (beacon-blink-when-point-moves-vertically 5)
-  (beacon-dont-blink-commands ()))
-
-(use-package emojify
-  :custom
-  (emojify-download-emojis-p t))
-
-(use-package colorful-mode)
 
 (provide 'theming)
