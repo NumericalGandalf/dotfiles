@@ -14,7 +14,6 @@
  "f l" 'find-library
 
  "z l" 'load-file
- "z t" 'load-theme
  "z f" 'font-load
 
  "y p" 'elpaca-manager

@@ -9,6 +9,7 @@
 
 (use-package vterm
   :general
+  ("C-c r t" 'vterm)
   (vterm-mode-map
    "C-j" (lambda ()
            (interactive)
@@ -60,5 +61,12 @@
       (call-process-shell-command terminal nil 0 nil)
     (with-selected-frame (make-frame)
       (vterm))))
+
+(general-define-key
+ :prefix "C-c r"
+ "m" 'consult-man
+ "f" 'consult-find
+ "g" 'consult-grep
+ "y" 'consult-git-grep)
 
 (provide 'posix)

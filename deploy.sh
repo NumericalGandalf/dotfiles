@@ -2,7 +2,7 @@
 
 [[ $0 != $SHELL ]] && cd $(dirname $0)
 
-EMACS_DIR="$HOME/.emacs.d"
+EMACS_DIR="$HOME/.config/emacs"
 REQ_EMACS="29"
 
 function fail()
@@ -34,9 +34,14 @@ function unlink_emacs_dir()
 function link_emacs_dir()
 {
     local emacs_dir=$(realpath emacs)
+    local emacsd="$HOME/.emacs.d"
+
     [[ ! -d $emacs_dir ]] && fail "Missing Emacs dotfiles"
     
     [[ -e "$HOME/.emacs" ]] && rm "$HOME/.emacs"
+    [[ -L $emacsd ]] && rm $emacsd
+    [[ -d $emacsd ]] && rm -rf $emacsd
+    
     unlink_emacs_dir
 
     ln -s $emacs_dir $EMACS_DIR

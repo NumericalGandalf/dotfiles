@@ -40,17 +40,15 @@
            "4 b" 'consult-buffer-other-window
            "5 b" 'consult-buffer-other-frame
            "r b" 'consult-bookmark)
+  (:prefix "C-c"
+           "r y" 'consult-git-grep
+           "z t" 'consult-theme)
   (:prefix "M-g"
            "e" 'consult-compile-error
            "o" 'consult-outline
            "i" 'consult-imenu)
   (minibuffer-local-map
    "M-r" 'consult-history)
-  (:prefix "C-c r"
-           "m" 'consult-man
-           "f" 'consult-fd
-           "g" 'consult-ripgrep
-           "y" 'consult-git-grep)
   :custom
   (consult-line-start-from-top t)
   (xref-show-xrefs-function 'consult-xref)

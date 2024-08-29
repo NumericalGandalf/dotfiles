@@ -67,7 +67,8 @@ If NOBREAK is non-nil, do not break line afterwards."
        ,success
      ,error))
 
-(define-advice custom-save-all (:around (fun &rest args) silently)
+(define-advice custom-save-all
+    (:around (fun &rest args) silently)
   "Save custom variables silently."
   (let ((save-silently t))
     (apply fun args)))
