@@ -48,13 +48,13 @@ smart_borders on
 for_window [window_role="pop-up"] floating enable
 for_window [window_role="task_dialog"] floating enable
 for_window [shell="xwayland"] title_format "[XWayland] %title"
-for_window [title="^app-launcher$"] floating enable
+for_window [title="^posix-launcher$"] floating enable
 
 bindsym $mod+Shift+q kill
 
 set $emacs_run exec --no-startup-id emacsclient 
 bindsym $mod+Shift+e $emacs_run -ca emacs
-bindsym $mod+Shift+d $emacs_run -e "(app-launcher-frame t)"
+bindsym $mod+Shift+d $emacs_run -e "(posix-launcher)"
 bindsym $mod+Shift+w $emacs_run -e "(posix-browser)"
 bindsym $mod+Shift+t $emacs_run -e "(posix-terminal)"
 

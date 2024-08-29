@@ -56,7 +56,7 @@
   (editorconfig-mode))
 
 (use-package sudo-edit
-  :if rc-posix-p
+  :if (rc-posix-p)
   :general
   ("C-r" 'sudo-edit
    "C-S-r" 'sudo-edit-find-file))
@@ -86,16 +86,5 @@
            "j" 'buf-move-down
            "k" 'buf-move-up
            "l" 'buf-move-right))
-
-(general-define-key
- "C-S-N" 'next-buffer
- "C-S-P" 'previous-buffer
- "C-x C-b" 'ibuffer-other-window
- "C-c b r" 'revert-buffer-quick)
-
-(general-define-key
- :prefix "C-c f"
- "r" 'recentf
- "l" 'find-library)
 
 (provide 'editing)

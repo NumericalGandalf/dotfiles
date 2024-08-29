@@ -71,12 +71,12 @@
   (embark-collect-mode-hook . consult-preview-at-point-mode))
 
 (use-package corfu
-  :config
-  (global-corfu-mode)
   :general
   (corfu-map
    "RET" nil
    "SPC" 'corfu-insert-separator)
+  :init
+  (global-corfu-mode)
   :custom
   (corfu-cycle t)
   (corfu-auto t)

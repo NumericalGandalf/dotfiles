@@ -45,7 +45,7 @@
 (add-hook 'after-init-hook #'elpaca-process-queues)
 (elpaca `(,@elpaca-order))
 
-(when rc-windows-p
+(when (rc-windows-p)
   (setq elpaca-queue-limit 20)
   (elpaca-no-symlink-mode))
 

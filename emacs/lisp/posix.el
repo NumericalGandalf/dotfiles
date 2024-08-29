@@ -1,11 +1,11 @@
 (defgroup posix nil
   "Posix OS Management."
-  :prefix "sys-"
+  :prefix "posix-"
   :group 'emacs)
 
-(use-package app-launcher
-  :ensure
-  (:host github :repo "NumericalGandalf/app-launcher"))
+(defcustom posix-launcher-height 25
+  "Height of `posix-launcher' frame."
+  :type 'natnum)
 
 (use-package vterm
   :general
@@ -16,18 +16,36 @@
   :config
   (setq vterm-timer-delay nil)
   :custom
+  (vterm-max-scroll-back 5000)
   (vterm-clear-scrollback-when-clearing t)
   (vterm-always-compile-module t))
 
 (use-package guix
   :general
-  ("C-c I" 'guix))
+  ("C-c y g" 'guix))
 
 (use-package restart-emacs
   :general
   (:prefix "C-c r"
            "r" 'restart-emacs
            "R" 'restart-emacs-start-new-emacs))
+
+(use-package app-launcher
+  :ensure
+  (:host github :repo "NumericalGandalf/app-launcher"))
+
+(defun posix-launcher ()
+  "Create frame for `app-launcher-run-app'."
+  (interactive)
+  (with-selected-frame
+      (make-frame `((name . "posix-launcher")
+		            (height . ,posix-launcher-height)
+                    (width . ,(* posix-launcher-height 4))
+                    (minibuffer . only)))
+    (unwind-protect
+        (let ((vertico-count (1- posix-launcher-height)))
+	      (app-launcher-run-app t))
+      (delete-frame))))
 
 (defun posix-browser ()
   "Run system browser."

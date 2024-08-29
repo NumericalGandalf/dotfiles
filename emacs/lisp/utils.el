@@ -1,13 +1,15 @@
-(defvar rc-posix-p (pcase system-type
-                     ('gnu)
-                     ('gnu/linux t)
-                     ('gnu/kfreebsd t))
-  "Pred whether system is posix.")
+(defun rc-posix-p ()
+  "Non-nil means system is posix."
+  (pcase system-type
+    ('gnu t)
+    ('gnu/linux t)
+    ('gnu/kfreebsd t)))
 
-(defvar rc-windows-p (pcase system-type
-                       ('windows-nt)
-                       ('cygwin))
-  "Pred whether system is windows.")
+(defun rc-windows-p ()
+  "Non-nil means system is windows."
+  (pcase system-type
+    ('windows-nt t)
+    ('cygwin t)))
 
 (defun rc-expand (&optional file directory)
   "Expands FILE to canonical path from DIRECTORY.
@@ -22,8 +24,8 @@ If DIRECTORY is nil, expand from `user-emacs-directory'."
 
 Cache directories are system dependent:
     gnu/linux -> ~/.cache/emacs"
-  (rc-expand file (cond (rc-posix-p "~/.cache/emacs/")
-                        (rc-windows-p "~/../Local/emacs/")
+  (rc-expand file (cond ((rc-posix-p) "~/.cache/emacs/")
+                        ((rc-windows-p) "~/../Local/emacs/")
                         (t (locate-user-emacs-file "var/")))))
 
 (defun rc-join (&rest strings)
@@ -69,15 +71,5 @@ If NOBREAK is non-nil, do not break line afterwards."
   "Save custom variables silently."
   (let ((save-silently t))
     (apply fun args)))
-
-(with-eval-after-load 'general
-  (general-define-key
-   :prefix "C-c o"
-   "." (lambda ()
-         (interactive)
-         (find-file (file-truename user-init-file)))
-   "," (lambda ()
-         (interactive)
-         (find-file (rc-cache)))))
 
 (provide 'utils)

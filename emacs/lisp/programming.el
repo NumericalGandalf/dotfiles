@@ -10,13 +10,9 @@
 (add-to-list 'auto-mode-alist '("\\.jsonc\\'" . js-json-mode))
 
 (use-package magit
-  :general
-  ("C-x g" 'magit-status
-   "C-x M-g" 'magit-dispatch
-   "C-c M-g" 'magit-file-dispatch)
+  :defer
   :init
-  (setq magit-auto-revert-mode nil
-        magit-define-global-key-bindings nil))
+  (setq magit-auto-revert-mode nil))
 
 (use-package lsp-mode
   :hook

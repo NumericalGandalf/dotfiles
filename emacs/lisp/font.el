@@ -3,16 +3,16 @@
   :prefix "font-"
   :group 'emacs)
 
-(defcustom font-name (cond (rc-windows-p "Cascadia Code"))
+(defcustom font-name (cond ((rc-windows-p) "Cascadia Code"))
   "Default font name."
   :type 'string)
 
-(defcustom font-name-var (cond (rc-posix-p "DejaVu Sans")
-                               (rc-windows-p "Microsoft Sans Serif"))
+(defcustom font-name-var (cond ((rc-posix-p) "DejaVu Sans")
+                               ((rc-windows-p) "Microsoft Sans Serif"))
   "Variable pitch font name."
   :type 'string)
 
-(defcustom font-height (cond (rc-windows-p 12))
+(defcustom font-height (cond ((rc-windows-p) 12))
   "Default font height."
   :type 'natnum)
 
@@ -28,10 +28,10 @@
 
 (define-minor-mode font-nerds-mode
   "Toggle usage of nerd-fonts."
-  :init-value rc-posix-p
+  :init-value (rc-posix-p)
   :global t
   :lighter nil
-  (unless rc-posix-p
+  (unless (rc-posix-p)
     (error "Can't use `font-nerds-mode' on non-posix systems")))
 
 (defun font-nerds-fetch-list ()
@@ -74,7 +74,7 @@
            "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/" file)))
     (make-directory default-directory t)
     (cond
-     (rc-posix-p
+     ((rc-posix-p)
       (rc-shell (rc-join
                  "fc-list : file family | grep"
                  default-directory "| grep -q" (prin1-to-string font-name))
@@ -139,11 +139,5 @@ If optional PREFIX is non-nil, query for them anyways."
   (set-face-attribute 'variable-pitch nil :family font-name-var))
 
 (add-hook 'elpaca-after-init-hook 'font-load)
-
-(general-define-key
- :prefix "C-c"
- "o f" (lambda ()
-         (interactive)
-         (find-file (dots-expand))))
 
 (provide 'font)

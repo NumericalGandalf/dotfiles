@@ -8,14 +8,9 @@
 (add-hook
  'elpaca-after-init-hook (lambda () (load custom-file t t)) -90)
 
-(when rc-posix-p
-  (require 'posix)
+(when (rc-posix-p)
   (require 'dotfiles)
-
-  (require 'server)
-  (unless (or (daemonp)
-              (server-running-p))
-    (server-start)))
+  (require 'posix))
 
 (require 'font)
 (require 'theming)
@@ -28,3 +23,8 @@
 
 (when (treesit-available-p)
   (require 'treesitter))
+
+(require 'keybinds)
+
+(unless (daemonp)
+  (server-start))
