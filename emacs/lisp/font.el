@@ -42,68 +42,70 @@
         (url-retrieve-synchronously "https://www.nerdfonts.com/font-downloads")
       (let ((content (buffer-string))
             (last nil))
-        (while (string-match "href=\"[^\"]+\\/\\([^/]+\\.zip\\)\"" content (match-end 0))
+        (while (string-match
+                "href=\"[^\"]+\\/\\([^/]+\\.zip\\)\"" content (match-end 0))
           (when-let*
               ((file (let ((match (match-string 1 content)))
                        (unless (string-equal last match)
                          (setq last match))))
                (name (progn
-                       (string-match "invisible-text\"> \\([^<]+\\)" content (match-end 0))
+                       (string-match
+                        "invisible-text\"> \\([^<]+\\)" content (match-end 0))
                        (string-clean-whitespace (match-string 1 content))))
                (len (length name))
                (info (progn
-                       (string-match "Info:</strong> \\([^<]+\\)" content (match-end 0))
+                       (string-match
+                        "Info:</strong> \\([^<]+\\)" content (match-end 0))
                        (string-replace
                         "\342\200\231" "'"
                         (string-clean-whitespace (match-string 1 content))))))
             (unless (member name font-nerds-ignore-fonts)
               (puthash
-               (rc-join name "Nerd Font")
+               (format "%s Nerd Font"name)
                (list :file file :info info :len len)
                font-nerds--font-list)
               (when (> len font-nerds--curr-max-name-len)
                 (setq font-nerds--curr-max-name-len len)))))))))
 
-(defun font-nerds-ensure-font ()
-  "Ensure `font-name' for posix systems."
-  (let* ((file (plist-get (gethash font-name font-nerds--font-list) :file))
-	     (default-directory
-          (rc-expand (concat (file-name-base file) "/") "~/.local/share/fonts/rc/"))
-	     (link
-          (concat
-           "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/" file)))
+(defun font-nerds-ensure-font (&optional font)
+  "Ensure that if non-nil FONT, else `font-name' is installed."
+  (let* ((font (or font font-name))
+         (file (plist-get (gethash font font-nerds--font-list) :file))
+         (default-directory
+          (rc-expand
+           (concat (file-name-base file) "/") "~/.local/share/fonts/nerds/")))
     (make-directory default-directory t)
-    (cond
-     ((rc-posix-p)
-      (rc-shell (rc-join
-                 "fc-list : file family | grep"
-                 default-directory "| grep -q" (prin1-to-string font-name))
-        nil
-        (progn
-          (message "Downloading nerd-font %s" (prin1-to-string font-name))
-          (rc-shell (rc-join "curl -sLO" link "&&"
-                             "unzip -qo" file "&&"
-                             "fc-cache -f &&"
-                             "rm" file)
-            (message "Extracted %s to %s" file default-directory)))))
-     (t (message
-         "Assuming nerd-font %s is installed" (prin1-to-string font-name))))))
+    (rc-shell (format
+               "fc-list : file family | grep %s | grep -q %s"
+               default-directory (prin1-to-string font))
+      nil
+      (progn
+        (url-copy-file
+         (concat
+          "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/"
+          file)
+         file t)
+        (dired-compress-file file)
+        (rc-shell "fc-cache -f")
+        (delete-file (expand-file-name file))))))
 
 (defun font-nerds-query-font ()
   "Query for the nerd-font and their height."
   (let ((name
          (completing-read
           "Default nerd-font: "
-	      (lambda (str pred flag)
+          (lambda (str pred flag)
             (pcase flag
               ('metadata
                `(metadata
                  (annotation-function
                   . (lambda (cand)
                       (let ((info
-                             (plist-get (gethash cand font-nerds--font-list) :info))
+                             (plist-get
+                              (gethash cand font-nerds--font-list) :info))
                             (len
-                             (plist-get (gethash cand font-nerds--font-list) :len)))
+                             (plist-get
+                              (gethash cand font-nerds--font-list) :len)))
                         (concat
                          (make-string
                           (+ 2 (if icomplete-mode
@@ -111,7 +113,7 @@
                           ?\s)
                          (propertize info 'face 'completions-annotations)))))))
               (_ (all-completions str font-nerds--font-list pred))))
-	      nil nil nil t nil nil))
+          nil nil nil t nil nil))
         (height
          (round
           (read-number "Default nerd-font height: " nil t))))

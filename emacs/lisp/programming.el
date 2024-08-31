@@ -5,7 +5,7 @@
 
 (setq-default indent-tabs-mode nil
               tab-width 4
-	          c-basic-offset tab-width)
+              c-basic-offset tab-width)
 
 (add-to-list 'auto-mode-alist '("\\.jsonc\\'" . js-json-mode))
 

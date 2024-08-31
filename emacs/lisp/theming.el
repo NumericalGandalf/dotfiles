@@ -1,11 +1,29 @@
 (setq use-short-answers t
       suggest-key-bindings nil
-      ring-bell-function 'ignore)
+      ring-bell-function nil)
 
 (setq inhibit-startup-message t
       server-client-instructions nil)
 
 (defun display-startup-echo-area-message ())
+
+(pixel-scroll-mode 1)
+(pixel-scroll-precision-mode 1)
+(setq scroll-step 1
+      scroll-preserve-screen-position t)
+
+(setq display-line-numbers-width-start t
+      display-line-numbers-grow-only t
+      display-line-numbers-type 'relative)
+(global-display-line-numbers-mode)
+
+(dolist (mode '(image))
+  (add-hook
+   (intern (concat (symbol-name mode) "-mode-hook"))
+   (lambda () (display-line-numbers-mode 0))))
+
+(column-number-mode)
+(global-visual-line-mode)
 
 (use-package doom-themes
   :config
@@ -41,7 +59,7 @@
   (marginalia-mode-hook . nerd-icons-completion-marginalia-setup))
 
 (use-package nerd-icons-corfu
-  :after corfu 
+  :after corfu
   :config
   (add-to-list 'corfu-margin-formatters 'nerd-icons-corfu-formatter))
 
@@ -53,6 +71,13 @@
   (doom-modeline-buffer-file-name-style 'file-name-with-project)
   (doom-modeline-highlight-modified-buffer-name nil))
 
+(use-package emojify
+  :config
+  (global-emojify-mode)
+  (global-prettify-symbols-mode)
+  :custom
+  (emojify-download-emojis-p t))
+
 (use-package dashboard
   :hook
   ((window-size-change-functions . dashboard-resize-on-hook)
@@ -60,7 +85,7 @@
    (emacs-startup-hook
     . (lambda ()
         (when (and (string= (buffer-name) "*scratch*")
-	               (= (length (window-list)) 1))
+                   (= (length (window-list)) 1))
           (dashboard-open))
         (setq initial-buffer-choice
               (lambda ()
@@ -76,20 +101,20 @@
   (dashboard-banner-ascii (rc-expand "banner.txt"))
   (dashboard-init-info 'rc-init-info)
   (dashboard-items '((recents   . 5)
-		             (projects  . 5)
-		             (bookmarks . 5)
-		             (agenda    . 5)))
+                     (projects  . 5)
+                     (bookmarks . 5)
+                     (agenda    . 5)))
   (dashboard-startupify-list '(dashboard-insert-banner
-			                   dashboard-insert-newline
-			                   dashboard-insert-footer
-			                   dashboard-insert-items
-			                   dashboard-insert-newline
-			                   dashboard-insert-init-info))
+                               dashboard-insert-newline
+                               dashboard-insert-footer
+                               dashboard-insert-items
+                               dashboard-insert-newline
+                               dashboard-insert-init-info))
   (dashboard-item-names '(("Recent Files:" . "Recent Files")
-			              ("Projects:" . "Projects")
-			              ("Bookmarks:" . "Bookmarks")
-			              ("Agenda for the coming week:" . "Agenda")
-			              ("Registers:" . "Registers")))
+                          ("Projects:" . "Projects")
+                          ("Bookmarks:" . "Bookmarks")
+                          ("Agenda for the coming week:" . "Agenda")
+                          ("Registers:" . "Registers")))
   (dashboard-heading-icons '((recents   . "nf-oct-history")
                              (bookmarks . "nf-oct-bookmark")
                              (agenda    . "nf-oct-calendar")

@@ -36,7 +36,7 @@
   ("M-y" 'consult-yank-pop
    "C-s" 'consult-line)
   (:prefix "C-x"
-           "b" 'consult-buffer   
+           "b" 'consult-buffer
            "4 b" 'consult-buffer-other-window
            "5 b" 'consult-buffer-other-frame
            "r b" 'consult-bookmark)
@@ -56,7 +56,7 @@
 
 (use-package embark
   :general
-  (minibuffer-local-map   
+  (minibuffer-local-map
    "C-." 'embark-act
    "C-;" 'embark-dwin
    "C-h B" 'embark-bindings)

@@ -40,12 +40,12 @@
   (interactive)
   (with-selected-frame
       (make-frame `((name . "posix-launcher")
-		            (height . ,posix-launcher-height)
+                    (height . ,posix-launcher-height)
                     (width . ,(* posix-launcher-height 4))
                     (minibuffer . only)))
     (unwind-protect
         (let ((vertico-count (1- posix-launcher-height)))
-	      (app-launcher-run-app t))
+          (app-launcher-run-app t))
       (delete-frame))))
 
 (defun posix-browser ()

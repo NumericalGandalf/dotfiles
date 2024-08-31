@@ -16,24 +16,6 @@
       auto-revert-verbose nil)
 (global-auto-revert-mode 1)
 
-(setq display-line-numbers-width-start t
-      display-line-numbers-grow-only t
-      display-line-numbers-type 'relative)
-(global-display-line-numbers-mode)
-
-(dolist (mode '(image))
-  (add-hook
-   (intern (concat (symbol-name mode) "-mode-hook"))
-   (lambda () (display-line-numbers-mode 0))))
-
-(column-number-mode)
-(global-visual-line-mode)
-
-(pixel-scroll-mode 1)
-(pixel-scroll-precision-mode 1)
-(setq scroll-step 1
-      scroll-preserve-screen-position t)
-
 (defun rc-duplicate-line (&optional n)
   "Duplicate the current line N times."
   (interactive "p")
@@ -64,7 +46,17 @@
 (use-package move-text
   :general
   ("M-P" 'move-text-up
-   "M-N" 'move-text-down))
+   "M-N" 'move-text-down)
+  :config
+  (defun move-text@indent-after (&rest res)
+    (let ((deactivate deactivate-mark))
+      (if (region-active-p)
+          (indent-region (region-beginning) (region-end))
+        (indent-region (line-beginning-position) (line-end-position)))
+      (setq deactivate-mark deactivate))
+    res)
+  (advice-add 'move-text-up :after 'move-text@indent-after)
+  (advice-add 'move-text-down :after 'move-text@indent-after))
 
 (use-package multiple-cursors
   :general

@@ -49,18 +49,25 @@
   (setq elpaca-queue-limit 20)
   (elpaca-no-symlink-mode))
 
+(dolist (package '(transient))
+  (setq elpaca-ignored-dependencies
+        (remove package elpaca-ignored-dependencies)))
+
 (elpaca elpaca-use-package
-  (elpaca-use-package-mode)
-  (setq use-package-always-ensure t
-        use-package-hook-name-suffix nil
-        use-package-compute-statistics init-file-debug))
+  (elpaca-use-package-mode))
+
+(setq use-package-always-ensure t
+      use-package-hook-name-suffix nil)
+
+(when init-file-debug
+  (setq use-package-compute-statistics t))
 
 (use-package general)
 
 (use-package no-littering
   :init
   (setq no-littering-etc-directory (rc-expand)
-	    no-littering-var-directory (rc-cache)))
+        no-littering-var-directory (rc-cache)))
 
 (elpaca-wait)
 

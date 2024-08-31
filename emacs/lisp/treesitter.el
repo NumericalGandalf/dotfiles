@@ -1,7 +1,3 @@
-(defcustom treesit-ignore-langs '(janet latex markdown)
-  "Treesitter languages to ignore."
-  :type '(repeat symbol))
-
 (use-package treesit-auto
   :config
   (global-treesit-auto-mode))
@@ -15,14 +11,9 @@ If optional PREFIX is non-nil, force all builds."
       (let ((lang (nth 0 source)))
         (when (and (or prefix
                        (not (treesit-ready-p lang t)))
-                   (not (member lang treesit-ignore-langs)))
-          (message
-           "Building tree-sitter library %s"
-           (prin1-to-string (symbol-name lang)))
-          (let ((inhibit-message t)
-                (message-log-max nil))
-            (apply
-             'treesit--install-language-grammar-1 outdir source)))))))
+                   (not (member lang '(janet latex markdown))))
+          (apply
+           'treesit--install-language-grammar-1 outdir source))))))
 
 (setq-default c-ts-mode-indent-offset c-basic-offset
               json-ts-mode-indent-offset c-basic-offset)

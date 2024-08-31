@@ -67,6 +67,4 @@
   :ensure
   (:host github :repo "emacsmirror/bookmark-plus"))
 
-(use-package transient)
-
 (provide 'enhancements)

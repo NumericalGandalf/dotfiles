@@ -1,3 +1,5 @@
+(setq ad-redefinition-action 'accept)
+
 (add-to-list
  'load-path (file-truename (locate-user-emacs-file "lisp/")))
 
@@ -26,5 +28,7 @@
 
 (require 'keybinds)
 
-(unless (daemonp)
+(require 'server)
+(unless (or (daemonp)
+            (server-running-p))
   (server-start))

@@ -9,7 +9,8 @@
   "Non-nil means system is windows."
   (pcase system-type
     ('windows-nt t)
-    ('cygwin t)))
+    ('cygwin t)
+    ('ms-dos t)))
 
 (defun rc-expand (&optional file directory)
   "Expands FILE to canonical path from DIRECTORY.
@@ -27,17 +28,6 @@ Cache directories are system dependent:
   (rc-expand file (cond ((rc-posix-p) "~/.cache/emacs/")
                         ((rc-windows-p) "~/../Local/emacs/")
                         (t (locate-user-emacs-file "var/")))))
-
-(defun rc-join (&rest strings)
-  "Join STRINGS with char space as seperator."
-  (string-join strings (char-to-string ?\s)))
-
-(defun rc-insert (string &optional nobreak)
-  "Insert STRING into current buffer.
-If NOBREAK is non-nil, do not break line afterwards."
-  (insert string)
-  (unless nobreak
-    (newline)))
 
 (defun rc-init-info ()
   "Fetch emacs init info."
@@ -63,12 +53,12 @@ If NOBREAK is non-nil, do not break line afterwards."
 (defmacro rc-shell (command &optional success error)
   "Run shell command COMMAND and evaluate SUCCESS or ERROR."
   (declare (indent 1))
-  `(if (= (call-process-shell-command ,command) 0)
-       ,success
-     ,error))
+  `(when ,command
+     (if (= (call-process-shell-command ,command) 0)
+         ,success
+       ,error)))
 
-(define-advice custom-save-all
-    (:around (fun &rest args) silently)
+(define-advice custom-save-all (:around (fun &rest args) silently)
   "Save custom variables silently."
   (let ((save-silently t))
     (apply fun args)))

@@ -9,7 +9,7 @@
 (general-define-key
  :prefix "C-c"
  "b r" 'revert-buffer-quick
- 
+
  "f r" 'recentf
  "f l" 'find-library
 
@@ -17,12 +17,11 @@
  "z f" 'font-load
 
  "y p" 'elpaca-manager
- "y P" 'use-package-report
 
  "h f" 'describe-face
  "h g" 'customize-group
  "h t" 'describe-theme
- 
+
  "o ." (lambda ()
          (interactive)
          (find-file (file-truename user-init-file)))
