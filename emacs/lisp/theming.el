@@ -45,16 +45,19 @@
   (dots-deploy-hook . (lambda () (nerd-icons-install-fonts t))))
 
 (use-package nerd-icons-dired
+  :after dired
   :hook
   (dired-mode-hook . nerd-icons-dired-mode)
   :config
   (advice-add 'dired-do-rename :around 'nerd-icons-dired--refresh-advice))
 
 (use-package nerd-icons-ibuffer
+  :after ibuffer
   :hook
   (ibuffer-mode-hook . nerd-icons-ibuffer-mode))
 
 (use-package nerd-icons-completion
+  :after marginalia
   :hook
   (marginalia-mode-hook . nerd-icons-completion-marginalia-setup))
 
@@ -99,7 +102,6 @@
   (dashboard-show-shortcuts nil)
   (dashboard-startup-banner 'ascii)
   (dashboard-banner-ascii (rc-expand "banner.txt"))
-  (dashboard-init-info 'rc-init-info)
   (dashboard-items '((recents   . 5)
                      (projects  . 5)
                      (bookmarks . 5)

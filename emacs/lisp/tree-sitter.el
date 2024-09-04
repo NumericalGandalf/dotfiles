@@ -21,4 +21,4 @@ If optional PREFIX is non-nil, force all builds."
 (add-to-list 'treesit-extra-load-path (rc-cache "tree-sitter/"))
 (add-hook 'dots-deploy-hook 'treesit-ensure-all)
 
-(provide 'treesitter)
+(provide 'tree-sitter)

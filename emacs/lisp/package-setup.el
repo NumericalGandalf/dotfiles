@@ -45,7 +45,7 @@
 (add-hook 'after-init-hook #'elpaca-process-queues)
 (elpaca `(,@elpaca-order))
 
-(when (rc-windows-p)
+(when rc-windows-p
   (setq elpaca-queue-limit 20)
   (elpaca-no-symlink-mode))
 
@@ -60,7 +60,8 @@
       use-package-hook-name-suffix nil)
 
 (when init-file-debug
-  (setq use-package-compute-statistics t))
+  (setq use-package-verbose t
+        use-package-compute-statistics t))
 
 (use-package general)
 
@@ -71,4 +72,4 @@
 
 (elpaca-wait)
 
-(provide 'packages)
+(provide 'package-setup)

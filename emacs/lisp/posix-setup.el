@@ -33,11 +33,25 @@
 
 (use-package app-launcher
   :ensure
-  (:host github :repo "NumericalGandalf/app-launcher"))
+  (:host github :repo "NumericalGandalf/app-launcher")
+  :defer)
 
-(defun posix-launcher ()
-  "Create frame for `app-launcher-run-app'."
-  (interactive)
+(defmacro posix-program (program &optional doc &rest body)
+  "Define function for PROGRAM with DOC and BODY.
+
+This will check for an environment variable PROGRAM first
+and, if non-nil, run it, or execute BODY otherwise."
+  (declare (indent 1) (doc-string 2))
+  `(defun ,(intern (concat "posix-" (symbol-name program))) ()
+     ,doc
+     (interactive)
+     (if-let ((command (getenv (upcase ,(symbol-name program)))))
+         (call-process-shell-command command nil 0 nil)
+       (ignore-errors
+         ,@body))))
+
+(posix-program launcher
+  "Run LAUNCHER or create frame for `app-launcher-run-app'."
   (with-selected-frame
       (make-frame `((name . "posix-launcher")
                     (height . ,posix-launcher-height)
@@ -48,19 +62,13 @@
           (app-launcher-run-app t))
       (delete-frame))))
 
-(defun posix-browser ()
-  "Run system browser."
-  (interactive)
-  (when-let ((browser (getenv "BROWSER")))
-    (call-process-shell-command browser nil 0 nil)))
+(posix-program browser
+  "Run BROWSER.")
 
-(defun posix-terminal ()
-  "Run system terminal or `vterm'."
-  (interactive)
-  (if-let ((terminal (getenv "TERMINAL")))
-      (call-process-shell-command terminal nil 0 nil)
-    (with-selected-frame (make-frame)
-      (vterm))))
+(posix-program terminal
+  "Run TERMINAL or `vterm'."
+  (with-selected-frame (make-frame)
+    (vterm)))
 
 (general-define-key
  :prefix "C-c r"
@@ -69,4 +77,4 @@
  "g" 'consult-grep
  "y" 'consult-git-grep)
 
-(provide 'posix)
+(provide 'posix-setup)

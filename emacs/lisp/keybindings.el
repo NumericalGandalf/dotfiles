@@ -32,4 +32,4 @@
          (interactive)
          (find-file (dots-expand))))
 
-(provide 'keybinds)
+(provide 'keybindings)

@@ -3,6 +3,12 @@
   :prefix "dots-"
   :group 'emacs)
 
+(defcustom dots-gsettings
+  '(("org.gnome.desktop.interface" "gtk-key-theme" "Emacs")
+    ("org.gnome.desktop.interface" "color-scheme" "prefer-dark"))
+  "List of gsettings in form SCHEME, KEY, VALUE."
+  :type '(repeat (list string string string)))
+
 (defcustom dots-stow-parents '(".config/")
   "List of stow parent directories.
 
@@ -12,11 +18,17 @@ and will not be traversed any further.
 These directories are relative to the dotfiles dots directory."
   :type '(repeat string))
 
-(defcustom dots-gsettings
-  '(("org.gnome.desktop.interface" "gtk-key-theme" "Emacs")
-    ("org.gnome.desktop.interface" "color-scheme" "prefer-dark"))
-  "List of gsettings in form SCHEME, KEY, VALUE."
-  :type '(list string string string))
+(defcustom dots-priv-dir (rc-cache "priv-backup/")
+  "Backup directory for `dots-priv-files'."
+  :type 'string)
+
+(defcustom dots-priv-files
+  '(".ssh"
+    ".mozilla/firefox/v2pr6fd9.gandalf")
+  "List of private files not stored in a git repository.
+
+These files are relative to the users home directory."
+  :type '(repeat string))
 
 (defcustom dots-deploy-hook nil
   "Hooks to run when deploying dotfiles."
@@ -37,7 +49,8 @@ If RESET is non-nil, reset the scheme keys."
            (value (prin1-to-string (nth 2 item))))
       (if reset
           (rc-shell (format "gsettings reset %s %s" scheme key))
-        (rc-shell (format "gsettings set %s %s %s" scheme key value))))))
+        (rc-shell
+            (format "gsettings set %s %s %s" scheme key value))))))
 
 (defun dots-sway-write-wallpaper ()
   "Write wallpaper into sway config."
@@ -64,9 +77,9 @@ Whether a child dir is stowed depends on `dots-stow-parents'."
                       (dots-expand entry) (dots-expand))
                      "~/")))
           (when (file-exists-p dest)
-            (cond ((f-symlink-p dest)
+            (cond ((file-symlink-p dest)
                    (delete-file dest))
-                  ((f-directory-p dest)
+                  ((file-directory-p dest)
                    (delete-directory dest t))
                   (t (delete-file dest))))
           (unless unstow
@@ -123,6 +136,20 @@ If RESET is non-nil, reset gsettings font."
     (dots-font-write-waybar)
     (dots-font-write-sway))
   res)
+
+(defun dots-priv-backup ()
+  "Backup `dots-priv-files' to `dots-priv-dir'."
+  (interactive)
+  (when (file-exists-p dots-priv-dir)
+    (delete-directory dots-priv-dir t))
+  (dolist (file dots-backup-files)
+    (let ((name (expand-file-name file "~/"))
+          (target (file-name-parent-directory
+                   (expand-file-name file dots-priv-dir))))
+      (make-directory target t)
+      (if (file-directory-p name)
+          (copy-directory name target)
+        (copy-file name target)))))
 
 (defun dots-deploy ()
   "Deploy dotfiles and run `dots-deploy-hook'."

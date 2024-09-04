@@ -3,16 +3,16 @@
   :prefix "font-"
   :group 'emacs)
 
-(defcustom font-name (cond ((rc-windows-p) "Cascadia Code"))
+(defcustom font-name (cond (rc-windows-p "Cascadia Code"))
   "Default font name."
   :type 'string)
 
-(defcustom font-name-var (cond ((rc-posix-p) "DejaVu Sans")
-                               ((rc-windows-p) "Microsoft Sans Serif"))
+(defcustom font-name-var (cond (rc-posix-p "DejaVu Sans")
+                               (rc-windows-p "Microsoft Sans Serif"))
   "Variable pitch font name."
   :type 'string)
 
-(defcustom font-height (cond ((rc-windows-p) 12))
+(defcustom font-height (cond (rc-windows-p 12))
   "Default font height."
   :type 'natnum)
 
@@ -28,10 +28,10 @@
 
 (define-minor-mode font-nerds-mode
   "Toggle usage of nerd-fonts."
-  :init-value (rc-posix-p)
+  :init-value rc-posix-p
   :global t
   :lighter nil
-  (unless (rc-posix-p)
+  (unless rc-posix-p
     (error "Can't use `font-nerds-mode' on non-posix systems")))
 
 (defun font-nerds-fetch-list ()

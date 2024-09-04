@@ -38,7 +38,6 @@
   (editorconfig-mode))
 
 (use-package sudo-edit
-  :if (rc-posix-p)
   :general
   ("C-r" 'sudo-edit
    "C-S-r" 'sudo-edit-find-file))
@@ -55,6 +54,7 @@
         (indent-region (line-beginning-position) (line-end-position)))
       (setq deactivate-mark deactivate))
     res)
+  
   (advice-add 'move-text-up :after 'move-text@indent-after)
   (advice-add 'move-text-down :after 'move-text@indent-after))
 
