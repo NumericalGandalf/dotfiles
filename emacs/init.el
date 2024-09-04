@@ -8,12 +8,6 @@
          ,success
        ,error)))
 
-(defmacro rc-load (file &optional nosuffix must-suffix)
-  "Load file FILE.
-For NOSUFFIX and MUST-SUFFIX see function `load'."
-  `(let ((silent (not init-file-debug)))
-     (load ,file silent silent ,nosuffix ,must-suffix)))
-
 (add-to-list 'load-path (rc-expand "lisp/"))
 
 (require 'package-setup)
