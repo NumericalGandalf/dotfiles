@@ -42,13 +42,16 @@
 This will check for an environment variable PROGRAM first
 and, if non-nil, run it, or execute BODY otherwise."
   (declare (indent 1) (doc-string 2))
-  `(defun ,(intern (concat "posix-" (symbol-name program))) ()
-     ,doc
-     (interactive)
-     (if-let ((command (getenv (upcase ,(symbol-name program)))))
-         (call-process-shell-command command nil 0 nil)
-       (ignore-errors
-         ,@body))))
+  (let ((name (symbol-name program)))
+    `(defun ,(intern (concat "posix-" name)) ()
+       ,(if (stringp doc)
+            doc
+          (format "Run %s." (upcase name)))
+       (interactive)
+       (if-let ((command (getenv (upcase ,name))))
+           (call-process-shell-command command nil 0 nil)
+         (ignore-errors
+           ,@body)))))
 
 (posix-program launcher
   "Run LAUNCHER or create frame for `app-launcher-run-app'."
@@ -62,8 +65,7 @@ and, if non-nil, run it, or execute BODY otherwise."
           (app-launcher-run-app t))
       (delete-frame))))
 
-(posix-program browser
-  "Run BROWSER.")
+(posix-program browser)
 
 (posix-program terminal
   "Run TERMINAL or `vterm'."
