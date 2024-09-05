@@ -26,7 +26,9 @@ Cache directories are system dependent:
     windows -> %APPDATA%/emacs
     others  -> `user-emacs-directory'/var"
   (rc-expand file (cond (rc-posix-p "~/.cache/emacs/")
-                        (rc-windows-p "~/../Local/emacs/")
+                        (rc-windows-p
+                         (expand-file-name "Emacs/"
+                                           (getenv "APPDATA")))
                         (t (rc-expand "var/")))))
 
 (when (native-comp-available-p)

@@ -38,8 +38,3 @@
   (require 'tree-sitter))
 
 (require 'keybindings)
-
-(require 'server)
-(unless (or (daemonp)
-            (server-running-p))
-  (server-start))
