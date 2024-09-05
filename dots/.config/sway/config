@@ -1,4 +1,4 @@
-exec --no-startup-id emacsclient -ca emacs
+exec emacs --daemon
 
 set $step 10
 set $mod Mod1
@@ -52,11 +52,11 @@ for_window [title="^posix-launcher$"] floating enable
 
 bindsym $mod+Shift+q kill
 
-set $emacs_run exec --no-startup-id emacsclient 
-bindsym $mod+Shift+e $emacs_run -ca emacs
-bindsym $mod+Shift+d $emacs_run -e "(posix-launcher)"
-bindsym $mod+Shift+w $emacs_run -e "(posix-browser)"
-bindsym $mod+Shift+t $emacs_run -e "(posix-terminal)"
+set $emacs_run exec emacsclient -e
+bindsym $mod+Shift+e exec emacsclient -ca emacs
+bindsym $mod+Shift+d $emacs_run "(posix-run-launcher)"
+bindsym $mod+Shift+w $emacs_run "(posix-run-browser)"
+bindsym $mod+Shift+t $emacs_run "(posix-run-terminal)"
 
 bindsym $mod+Shift+s mode "System"
 mode "System" {
@@ -67,11 +67,11 @@ mode "System" {
     
     bindsym e exit
     bindsym c reload
-    bindsym l exec --no-startup-id loginctl lock-session, mode "default"
-    bindsym r exec --no-startup-id loginctl reboot, mode "default"
-    bindsym s exec --no-startup-id loginctl suspend, mode "default"
-    bindsym p exec --no-startup-id loginctl poweroff, mode "default"
-    bindsym h exec --no-startup-id loginctl hibernate, mode "default"
+    bindsym l exec loginctl lock-session, mode "default"
+    bindsym r exec loginctl reboot, mode "default"
+    bindsym s exec loginctl suspend, mode "default"
+    bindsym p exec loginctl poweroff, mode "default"
+    bindsym h exec loginctl hibernate, mode "default"
     
     bindsym Escape mode "default"
 }
@@ -95,13 +95,19 @@ mode "Resize" {
 
 bindsym $mod+Shift+a mode "Audio"
 mode "Audio" {
-    bindsym $up exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +$step%
-    bindsym $down exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -$step%
-    bindsym m exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle
-    bindsym n exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle
+    bindsym $up exec pactl set-sink-volume @DEFAULT_SINK@ +$step%
+    bindsym $down exec pactl set-sink-volume @DEFAULT_SINK@ -$step%
+    bindsym m exec pactl set-sink-mute @DEFAULT_SINK@ toggle
+    bindsym n exec pactl set-source-mute @DEFAULT_SOURCE@ toggle
     
     bindsym Escape mode "default"
 }
+
+include "font"
+include "wallpaper"
+include "outputs"
+
+output * bg $wallpaper fit
 
 bar {
     swaybar_command waybar
@@ -112,11 +118,5 @@ input * {
     xkb_options grp:win_space_toggle
 }
 
-include "font"
-include "wallpaper"
-include "outputs"
-
-output * bg $wallpaper fit
-
 set $lock "swaylock -i $wallpaper -s fit"
-exec --no-startup-id swayidle -w before-sleep $lock lock $lock
+exec swayidle -w before-sleep $lock lock $lock
