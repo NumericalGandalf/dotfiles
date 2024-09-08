@@ -6,13 +6,6 @@
            "k" 'helpful-key
            "C-." 'helpful-at-point))
 
-(use-package projectile
-  :general
-  (projectile-mode-map
-   "C-x p" 'projectile-command-map)
-  :config
-  (projectile-mode))
-
 (use-package dired+
   :ensure
   (:host github :repo "emacsmirror/dired-plus")

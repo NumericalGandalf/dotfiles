@@ -31,6 +31,6 @@
          (find-file (rc-cache)))
  "o /" (lambda ()
          (interactive)
-         (find-file (dots-expand))))
+         (find-file (rc-dots))))
 
 (provide 'keybindings)

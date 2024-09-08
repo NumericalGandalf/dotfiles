@@ -31,6 +31,10 @@ Cache directories are system dependent:
                                            (getenv "APPDATA")))
                         (t (rc-expand "var/")))))
 
+(defun rc-dots (&optional file)
+  "Expand FILE from the dotfiles dots directory."
+  (rc-expand file (rc-expand "../dots/")))
+
 (when (native-comp-available-p)
   (startup-redirect-eln-cache (rc-cache "eln/"))
   (setq native-comp-async-report-warnings-errors 'silent))

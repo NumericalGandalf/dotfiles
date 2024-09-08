@@ -34,9 +34,21 @@ These files are relative to the users home directory."
   "Hooks to run when deploying dotfiles."
   :type 'hook)
 
-(defun dots-expand (&optional file)
-  "Expand FILE from the dotfiles dots directory."
-  (rc-expand file (rc-expand "../dots/")))
+(defun dots-link-emacs-dir (&optional unlink)
+  "Link emacs init directory.
+If optional UNLINK is non-nil, unlink it."
+  (dolist (file '(".emacs" ".emacs.d" ".config/emacs"))
+    (let ((file (expand-file-name file "~/")))
+      (when (file-exists-p file)
+        (cond ((file-symlink-p file)
+               (delete-file file))
+              ((file-directory-p file)
+               (delete-directory file t))
+              (t (delete-file file))))))
+  (unless unlink
+    (make-symbolic-link
+     (rc-expand)
+     (expand-file-name ".config/emacs/" "~/"))))
 
 (defun dots-gsettings-apply (&optional reset)
   "Applies gsettings specified in `dots-gsettings'.
@@ -55,11 +67,11 @@ If RESET is non-nil, reset the scheme keys."
 
 (defun dots-sway-write-wallpaper ()
   "Write wallpaper into sway config."
-  (with-temp-file (dots-expand ".config/sway/wallpaper")
+  (with-temp-file (rc-dots ".config/sway/wallpaper")
     (erase-buffer)
     (insert (format
              "set $wallpaper %s"
-             (dots-expand ".config/sway/butterfly.png"))))
+             (rc-dots ".config/sway/butterfly.png"))))
   (shell-command "sway reload"))
 
 (defun dots-stow-files (&optional unstow dir)
@@ -67,16 +79,16 @@ If RESET is non-nil, reset the scheme keys."
 If UNSTOW is non-nil, unstow them.
 
 Whether a child dir is stowed depends on `dots-stow-parents'."
-  (dolist (target (cdr (cdr (directory-files (dots-expand dir) t))))
+  (dolist (target (cdr (cdr (directory-files (rc-dots dir) t))))
     (if (or (file-regular-p target)
             (cl-dolist (parent dots-stow-parents)
-              (let ((parent (dots-expand parent)))
+              (let ((parent (rc-dots parent)))
                 (when (and (file-in-directory-p target parent)
                            (not (file-equal-p target parent)))
                   (cl-return target)))))
         (let ((link-name (expand-file-name
                           (file-relative-name
-                           (dots-expand target) (dots-expand))
+                           (rc-dots target) (rc-dots))
                           "~/")))
           (when (file-exists-p link-name)
             (cond ((file-symlink-p link-name)
@@ -86,12 +98,13 @@ Whether a child dir is stowed depends on `dots-stow-parents'."
                   (t (delete-file link-name))))
           (unless unstow
             (make-symbolic-link target link-name)))
-      (dots-stow-files unstow entry))))
+      (dots-stow-files unstow target))))
 
 (defun dots-stow (&optional prefix)
   "Stow dotfiles.
-If PREFIX is non-nil, unstow dotfiles."
+If PREFIX is non-nil, unstow them."
   (interactive "P")
+  (dots-link-emacs-dir prefix)
   (dots-stow-files prefix)
   (dots-gsettings-apply prefix)
   (unless prefix
@@ -117,7 +130,7 @@ If RESET is non-nil, reset gsettings font."
 
 (defun dots-font-write-waybar ()
   "Write `font-name' into waybar config."
-  (with-temp-file (dots-expand ".config/waybar/font.css")
+  (with-temp-file (rc-dots ".config/waybar/font.css")
     (erase-buffer)
     (insert (format "*{font-family:%s;font-size:%d}"
                     (prin1-to-string font-name)
@@ -125,7 +138,7 @@ If RESET is non-nil, reset gsettings font."
 
 (defun dots-font-write-sway ()
   "Write `font-name' into sway config."
-  (with-temp-file (dots-expand ".config/sway/font")
+  (with-temp-file (rc-dots ".config/sway/font")
     (erase-buffer)
     (insert
      (format "font pango:%s %d" font-name (- font-height 3))))
@@ -138,23 +151,6 @@ If RESET is non-nil, reset gsettings font."
     (dots-font-write-waybar)
     (dots-font-write-sway))
   res)
-
-(defun dots-link-emacs-dir (&optional prefix)
-  "Link emacs init directory.
-If optional PREFIX is non-nil, unlink it."
-  (interactive "P")
-  (dolist (file '(".emacs" ".emacs.d" ".config/emacs"))
-    (let ((file (expand-file-name file "~/")))
-      (when (file-exists-p file)
-        (cond ((file-symlink-p file)
-               (delete-file file))
-              ((file-directory-p file)
-               (delete-directory file t))
-              (t (delete-file file))))))
-  (unless prefix
-    (make-symbolic-link
-     (rc-expand)
-     (expand-file-name ".config/emacs/" "~/"))))
 
 (defun dots-priv-backup ()
   "Backup `dots-priv-files' to `dots-priv-dir'."

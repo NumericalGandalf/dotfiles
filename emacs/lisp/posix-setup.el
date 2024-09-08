@@ -65,6 +65,8 @@ and, if non-nil, run it, or execute BODY otherwise."
           (app-launcher-run-app t))
       (delete-frame))))
 
+(posix-program editor)
+
 (posix-program browser)
 
 (posix-program terminal

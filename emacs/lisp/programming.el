@@ -14,6 +14,13 @@
   :init
   (setq magit-auto-revert-mode nil))
 
+(use-package projectile
+  :general
+  (projectile-mode-map
+   "C-x p" 'projectile-command-map)
+  :init
+  (projectile-mode))
+
 (use-package lsp-mode
   :hook
   (prog-mode-hook . lsp)
