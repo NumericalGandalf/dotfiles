@@ -4,6 +4,7 @@
 
 (general-define-key
  :prefix "C-x"
+ "C-c" 'save-buffers-kill-emacs
  "C-b" 'ibuffer-other-window)
 
 (general-define-key

@@ -16,19 +16,10 @@
       auto-revert-verbose nil)
 (global-auto-revert-mode 1)
 
-(defun rc-duplicate-line (&optional n)
-  "Duplicate the current line N times."
-  (interactive "p")
-  (dotimes (_ n)
-    (move-beginning-of-line 1)
-    (kill-line)
-    (yank)
-    (open-line 1)
-    (next-line 1)
-    (yank)))
-
 (use-package which-key
-  :config
+  :hook
+  (lsp-mode-hook . lsp-enable-which-key-integration)
+  :init
   (which-key-mode)
   :custom
   (which-key-idle-delay 1.5))
@@ -69,6 +60,7 @@
 (use-package wgrep
   :defer
   :custom
+  (wgrep-enable-key "r")
   (wgrep-auto-save-buffer t))
 
 (use-package buffer-move

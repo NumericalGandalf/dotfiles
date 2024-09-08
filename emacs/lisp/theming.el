@@ -32,7 +32,12 @@
   (doom-themes-treemacs-config)
   (doom-themes-set-faces nil
     '(replacep-msg-emphasis :inherit 'warning)
-    '(replacep-msg-emphasis2 :inherit 'success))
+    '(replacep-msg-emphasis2 :inherit 'success)
+    '(wgrep-face :weight 'normal
+                 :foreground 'unspecified
+                 :background 'unspecified)
+    '(wgrep-done-face :foreground 'unspecified
+                      :background 'unspecified))
   :custom
   (doom-themes-treemacs-theme "doom-colors"))
 

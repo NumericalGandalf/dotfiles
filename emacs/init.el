@@ -1,13 +1,5 @@
 (setq ad-redefinition-action 'accept)
 
-(defmacro rc-shell (command &optional success error)
-  "Run shell command COMMAND and evaluate SUCCESS or ERROR."
-  (declare (indent 1))
-  `(when ,command
-     (if (= (call-process-shell-command ,command) 0)
-         ,success
-       ,error)))
-
 (add-to-list 'load-path (rc-expand "lisp/"))
 
 (require 'package-setup)

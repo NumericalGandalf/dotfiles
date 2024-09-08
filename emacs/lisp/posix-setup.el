@@ -79,9 +79,9 @@ and, if non-nil, run it, or execute BODY otherwise."
  "g" 'consult-grep
  "y" 'consult-git-grep)
 
-(unless (daemonp)
-  (require 'server)
-  (unless (server-running-p)
-    (server-start)))
+(require 'server)
+(unless (or (daemonp)
+            (server-running-p))
+  (server-start))
 
 (provide 'posix-setup)

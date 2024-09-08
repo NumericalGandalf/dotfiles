@@ -75,7 +75,7 @@
           (rc-expand
            (concat (file-name-base file) "/") "~/.local/share/fonts/nerds/")))
     (make-directory default-directory t)
-    (rc-shell (format
+    (shell-command (format
                "fc-list : file family | grep %s | grep -q %s"
                default-directory (prin1-to-string font))
       nil
@@ -86,7 +86,7 @@
           file)
          file t)
         (dired-compress-file file)
-        (rc-shell "fc-cache -f")
+        (shell-command "fc-cache -f")
         (delete-file (expand-file-name file))))))
 
 (defun font-nerds-query-font ()
