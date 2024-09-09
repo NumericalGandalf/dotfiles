@@ -187,7 +187,8 @@ If RESET is non-nil, reset gsettings font."
   "Link emacs init directory.
 If optional UNLINK is non-nil, unlink it."
   (let ((config-dir (expand-file-name ".config/emacs/" "~/")))
-    (unless (file-equal-p config-dir user-emacs-directory)
+    (unless (string= (expand-file-name config-dir)
+                     (expand-file-name user-emacs-directory))
       (dolist (file '(".emacs" ".emacs.d" ".config/emacs"))
         (let ((file (expand-file-name file "~/")))
           (cond ((file-symlink-p file)
