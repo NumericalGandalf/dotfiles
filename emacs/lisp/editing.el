@@ -1,6 +1,9 @@
 (ffap-bindings)
 (save-place-mode)
 
+(elpaca (which-key :wait t))
+(which-key-mode)
+
 (setq vc-follow-symlinks t)
 
 (setq-default auto-save-default nil)
@@ -16,13 +19,26 @@
       auto-revert-verbose nil)
 (global-auto-revert-mode 1)
 
-(use-package which-key
-  :hook
-  (lsp-mode-hook . lsp-enable-which-key-integration)
-  :init
-  (which-key-mode)
+(use-package dired+
+  :ensure
+  (:host github :repo "emacsmirror/dired-plus")
+  :after dired
   :custom
-  (which-key-idle-delay 1.5))
+  (dired-listing-switches "-lah")
+  (dired-free-space 'separate)
+  (dired-recursive-deletes 'always)
+  (dired-dwim-target t)
+  (dired-auto-revert-buffer t)
+  (dired-clean-confirm-killing-deleted-buffers nil)
+  (diredp-hide-details-initially-flag nil))
+
+(use-package helpful
+  :general
+  (:prefix "C-h"
+           "f" 'helpful-callable
+           "v" 'helpful-variable
+           "k" 'helpful-key
+           "C-." 'helpful-at-point))
 
 (use-package editorconfig
   :config
@@ -38,14 +54,12 @@
   ("M-P" 'move-text-up
    "M-N" 'move-text-down)
   :config
-  (defun move-text@indent-after (&rest res)
+  (defun move-text@indent-after (&rest _)
     (let ((deactivate deactivate-mark))
       (if (region-active-p)
           (indent-region (region-beginning) (region-end))
         (indent-region (line-beginning-position) (line-end-position)))
-      (setq deactivate-mark deactivate))
-    res)
-  
+      (setq deactivate-mark deactivate)))
   (advice-add 'move-text-up :after 'move-text@indent-after)
   (advice-add 'move-text-down :after 'move-text@indent-after))
 

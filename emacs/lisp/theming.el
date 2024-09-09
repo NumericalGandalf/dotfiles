@@ -31,8 +31,6 @@
   (doom-themes-org-config)
   (doom-themes-treemacs-config)
   (doom-themes-set-faces nil
-    '(replacep-msg-emphasis :inherit 'warning)
-    '(replacep-msg-emphasis2 :inherit 'success)
     '(wgrep-face :weight 'normal
                  :foreground 'unspecified
                  :background 'unspecified)
@@ -43,11 +41,11 @@
 
 (use-package all-the-icons
   :hook
-  (dots-deploy-hook . (lambda () (all-the-icons-install-fonts t))))
+  (posix-deploy-hook . (lambda () (all-the-icons-install-fonts t))))
 
 (use-package nerd-icons
   :hook
-  (dots-deploy-hook . (lambda () (nerd-icons-install-fonts t))))
+  (posix-deploy-hook . (lambda () (nerd-icons-install-fonts t))))
 
 (use-package nerd-icons-dired
   :after dired

@@ -1,9 +1,9 @@
 (defvar elpaca-installer-version 0.7)
 (defvar elpaca-directory (rc-cache "elpaca/"))
-(defvar elpaca-builds-directory (expand-file-name
-                                 "builds/" elpaca-directory))
-(defvar elpaca-repos-directory (expand-file-name
-                                "repos/" elpaca-directory))
+(defvar elpaca-builds-directory
+  (expand-file-name "builds/" elpaca-directory))
+(defvar elpaca-repos-directory
+  (expand-file-name "repos/" elpaca-directory))
 (defvar elpaca-order
   '(elpaca :repo "https://github.com/progfolio/elpaca.git"
            :ref nil :depth 1
@@ -71,15 +71,4 @@
   (setq use-package-verbose t
         use-package-compute-statistics t))
 
-(use-package general)
-
-(use-package no-littering
-  :init
-  (setq no-littering-etc-directory (rc-expand)
-        no-littering-var-directory (rc-cache))
-  :custom
-  (server-auth-dir (rc-cache "server/")))
-
-(elpaca-wait)
-
-(provide 'package-setup)
+(provide 'elpaca-setup)

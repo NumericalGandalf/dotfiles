@@ -41,6 +41,9 @@
            "5 b" 'consult-buffer-other-frame
            "r b" 'consult-bookmark)
   (:prefix "C-c"
+           "r m" 'consult-man
+           "r f" 'consult-fd
+           "r g" 'consult-ripgrep
            "r y" 'consult-git-grep
            "z t" 'consult-theme)
   (:prefix "M-g"

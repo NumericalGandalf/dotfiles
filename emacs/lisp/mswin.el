@@ -1,0 +1,39 @@
+(defgroup mswin nil
+  "Windows OS management."
+  :prefix "mswin-"
+  :group 'emacs)
+
+(defcustom windows-deploy-hook nil
+  "Hooks to run after windows config deployment."
+  :type 'hook)
+
+(defun mswin-chemacs-setup ()
+  "Setup chemacs2 for config management."
+  (let ((home-dir (expand-file-name "./" (getenv "APPDATA"))))
+    (dolist (file '(".emacs" ".emacs-profiles.el" ".emacs.d/"))
+      (let ((file (expand-file-name file home-dir)))
+        (cond ((file-symlink-p file)
+               (delete-file file))
+              ((file-directory-p file)
+               (delete-directory file t))
+              ((file-exists-p file)
+               (delete-file file)))))
+    (shell-command
+     (format "git clone https://github.com/plexus/chemacs2.git %s"
+             (expand-file-name ".emacs.d/" home-dir)))
+    (with-temp-file (expand-file-name ".emacs-profiles.el" home-dir)
+      (insert (format "((%s . ((user-emacs-directory . %s))))"
+                      (prin1-to-string "default")
+                      (prin1-to-string (rc-expand)))))))
+
+(defun mswin-icons-install-fonts ()
+  "Install fonts for icons."
+  (interactive)
+  )
+
+(defun mswin-deploy ()
+  "Deploy windows configs."
+  (interactive)
+  (mswin-chemacs-setup))
+
+(provide 'mswin)

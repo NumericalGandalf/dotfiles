@@ -25,11 +25,11 @@ Cache directories are system dependent:
     posix   -> ~/.cache/emacs
     windows -> %APPDATA%/emacs
     others  -> `user-emacs-directory'/var"
-  (rc-expand file (cond (rc-posix-p "~/.cache/emacs/")
-                        (rc-windows-p
-                         (expand-file-name "Emacs/"
-                                           (getenv "APPDATA")))
-                        (t (rc-expand "var/")))))
+  (rc-expand file
+             (cond (rc-posix-p "~/.cache/emacs/")
+                   (rc-windows-p (rc-expand "Emacs/"
+                                            (getenv "APPDATA")))
+                   (t (rc-expand "var/")))))
 
 (defun rc-dots (&optional file)
   "Expand FILE from the dotfiles dots directory."

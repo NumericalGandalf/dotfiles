@@ -27,12 +27,10 @@
   "Current maximum nerd-font name length.")
 
 (define-minor-mode font-nerds-mode
-  "Toggle usage of nerd-fonts."
-  :init-value rc-posix-p
+  "If non-nil, usage of nerd-fonts is enabled."
+  :init-value t
   :global t
-  :lighter nil
-  (unless rc-posix-p
-    (error "Can't use `font-nerds-mode' on non-posix systems")))
+  :lighter nil)
 
 (defun font-nerds-fetch-list ()
   "Fetch list of available nerd-fonts into `font-nerds--font-list'."
@@ -76,18 +74,17 @@
            (concat (file-name-base file) "/") "~/.local/share/fonts/nerds/")))
     (make-directory default-directory t)
     (shell-command (format
-               "fc-list : file family | grep %s | grep -q %s"
-               default-directory (prin1-to-string font))
-      nil
-      (progn
-        (url-copy-file
-         (concat
-          "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/"
-          file)
-         file t)
-        (dired-compress-file file)
-        (shell-command "fc-cache -f")
-        (delete-file (expand-file-name file))))))
+                    "fc-list : file family | grep %s | grep -q %s"
+                    default-directory (prin1-to-string font)))
+    (progn
+      (url-copy-file
+       (concat
+        "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/"
+        file)
+       file t)
+      (dired-compress-file file)
+      (shell-command "fc-cache -f")
+      (delete-file (rc-expand file)))))
 
 (defun font-nerds-query-font ()
   "Query for the nerd-font and their height."

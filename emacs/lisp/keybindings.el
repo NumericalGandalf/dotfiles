@@ -1,36 +1,41 @@
-(general-define-key
- "C-S-N" 'next-buffer
- "C-S-P" 'previous-buffer)
+(elpaca (general :wait t)
+  (general-define-key
+   "C-S-N" 'next-buffer
+   "C-S-P" 'previous-buffer)
 
-(general-define-key
- :prefix "C-x"
- "C-c" 'save-buffers-kill-emacs
- "C-b" 'ibuffer-other-window)
+  (general-define-key
+   :prefix "C-x"
+   "C-c" 'save-buffers-kill-emacs
+   "C-b" 'ibuffer-other-window)
 
-(general-define-key
- :prefix "C-c"
- "b r" 'revert-buffer-quick
+  (general-define-key
+   :prefix "C-c"
+   "b r" 'revert-buffer-quick
 
- "f r" 'recentf
- "f l" 'find-library
+   "f r" 'recentf
+   "f l" 'find-library
 
- "z l" 'load-file
- "z f" 'font-load
+   "z l" 'load-file
+   "z f" 'font-load
 
- "y p" 'elpaca-manager
+   "y p" 'elpaca-manager
 
- "h f" 'describe-face
- "h g" 'customize-group
- "h t" 'describe-theme
+   "h f" 'describe-face
+   "h g" 'customize-group
+   "h t" 'describe-theme
 
- "o ." (lambda ()
-         (interactive)
-         (find-file (file-truename user-init-file)))
- "o ," (lambda ()
-         (interactive)
-         (find-file (rc-cache)))
- "o /" (lambda ()
-         (interactive)
-         (find-file (rc-dots))))
+   "r s" 'shell-command
+   "r S" 'async-shell-command
+   "r q" 'query-replace-regexp
+
+   "o ." (lambda ()
+           (interactive)
+           (find-file (file-truename user-init-file)))
+   "o ," (lambda ()
+           (interactive)
+           (find-file (rc-cache)))
+   "o /" (lambda ()
+           (interactive)
+           (find-file (rc-dots)))))
 
 (provide 'keybindings)

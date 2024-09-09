@@ -23,7 +23,13 @@
 
 (use-package lsp-mode
   :hook
-  (prog-mode-hook . lsp)
+  (prog-mode-hook . lsp-maybe)
+  :init
+  (defun lsp-maybe ()
+    "Maybe run `lsp'."
+    (unless (member major-mode '(emacs-lisp-mode
+                                 lisp-interaction-mode))
+      (lsp)))
   :custom
   (lsp-keymap-prefix "C-c l")
   (lsp-warn-no-matched-clients nil)
