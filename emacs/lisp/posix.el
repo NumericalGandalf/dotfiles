@@ -186,18 +186,18 @@ If RESET is non-nil, reset gsettings font."
 (defun posix-link-emacs-dir (&optional unlink)
   "Link emacs init directory.
 If optional UNLINK is non-nil, unlink it."
-  (dolist (file '(".emacs" ".emacs.d" ".config/emacs"))
-    (let ((file (expand-file-name file "~/")))
-      (cond ((file-symlink-p file)
-             (delete-file file))
-            ((file-directory-p file)
-             (delete-directory file t))
-            ((file-exists-p file)
-             (delete-file file)))))
-  (unless unlink
-    (make-symbolic-link
-     (rc-expand)
-     (expand-file-name ".config/emacs/" "~/"))))
+  (let ((config-dir (expand-file-name ".config/emacs/" "~/")))
+    (unless (file-equal-p config-dir user-emacs-directory)
+      (dolist (file '(".emacs" ".emacs.d" ".config/emacs"))
+        (let ((file (expand-file-name file "~/")))
+          (cond ((file-symlink-p file)
+                 (delete-file file))
+                ((file-directory-p file)
+                 (delete-directory file t))
+                ((file-exists-p file)
+                 (delete-file file)))))
+      (unless unlink
+        (make-symbolic-link (rc-expand) config-dir)))))
 
 (defun posix-deploy ()
   "Deploy posix configs and run `posix-deploy-hook'."
