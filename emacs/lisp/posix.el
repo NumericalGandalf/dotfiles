@@ -67,22 +67,6 @@ These files are relative to the users home directory."
   (:host github :repo "NumericalGandalf/app-launcher")
   :defer)
 
-(defun posix-link-emacs-dir (&optional unlink)
-  "Link emacs init directory.
-If optional UNLINK is non-nil, unlink it."
-  (dolist (file '(".emacs" ".emacs.d/" ".config/emacs/"))
-    (let ((file (expand-file-name file "~/")))
-      (cond ((file-symlink-p file)
-             (delete-file file))
-            ((file-directory-p file)
-             (delete-directory file t))
-            ((file-exists-p file)
-             (delete-file file)))))
-  (unless unlink
-    (make-symbolic-link
-     (rc-expand)
-     (expand-file-name ".config/emacs/" "~/"))))
-
 (defun posix-gsettings-apply (&optional reset)
   "Applies gsettings specified in `posix-gsettings'.
 If optional RESET is non-nil, reset the scheme keys."
@@ -139,7 +123,6 @@ Whether a child dir is stowed depends on `posix-stow-parents'."
   "Stow dotfiles.
 If PREFIX is non-nil, unstow them."
   (interactive "P")
-  (posix-link-emacs-dir prefix)
   (posix-stow-dots prefix)
   (posix-gsettings-apply prefix)
   (unless prefix
@@ -199,6 +182,22 @@ If RESET is non-nil, reset gsettings font."
       (if (file-directory-p file)
           (copy-directory file target)
         (copy-file file target)))))
+
+(defun posix-link-emacs-dir (&optional unlink)
+  "Link emacs init directory.
+If optional UNLINK is non-nil, unlink it."
+  (dolist (file '(".emacs" ".emacs.d" ".config/emacs"))
+    (let ((file (expand-file-name file "~/")))
+      (cond ((file-symlink-p file)
+             (delete-file file))
+            ((file-directory-p file)
+             (delete-directory file t))
+            ((file-exists-p file)
+             (delete-file file)))))
+  (unless unlink
+    (make-symbolic-link
+     (rc-expand)
+     (expand-file-name ".config/emacs/" "~/"))))
 
 (defun posix-deploy ()
   "Deploy posix configs and run `posix-deploy-hook'."
