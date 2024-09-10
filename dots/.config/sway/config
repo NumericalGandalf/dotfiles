@@ -52,7 +52,7 @@ for_window [title="^posix-launcher$"] floating enable
 
 bindsym $mod+Shift+q kill
 
-set $emacs_run exec emacsclient -e
+set $emacs_run exec emacsclient -r -e
 bindsym $mod+Shift+e exec emacsclient -ca emacs
 bindsym $mod+Shift+d $emacs_run "(posix-run-launcher)"
 bindsym $mod+Shift+w $emacs_run "(posix-run-browser)"

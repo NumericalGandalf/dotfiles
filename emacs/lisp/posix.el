@@ -22,7 +22,7 @@ and will not be traversed any further.
 These directories are relative to the dotfiles dots directory."
   :type '(repeat string))
 
-(defcustom posix-loose-dir (rc-cache "loose-backup/")
+(defcustom posix-loose-dir (rc-cache "loose/")
   "Backup directory for `posix-loose-files'."
   :type 'string)
 
@@ -174,7 +174,7 @@ If RESET is non-nil, reset gsettings font."
   (interactive)
   (when (file-exists-p posix-loose-dir)
     (delete-directory posix-loose-dir t))
-  (dolist (file posix-backup-files)
+  (dolist (file posix-loose-files)
     (let ((file (rc-expand file "~/"))
           (target (file-name-parent-directory
                    (rc-expand file posix-loose-dir))))

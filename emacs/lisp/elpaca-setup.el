@@ -53,13 +53,13 @@
 (add-hook 'after-init-hook #'elpaca-process-queues)
 (elpaca `(,@elpaca-order))
 
+(dolist (package '(transient))
+  (setq elpaca-ignored-dependencies
+	(remove package elpaca-ignored-dependencies)))
+
 (when rc-windows-p
   (setq elpaca-queue-limit 20)
   (elpaca-no-symlink-mode))
-
-(dolist (package '(transient))
-  (setq elpaca-ignored-dependencies
-        (remove package elpaca-ignored-dependencies)))
 
 (elpaca elpaca-use-package
   (elpaca-use-package-mode))
