@@ -45,8 +45,6 @@ Cache directories are system dependent:
 
 (setq load-prefer-newer t)
 
-(setq package-enable-at-startup nil)
-
 (setq frame-inhibit-implied-resize t
       frame-resize-pixelwise t)
 

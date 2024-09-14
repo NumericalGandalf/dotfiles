@@ -10,8 +10,7 @@
 
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 
-(unless package-enable-at-startup
-  (package-initialize))
+(package-initialize)
 
 (unless package-archive-contents
   (package-refresh-contents))
