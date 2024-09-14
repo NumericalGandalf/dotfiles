@@ -1,58 +1,44 @@
-(ffap-bindings)
-(save-place-mode)
+(setq create-lockfiles nil)
 
-(elpaca (which-key :wait t))
-(which-key-mode)
+(with-eval-after-load 'vc-hooks
+  (setq vc-follow-symlinks t))
 
-(setq vc-follow-symlinks t)
+(with-eval-after-load 'dired
+  (setq dired-listing-switches "-lah"
+        dired-free-space 'separate
+        dired-recursive-deletes 'always
+        dired-dwim-target t
+        dired-auto-revert-buffer t
+        dired-clean-confirm-killing-deleted-buffers nil))
 
-(setq-default auto-save-default nil)
-(auto-save-visited-mode 1)
+(with-eval-after-load 'files
+  (setq-default auto-save-default nil)
+  (setq make-backup-files nil)
+  (auto-save-visited-mode 1))
 
-(setq make-backup-files nil
-      create-lockfiles nil)
+(with-eval-after-load 'auth-source
+  (setq auth-source-save-behavior nil))
 
-(setq auth-source-save-behavior nil)
+(with-eval-after-load 'shell
+  (setq shell-kill-buffer-on-exit t))
 
-(setq global-auto-revert-non-file-buffers t
-      auto-revert-remote-files t
-      auto-revert-verbose nil)
-(global-auto-revert-mode 1)
+(with-eval-after-load 'autorevert
+  (setq global-auto-revert-non-file-buffers t
+        auto-revert-remote-files t
+        auto-revert-verbose nil))
 
-(use-package dired+
-  :ensure
-  (:host github :repo "emacsmirror/dired-plus")
-  :after dired
+(use-package sudo-edit)
+
+(use-package multiple-cursors)
+
+(use-package buffer-move)
+
+(use-package wgrep
   :custom
-  (dired-listing-switches "-lah")
-  (dired-free-space 'separate)
-  (dired-recursive-deletes 'always)
-  (dired-dwim-target t)
-  (dired-auto-revert-buffer t)
-  (dired-clean-confirm-killing-deleted-buffers nil)
-  (diredp-hide-details-initially-flag nil))
-
-(use-package helpful
-  :general
-  (:prefix "C-h"
-           "f" 'helpful-callable
-           "v" 'helpful-variable
-           "k" 'helpful-key
-           "C-." 'helpful-at-point))
-
-(use-package editorconfig
-  :config
-  (editorconfig-mode))
-
-(use-package sudo-edit
-  :general
-  ("C-r" 'sudo-edit
-   "C-S-r" 'sudo-edit-find-file))
+  (wgrep-enable-key "e")
+  (wgrep-auto-save-buffer t))
 
 (use-package move-text
-  :general
-  ("M-P" 'move-text-up
-   "M-N" 'move-text-down)
   :config
   (defun move-text@indent-after (&rest _)
     (let ((deactivate deactivate-mark))
@@ -63,26 +49,18 @@
   (advice-add 'move-text-up :after 'move-text@indent-after)
   (advice-add 'move-text-down :after 'move-text@indent-after))
 
-(use-package multiple-cursors
-  :general
-  ("C->" 'mc/mark-next-like-this
-   "C-<" 'mc/unmark-next-like-this)
-  (:prefix "C-c"
-           "C->" 'mc/mark-all-like-this
-           "C-<" 'mc/edit-lines))
+(global-auto-revert-mode)
 
-(use-package wgrep
-  :defer
-  :custom
-  (wgrep-enable-key "r")
-  (wgrep-auto-save-buffer t))
+(use-package editorconfig)
+(editorconfig-mode)
 
-(use-package buffer-move
-  :general
-  (:prefix "C-c w"
-           "h" 'buf-move-left
-           "j" 'buf-move-down
-           "k" 'buf-move-up
-           "l" 'buf-move-right))
+(electric-pair-mode)
+
+(ffap-bindings)
+(use-package which-key)
+(which-key-mode)
+
+(save-place-mode)
+(savehist-mode)
 
 (provide 'editing)

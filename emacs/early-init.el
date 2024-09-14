@@ -4,7 +4,7 @@
                        ('gnu/kfreebsd t))
   "Non-nil means system is posix.")
 
-(defconst rc-windows-p (pcase system-type
+(defconst rc-mswin-p (pcase system-type
                          ('windows-nt t)
                          ('cygwin t)
                          ('ms-dos t))
@@ -27,7 +27,7 @@ Cache directories are system dependent:
     others  -> `user-emacs-directory'/var"
   (rc-expand file
              (cond (rc-posix-p "~/.cache/emacs/")
-                   (rc-windows-p (rc-expand "Emacs/"
+                   (rc-mswin-p (rc-expand "Emacs/"
                                             (getenv "APPDATA")))
                    (t (rc-expand "var/")))))
 

@@ -3,10 +3,6 @@
   :prefix "posix-"
   :group 'emacs)
 
-(defcustom posix-launcher-height 25
-  "Height of `posix-launcher' frame."
-  :type 'natnum)
-
 (defcustom posix-gsettings
   '(("org.gnome.desktop.interface" "gtk-key-theme" "Emacs")
     ("org.gnome.desktop.interface" "color-scheme" "prefer-dark"))
@@ -38,13 +34,11 @@ These files are relative to the users home directory."
   "Hooks to run after posix config deployment."
   :type 'hook)
 
+(defcustom posix-launcher-height 25
+  "Height of `posix-run-launcher' frame."
+  :type 'natnum)
+
 (use-package vterm
-  :general
-  ("C-c r t" 'vterm)
-  (vterm-mode-map
-   "C-j" (lambda ()
-           (interactive)
-           (vterm-send "C-c")))
   :config
   (setq vterm-timer-delay nil)
   :custom
@@ -52,20 +46,12 @@ These files are relative to the users home directory."
   (vterm-clear-scrollback-when-clearing t)
   (vterm-always-compile-module t))
 
-(use-package guix
-  :general
-  ("C-c y g" 'guix))
+(use-package guix)
 
-(use-package restart-emacs
-  :general
-  (:prefix "C-c r"
-           "r" 'restart-emacs
-           "R" 'restart-emacs-start-new-emacs))
-
-(use-package app-launcher
-  :ensure
-  (:host github :repo "NumericalGandalf/app-launcher")
-  :defer)
+;; (use-package app-launcher
+;;   :ensure
+;;   (:host github :repo "NumericalGandalf/app-launcher")
+;;   :defer)
 
 (defun posix-link-emacs-dir (&optional unlink)
   "Link emacs init directory.
@@ -222,7 +208,7 @@ and, if non-nil, run it, or execute BODY otherwise."
        (interactive)
        (if-let ((command (getenv (upcase ,name))))
            (call-process-shell-command command nil 0 nil)
-         (ignore-errors
+         (progn 
            ,@body)))))
 
 (posix-program launcher
@@ -237,12 +223,12 @@ and, if non-nil, run it, or execute BODY otherwise."
           (app-launcher-run-app t))
       (delete-frame))))
 
-(posix-program browser)
-
 (posix-program terminal
   "Run posix terminal or `vterm'."
   (with-selected-frame (make-frame)
     (vterm)))
+
+(posix-program browser)
 
 (require 'server)
 (unless (or (daemonp)

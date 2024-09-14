@@ -1,37 +1,34 @@
-(setq compilation-ask-about-save nil
-      compile-command nil)
+(setq-default tab-width 4)
 
-(electric-pair-mode)
+(with-eval-after-load 'compile
+  (setq compilation-ask-about-save nil
+        compile-command nil))
 
-(setq-default indent-tabs-mode nil
-              tab-width 4
-              c-basic-offset tab-width)
+(with-eval-after-load 'cc-vars
+  (setq-default c-basic-offset 4))
 
-(add-to-list 'auto-mode-alist '("\\.jsonc\\'" . js-json-mode))
+(with-eval-after-load 'simple
+  indent-tabs-mode nil)
 
 (use-package magit
-  :defer
   :init
   (setq magit-auto-revert-mode nil))
 
 (use-package projectile
-  :general
-  (projectile-mode-map
-   "C-x p" 'projectile-command-map)
   :init
   (projectile-mode))
 
 (use-package lsp-mode
   :hook
-  (prog-mode-hook . lsp-maybe)
+  ((prog-mode-hook . lsp-maybe)
+   (lsp-mode-hook . lsp-enable-which-key-integration))
   :init
   (defun lsp-maybe ()
-    "Maybe run `lsp'."
+    "Maybe run `lsp-deferred'."
     (unless (member major-mode '(emacs-lisp-mode
                                  lisp-interaction-mode))
-      (lsp)))
+      (lsp-deferred)))
   :custom
-  (lsp-keymap-prefix "C-c l")
   (lsp-warn-no-matched-clients nil)
   (lsp-completion-provider :none)
   (lsp-headerline-breadcrumb-enable nil)
@@ -39,17 +36,10 @@
   (lsp-lens-enable nil))
 
 (use-package consult-lsp
-  :after (consult lsp-mode)
-  :general
-  (lsp-mode-map
-   "M-?" 'consult-lsp-symbols))
+  :after (consult lsp-mode))
 
 (use-package lsp-ui
   :after lsp-mode
-  :general
-  (lsp-mode-map
-   "C-h ." 'lsp-ui-doc-toggle
-   "M-g i" 'lsp-ui-imenu)
   :custom
   (lsp-ui-imenu-auto-refresh t)
   (lsp-ui-doc-position 'at-point))
@@ -62,9 +52,6 @@
 
 (use-package flycheck
   :after lsp-ui
-  :general
-  (lsp-mode-map
-   "M-g f" 'lsp-ui-flycheck-list)
   :hook
   (lsp-mode-hook . flycheck-mode))
 

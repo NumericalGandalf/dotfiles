@@ -3,16 +3,16 @@
   :prefix "font-"
   :group 'emacs)
 
-(defcustom font-name (cond (rc-windows-p "Cascadia Code"))
+(defcustom font-name (cond (rc-mswin-p "Cascadia Code"))
   "Default font name."
   :type 'string)
 
 (defcustom font-name-var (cond (rc-posix-p "DejaVu Sans")
-                               (rc-windows-p "Microsoft Sans Serif"))
+                               (rc-mswin-p "Microsoft Sans Serif"))
   "Variable pitch font name."
   :type 'string)
 
-(defcustom font-height (cond (rc-windows-p 12))
+(defcustom font-height (cond (rc-mswin-p 12))
   "Default font height."
   :type 'natnum)
 
@@ -137,6 +137,6 @@ If optional PREFIX is non-nil, query for them anyways."
   (set-face-attribute 'fixed-pitch-serif nil :family font-name)
   (set-face-attribute 'variable-pitch nil :family font-name-var))
 
-(add-hook 'elpaca-after-init-hook 'font-load)
+(add-hook 'emacs-startup-hook 'font-load)
 
 (provide 'font)

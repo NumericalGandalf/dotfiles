@@ -1,33 +1,25 @@
 (setq use-short-answers t
-      suggest-key-bindings nil
-      ring-bell-function nil)
-
-(setq inhibit-startup-message t
-      server-client-instructions nil)
-
-(defun display-startup-echo-area-message ())
-
-(pixel-scroll-mode 1)
-(pixel-scroll-precision-mode 1)
-(setq scroll-step 1
+	  inhibit-startup-screen t
+      ring-bell-function nil
+      scroll-step 1
+      scroll-margin 4
       scroll-preserve-screen-position t)
 
-(setq display-line-numbers-width-start t
-      display-line-numbers-grow-only t
-      display-line-numbers-type 'relative)
-(global-display-line-numbers-mode)
+(with-eval-after-load 'simple
+  (setq suggest-key-bindings nil))
 
-(dolist (mode '(image))
-  (add-hook
-   (intern (concat (symbol-name mode) "-mode-hook"))
-   (lambda () (display-line-numbers-mode 0))))
+(with-eval-after-load 'server
+  (setq server-client-instructions nil))
 
-(column-number-mode)
-(global-visual-line-mode)
+(with-eval-after-load 'display-line-numbers
+  (setq display-line-numbers-width-start t
+        display-line-numbers-grow-only t
+        display-line-numbers-type 'relative))
 
 (use-package doom-themes
-  :config
+  :init
   (load-theme 'doom-palenight t)
+  :config
   (doom-themes-org-config)
   (doom-themes-treemacs-config)
   (doom-themes-set-faces nil
@@ -35,9 +27,7 @@
                  :foreground 'unspecified
                  :background 'unspecified)
     '(wgrep-done-face :foreground 'unspecified
-                      :background 'unspecified))
-  :custom
-  (doom-themes-treemacs-theme "doom-colors"))
+                      :background 'unspecified)))
 
 (use-package all-the-icons
   :hook
@@ -50,9 +40,7 @@
 (use-package nerd-icons-dired
   :after dired
   :hook
-  (dired-mode-hook . nerd-icons-dired-mode)
-  :config
-  (advice-add 'dired-do-rename :around 'nerd-icons-dired--refresh-advice))
+  (dired-mode-hook . nerd-icons-dired-mode))
 
 (use-package nerd-icons-ibuffer
   :after ibuffer
@@ -78,9 +66,10 @@
   (doom-modeline-highlight-modified-buffer-name nil))
 
 (use-package emojify
+  :hook
+  (())
   :config
   (global-emojify-mode)
-  (global-prettify-symbols-mode)
   :custom
   (emojify-download-emojis-p t))
 
@@ -92,10 +81,10 @@
     . (lambda ()
         (when (and (string= (buffer-name) "*scratch*")
                    (= (length (window-list)) 1))
-          (dashboard-open))
-        (setq initial-buffer-choice
-              (lambda ()
-                (get-buffer-create dashboard-buffer-name))))))
+          (dashboard-open)))))
+  :config
+  (setq initial-buffer-choice
+        (lambda () (get-buffer-create dashboard-buffer-name)))
   :custom
   (dashboard-icon-type 'nerd-icons)
   (dashboard-display-icons-p t)
@@ -125,5 +114,22 @@
                              (agenda    . "nf-oct-calendar")
                              (projects  . "nf-oct-rocket")
                              (registers . "nf-oct-database"))))
+
+(add-hook
+ 'after-init-hook
+ (lambda ()
+   (unless (string=
+            inhibit-startup-echo-area-message user-login-name)
+     (customize-save-variable
+      'inhibit-startup-echo-area-message user-login-name))))
+
+(pixel-scroll-mode)
+(pixel-scroll-precision-mode)
+
+(global-prettify-symbols-mode)
+(global-visual-line-mode)
+
+(global-display-line-numbers-mode)
+(column-number-mode)
 
 (provide 'theming)

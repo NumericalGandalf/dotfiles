@@ -3,8 +3,8 @@
   :prefix "mswin-"
   :group 'emacs)
 
-(defcustom windows-deploy-hook nil
-  "Hooks to run after windows config deployment."
+(defcustom mswin-deploy-hook nil
+  "Hooks to run after mswin config deployment."
   :type 'hook)
 
 (defun mswin-chemacs-setup ()
@@ -34,6 +34,7 @@
 (defun mswin-deploy ()
   "Deploy windows configs."
   (interactive)
-  (mswin-chemacs-setup))
+  (mswin-chemacs-setup)
+  (run-hooks 'mswin-deploy-hook))
 
 (provide 'mswin)
