@@ -18,7 +18,7 @@ and will not be traversed any further.
 These directories are relative to the dotfiles dots directory."
   :type '(repeat string))
 
-(defcustom posix-loose-dir (rc-cache "loose-backup/")
+(defcustom posix-loose-dir (rc-cache "loose/")
   "Backup directory for `posix-loose-files'."
   :type 'string)
 
@@ -52,22 +52,6 @@ These files are relative to the users home directory."
 ;;   :ensure
 ;;   (:host github :repo "NumericalGandalf/app-launcher")
 ;;   :defer)
-
-(defun posix-link-emacs-dir (&optional unlink)
-  "Link emacs init directory.
-If optional UNLINK is non-nil, unlink it."
-  (dolist (file '(".emacs" ".emacs.d/" ".config/emacs/"))
-    (let ((file (expand-file-name file "~/")))
-      (cond ((file-symlink-p file)
-             (delete-file file))
-            ((file-directory-p file)
-             (delete-directory file t))
-            ((file-exists-p file)
-             (delete-file file)))))
-  (unless unlink
-    (make-symbolic-link
-     (rc-expand)
-     (expand-file-name ".config/emacs/" "~/"))))
 
 (defun posix-gsettings-apply (&optional reset)
   "Applies gsettings specified in `posix-gsettings'.
@@ -125,7 +109,6 @@ Whether a child dir is stowed depends on `posix-stow-parents'."
   "Stow dotfiles.
 If PREFIX is non-nil, unstow them."
   (interactive "P")
-  (posix-link-emacs-dir prefix)
   (posix-stow-dots prefix)
   (posix-gsettings-apply prefix)
   (unless prefix
@@ -177,7 +160,7 @@ If RESET is non-nil, reset gsettings font."
   (interactive)
   (when (file-exists-p posix-loose-dir)
     (delete-directory posix-loose-dir t))
-  (dolist (file posix-backup-files)
+  (dolist (file posix-loose-files)
     (let ((file (rc-expand file "~/"))
           (target (file-name-parent-directory
                    (rc-expand file posix-loose-dir))))
@@ -185,6 +168,23 @@ If RESET is non-nil, reset gsettings font."
       (if (file-directory-p file)
           (copy-directory file target)
         (copy-file file target)))))
+
+(defun posix-link-emacs-dir (&optional unlink)
+  "Link emacs init directory.
+If optional UNLINK is non-nil, unlink it."
+  (let ((config-dir (expand-file-name ".config/emacs/" "~/")))
+    (unless (string= (expand-file-name config-dir)
+                     (expand-file-name user-emacs-directory))
+      (dolist (file '(".emacs" ".emacs.d" ".config/emacs"))
+        (let ((file (expand-file-name file "~/")))
+          (cond ((file-symlink-p file)
+                 (delete-file file))
+                ((file-directory-p file)
+                 (delete-directory file t))
+                ((file-exists-p file)
+                 (delete-file file)))))
+      (unless unlink
+        (make-symbolic-link (rc-expand) config-dir)))))
 
 (defun posix-deploy ()
   "Deploy posix configs and run `posix-deploy-hook'."
