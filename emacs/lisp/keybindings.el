@@ -84,21 +84,19 @@
     "C-;" 'embark-dwin
     "C-h B" 'embark-bindings)
 
-  (general-def corfu-map
-    "RET" nil
-    "SPC" 'corfu-insert-separator)
-
-  (general-def projectile-mode-map
-    "C-x p" 'projectile-command-map)
+  (general-with-eval-after-load 'corfu
+	(general-def corfu-map
+      "RET" nil
+      "SPC" 'corfu-insert-separator))
 
   (general-with-eval-after-load 'lsp-mode
-    (setq lsp-keymap-prefix "C-c l"))
+    (setq lsp-keymap-prefix "C-c l")
 
-  (general-def lsp-mode-map
-    "M-?" 'consult-lsp-symbols
-    "C-h ." 'lsp-ui-doc-toggle
-    "M-g i" 'lsp-ui-imenu
-    "M-g f" 'lsp-ui-flycheck-list)
+	(general-def lsp-mode-map
+      "M-?" 'consult-lsp-symbols
+      "C-h ." 'lsp-ui-doc-toggle
+      "M-g i" 'lsp-ui-imenu
+      "M-g f" 'lsp-ui-flycheck-list))
 
   (when rc-posix-p
     (general-define-key
@@ -108,10 +106,10 @@
 
      "p g" 'guix)
 
-    (general-def vterm-mode-map
-      (vterm-mode-map
-       "C-j" (lambda ()
-               (interactive)
-               (vterm-send "C-c"))))))
+	(general-with-eval-after-load 'vterm
+      (general-def vterm-mode-map
+		"C-j" (lambda ()
+				(interactive)
+				(vterm-send "C-c"))))))
 
 (provide 'keybindings)

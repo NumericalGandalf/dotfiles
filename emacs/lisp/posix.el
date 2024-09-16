@@ -42,7 +42,7 @@ These files are relative to the users home directory."
   :config
   (setq vterm-timer-delay nil)
   :custom
-  (vterm-max-scroll-back 5000)
+  (vterm-max-scrollback 5000)
   (vterm-clear-scrollback-when-clearing t)
   (vterm-always-compile-module t))
 
@@ -53,6 +53,77 @@ These files are relative to the users home directory."
 ;;   (:host github :repo "NumericalGandalf/app-launcher")
 ;;   :defer)
 
+(defun posix-link-emacs-dir (&optional unlink)
+  "Link emacs init directory.
+If optional UNLINK is non-nil, unlink it."
+  (let ((config-dir (expand-file-name ".config/emacs/" "~/")))
+    (unless (string= (expand-file-name config-dir)
+                     (expand-file-name user-emacs-directory))
+      (dolist (file '(".emacs" ".emacs.d" ".config/emacs"))
+        (let ((file (expand-file-name file "~/")))
+          (cond ((file-symlink-p file)
+                 (delete-file file))
+                ((file-directory-p file)
+                 (delete-directory file t))
+                ((file-exists-p file)
+                 (delete-file file)))))
+      (unless unlink
+        (make-symbolic-link (rc-expand) config-dir)))))
+
+(defun posix-loose-backup ()
+  "Backup `posix-loose-files' to `posix-loose-dir'."
+  (interactive)
+  (when (file-exists-p posix-loose-dir)
+    (delete-directory posix-loose-dir t))
+  (dolist (file posix-loose-files)
+    (let ((file (rc-expand file "~/"))
+          (target (file-name-parent-directory
+                   (rc-expand file posix-loose-dir))))
+      (make-directory target t)
+      (if (file-directory-p file)
+          (copy-directory file target)
+        (copy-file file target)))))
+
+(defun posix-font-set-gsettings (&optional reset)
+  "Set `font-name' for gsettings.
+If optional RESET is non-nil, reset them."
+  (let* ((scheme "org.gnome.desktop.interface")
+         (scheme1 (prin1-to-string scheme))
+         (list `(("font-name" . font-name)
+                 ("monospace-font-name" . font-name)
+                 ("document-font-name" . font-name-var))))
+    (dolist (item list)
+      (let* ((key (car item))
+             (key1 (prin1-to-string key))
+         (name (symbol-value (cdr item)))
+         (height (int-to-string (1- font-height)))
+             (val (prin1-to-string (format "%s %s" name height)))
+         (cmd (if reset
+              (format "gsettings reset %s %s" scheme key)
+            (format "gsettings set %s %s %s" scheme key val))))
+        (call-process-shell-command cmd nil 0)))))
+
+(defun posix-font-write-waybar ()
+  "Write `font-name' into waybar config."
+  (let ((name (prin1-to-string font-name)))
+    (with-temp-file (rc-dots ".config/waybar/font.css")
+      (erase-buffer)
+      (insert (format "*{font-family:%s;font-size:%d}" name font-height)))))
+
+(defun posix-font-write-sway ()
+  "Write `font-name' into sway config."
+  (with-temp-file (rc-dots ".config/sway/font")
+    (erase-buffer)
+    (insert (format "font pango:%s %d" font-name (- font-height 3))))
+  (call-process-shell-command "sway reload" nil 0))
+
+(define-advice font-load (:after (&rest _) posix)
+  "Apply fonts for system if called interactively."
+  (when (called-interactively-p)
+    (posix-font-set-gsettings)
+    (posix-font-write-waybar)
+    (posix-font-write-sway)))
+
 (defun posix-gsettings-apply (&optional reset)
   "Applies gsettings specified in `posix-gsettings'.
 If optional RESET is non-nil, reset the scheme keys."
@@ -61,21 +132,20 @@ If optional RESET is non-nil, reset the scheme keys."
            (scheme1 (prin1-to-string scheme))
            (key (nth 1 item))
            (key1 (prin1-to-string key))
-           (value (prin1-to-string (nth 2 item))))
-      (if reset
-          (shell-command
-           (format "gsettings reset %s %s" scheme key))
-        (shell-command
-            (format "gsettings set %s %s %s" scheme key value))))))
+           (value (prin1-to-string (nth 2 item)))
+       (cmd (if reset
+            (format "gsettings reset %s %s" scheme key)
+          (format "gsettings set %s %s %s" scheme key value))))
+      (call-process-shell-command cmd nil 0)))
+  (posix-font-set-gsettings reset))
 
 (defun posix-sway-write-wallpaper ()
   "Write wallpaper into sway config."
-  (with-temp-file (rc-dots ".config/sway/wallpaper")
-    (erase-buffer)
-    (insert (format
-             "set $wallpaper %s"
-             (rc-dots ".config/sway/butterfly.png"))))
-  (shell-command "sway reload"))
+  (let ((wallpaper (rc-dots ".config/sway/butterfly.png")))
+    (with-temp-file (rc-dots ".config/sway/wallpaper")
+      (erase-buffer)
+      (insert (format "set $wallpaper %s" wallpaper)))
+    (call-process-shell-command "sway reload" nil 0)))
 
 (defun posix-stow-dots (&optional unstow dir)
   "Recursively iterate over DIR and stow its files.
@@ -91,10 +161,8 @@ Whether a child dir is stowed depends on `posix-stow-parents'."
                 (when (and (file-in-directory-p target parent)
                            (not (file-equal-p target parent)))
                   (cl-return target)))))
-        (let ((link-name (expand-file-name
-                          (file-relative-name
-                           (rc-dots target) (rc-dots))
-                          "~/")))
+        (let* ((rel-name (file-relative-name (rc-dots target) (rc-dots)))
+           (link-name (expand-file-name rel-name "~/")))
           (when (file-exists-p link-name)
             (cond ((file-symlink-p link-name)
                    (delete-file link-name))
@@ -113,78 +181,6 @@ If PREFIX is non-nil, unstow them."
   (posix-gsettings-apply prefix)
   (unless prefix
     (posix-sway-write-wallpaper)))
-
-(defun posix-font-write-gsettings ()
-  "Write `font-name' into gsettings.
-If RESET is non-nil, reset gsettings font."
-  (let* ((scheme "org.gnome.desktop.interface")
-         (scheme1 (prin1-to-string scheme))
-         (list `(("font-name" . font-name)
-                 ("monospace-font-name" . font-name)
-                 ("document-font-name" . font-name-var))))
-    (dolist (item list)
-      (let* ((key (car item))
-             (key1 (prin1-to-string key))
-             (val (prin1-to-string
-                   (format "%s %s"
-                           (symbol-value (cdr item))
-                           (int-to-string (1- font-height))))))
-        (shell-command
-            (format "gsettings set %s %s %s" scheme key val))))))
-
-(defun posix-font-write-waybar ()
-  "Write `font-name' into waybar config."
-  (with-temp-file (rc-dots ".config/waybar/font.css")
-    (erase-buffer)
-    (insert (format "*{font-family:%s;font-size:%d}"
-                    (prin1-to-string font-name)
-                    font-height))))
-
-(defun posix-font-write-sway ()
-  "Write `font-name' into sway config."
-  (with-temp-file (rc-dots ".config/sway/font")
-    (erase-buffer)
-    (insert
-     (format "font pango:%s %d" font-name (- font-height 3))))
-  (shell-command "sway reload"))
-
-(define-advice font-load (:after (&rest _) dotfiles)
-  "Apply fonts for dotfiles if called interactively."
-  (when (called-interactively-p)
-    (posix-font-write-gsettings)
-    (posix-font-write-waybar)
-    (posix-font-write-sway)))
-
-(defun posix-loose-backup ()
-  "Backup `posix-loose-files' to `posix-loose-dir'."
-  (interactive)
-  (when (file-exists-p posix-loose-dir)
-    (delete-directory posix-loose-dir t))
-  (dolist (file posix-loose-files)
-    (let ((file (rc-expand file "~/"))
-          (target (file-name-parent-directory
-                   (rc-expand file posix-loose-dir))))
-      (make-directory target t)
-      (if (file-directory-p file)
-          (copy-directory file target)
-        (copy-file file target)))))
-
-(defun posix-link-emacs-dir (&optional unlink)
-  "Link emacs init directory.
-If optional UNLINK is non-nil, unlink it."
-  (let ((config-dir (expand-file-name ".config/emacs/" "~/")))
-    (unless (string= (expand-file-name config-dir)
-                     (expand-file-name user-emacs-directory))
-      (dolist (file '(".emacs" ".emacs.d" ".config/emacs"))
-        (let ((file (expand-file-name file "~/")))
-          (cond ((file-symlink-p file)
-                 (delete-file file))
-                ((file-directory-p file)
-                 (delete-directory file t))
-                ((file-exists-p file)
-                 (delete-file file)))))
-      (unless unlink
-        (make-symbolic-link (rc-expand) config-dir)))))
 
 (defun posix-deploy ()
   "Deploy posix configs and run `posix-deploy-hook'."
@@ -207,26 +203,26 @@ and, if non-nil, run it, or execute BODY otherwise."
           (format "Run posix %s." name))
        (interactive)
        (if-let ((command (getenv (upcase ,name))))
-           (call-process-shell-command command nil 0 nil)
+           (call-process-shell-command command nil 0)
          (progn 
            ,@body)))))
 
 (posix-program launcher
-  "Run posix launcher or create frame for `app-launcher-run-app'."
-  (with-selected-frame
-      (make-frame `((name . "posix-launcher")
-                    (height . ,posix-launcher-height)
-                    (width . ,(* posix-launcher-height 4))
-                    (minibuffer . only)))
-    (unwind-protect
-        (let ((vertico-count (1- posix-launcher-height)))
-          (app-launcher-run-app t))
-      (delete-frame))))
+           "Run posix launcher or create frame for `app-launcher-run-app'."
+           (with-selected-frame
+           (make-frame `((name . "posix-launcher")
+                 (height . ,posix-launcher-height)
+                 (width . ,(* posix-launcher-height 4))
+                 (minibuffer . only)))
+         (unwind-protect
+             (let ((vertico-count (1- posix-launcher-height)))
+               (app-launcher-run-app t))
+           (delete-frame))))
 
 (posix-program terminal
-  "Run posix terminal or `vterm'."
-  (with-selected-frame (make-frame)
-    (vterm)))
+           "Run posix terminal or `vterm'."
+           (with-selected-frame (make-frame)
+         (vterm)))
 
 (posix-program browser)
 

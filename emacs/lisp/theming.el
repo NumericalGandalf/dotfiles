@@ -77,14 +77,12 @@
   :hook
   ((window-size-change-functions . dashboard-resize-on-hook)
    (window-setup-hook . dashboard-resize-on-hook)
-   (emacs-startup-hook
-    . (lambda ()
-        (when (and (string= (buffer-name) "*scratch*")
-                   (= (length (window-list)) 1))
-          (dashboard-open)))))
+   (emacs-startup-hook . (lambda ()
+						   (when (and (string= (buffer-name) "*scratch*")
+									  (= (length (window-list)) 1))
+							 (dashboard-open)))))
   :config
-  (setq initial-buffer-choice
-        (lambda () (get-buffer-create dashboard-buffer-name)))
+  (setq initial-buffer-choice (lambda () (get-buffer-create dashboard-buffer-name)))
   :custom
   (dashboard-icon-type 'nerd-icons)
   (dashboard-display-icons-p t)
@@ -118,10 +116,8 @@
 (add-hook
  'after-init-hook
  (lambda ()
-   (unless (string=
-            inhibit-startup-echo-area-message user-login-name)
-     (customize-save-variable
-      'inhibit-startup-echo-area-message user-login-name))))
+   (unless (string= inhibit-startup-echo-area-message user-login-name)
+	 (customize-save-variable 'inhibit-startup-echo-area-message user-login-name))))
 
 (pixel-scroll-mode)
 (pixel-scroll-precision-mode)

@@ -14,10 +14,6 @@
   :init
   (setq magit-auto-revert-mode nil))
 
-(use-package projectile
-  :init
-  (projectile-mode))
-
 (use-package lsp-mode
   :hook
   ((prog-mode-hook . lsp-maybe)

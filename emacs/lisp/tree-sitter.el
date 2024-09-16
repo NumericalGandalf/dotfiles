@@ -7,11 +7,11 @@
   (setq-default c-ts-mode-indent-offset 4))
 
 (use-package treesit-auto
-  :hook
-  ((posix-deploy-hook mswin-deploy-hook) . treesit-ensure-all)
   :demand
   :config
-  (defun treesit-ensure-all (&optional prefix)
+  (global-treesit-auto-mode))
+
+(defun treesit-ensure-all (&optional prefix)
 	"Ensure all available tree-sitter libraries.
 If optional PREFIX is non-nil, force all builds."
 	(interactive "P")
@@ -22,6 +22,8 @@ If optional PREFIX is non-nil, force all builds."
 						 (not (treesit-ready-p lang t)))
 					 (not (member lang '(janet latex markdown))))
 			(apply 'treesit--install-language-grammar-1 outdir source))))))
-  (global-treesit-auto-mode))
+
+(add-hook 'posix-deploy-hook 'treesit-ensure-all)
+(add-hook 'mswin-deploy-hook 'treesit-ensure-all)
 
 (provide 'tree-sitter)

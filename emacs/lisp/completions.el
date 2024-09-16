@@ -25,6 +25,7 @@
   (vertico-mode)
   :custom
   (vertico-cycle t)
+  (vertico-preselect 'no-prompt)
   (vertico-count 17))
 
 (use-package consult

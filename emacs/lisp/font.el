@@ -16,111 +16,83 @@
   "Default font height."
   :type 'natnum)
 
-(defcustom font-nerds-ignore-fonts '("Symbols")
-  "List of nerd-fonts to ignore."
-  :type '(repeat string))
-
-(defvar font-nerds--font-list (make-hash-table :test 'equal)
-  "Hashmap of available nerd-fonts.")
-
-(defvar font-nerds--curr-max-name-len 0
-  "Current maximum nerd-font name length.")
-
 (define-minor-mode font-nerds-mode
   "If non-nil, usage of nerd-fonts is enabled."
   :init-value t
   :global t
   :lighter nil)
 
-(defun font-nerds-fetch-list ()
-  "Fetch list of available nerd-fonts into `font-nerds--font-list'."
-  (when (= (hash-table-count font-nerds--font-list) 0)
-    (clrhash font-nerds--font-list)
-    (with-current-buffer
-        (url-retrieve-synchronously "https://www.nerdfonts.com/font-downloads")
-      (let ((content (buffer-string))
-            (last nil))
-        (while (string-match
-                "href=\"[^\"]+\\/\\([^/]+\\.zip\\)\"" content (match-end 0))
-          (when-let*
-              ((file (let ((match (match-string 1 content)))
-                       (unless (string-equal last match)
-                         (setq last match))))
-               (name (progn
-                       (string-match
-                        "invisible-text\"> \\([^<]+\\)" content (match-end 0))
-                       (string-clean-whitespace (match-string 1 content))))
-               (len (length name))
-               (info (progn
-                       (string-match
-                        "Info:</strong> \\([^<]+\\)" content (match-end 0))
-                       (string-replace
-                        "\342\200\231" "'"
-                        (string-clean-whitespace (match-string 1 content))))))
-            (unless (member name font-nerds-ignore-fonts)
-              (puthash
-               (format "%s Nerd Font"name)
-               (list :file file :info info :len len)
-               font-nerds--font-list)
-              (when (> len font-nerds--curr-max-name-len)
-                (setq font-nerds--curr-max-name-len len)))))))))
+(defun font-nerds-ensure-font (font-name file)
+  "Ensure that FONT-NAME with FILE is installed."
+  (let* ((font-name (prin1-to-string font-name))
+		 (url (concat "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/" file))
+		 (dir (rc-expand "./" "~/.local/share/fonts/nerds/"))
+		 (file (rc-expand file dir))
+		 (cmd (format "fc-list : file family | grep %s | grep -q %s" dir font-name)))
+    (make-directory dir t)
+    (unless (= (call-process-shell-command cmd) 0)
+      (progn
+		(url-copy-file url file t)
+		(dired-compress-file file)
+		(call-process-shell-command "fc-cache -f")
+		(delete-file (rc-expand file))))))
 
-(defun font-nerds-ensure-font (&optional font)
-  "Ensure that if non-nil FONT, else `font-name' is installed."
-  (let* ((font (or font font-name))
-         (file (plist-get (gethash font font-nerds--font-list) :file))
-         (default-directory
-          (rc-expand
-           (concat (file-name-base file) "/") "~/.local/share/fonts/nerds/")))
-    (make-directory default-directory t)
-    (shell-command (format
-                    "fc-list : file family | grep %s | grep -q %s"
-                    default-directory (prin1-to-string font)))
-    (progn
-      (url-copy-file
-       (concat
-        "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/"
-        file)
-       file t)
-      (dired-compress-file file)
-      (shell-command "fc-cache -f")
-      (delete-file (rc-expand file)))))
+(defun font-nerds-fetch-list ()
+  "Fetch a list of downloadable nerd-fonts.
+
+Return a plist with :font-list and :max-name-len."
+  (with-current-buffer (url-retrieve-synchronously "https://www.nerdfonts.com/font-downloads" t)
+    (let ((fonts (make-hash-table :test 'equal))
+          (max-name-len 0)
+          (content (buffer-string))
+          (last nil))
+      (while (string-match "href=\"[^\"]+\\/\\([^/]+\\.zip\\)\"" content (match-end 0))
+        (when-let*
+            ((file (let ((match (match-string 1 content)))
+                     (unless (string-equal last match)
+                       (setq last match))))
+             (name (progn
+                     (string-match "invisible-text\"> \\([^<]+\\)" content (match-end 0))
+                     (string-clean-whitespace (match-string 1 content))))
+             (name-len (length name))
+			 (info (progn
+					 (string-match "Info:</strong> \\([^<]+\\)" content (match-end 0))
+					 (let ((match (match-string 1 content)))
+					   (setq match (string-clean-whitespace match))
+					   (string-replace "\342\200\231" "'" match)))))
+		  (when (> name-len max-name-len)
+			(setq max-name-len name-len))
+		  (unless (member name '("Symbols"))
+            (puthash
+			 (format "%s Nerd Font" name)
+			 (list :file file :info info :len name-len)
+			 fonts))))
+	  `(:fonts ,fonts :max-name-len ,max-name-len))))
 
 (defun font-nerds-query-font ()
-  "Query for the nerd-font and their height."
-  (let ((name
-         (completing-read
-          "Default nerd-font: "
-          (lambda (str pred flag)
-            (pcase flag
-              ('metadata
-               `(metadata
-                 (annotation-function
-                  . (lambda (cand)
-                      (let ((info
-                             (plist-get
-                              (gethash cand font-nerds--font-list) :info))
-                            (len
-                             (plist-get
-                              (gethash cand font-nerds--font-list) :len)))
-                        (concat
-                         (make-string
-                          (+ 2 (if icomplete-mode
-                                   0 (- font-nerds--curr-max-name-len len)))
-                          ?\s)
-                         (propertize info 'face 'completions-annotations)))))))
-              (_ (all-completions str font-nerds--font-list pred))))
-          nil nil nil t nil nil))
-        (height
-         (round
-          (read-number "Default nerd-font height: " nil t))))
-    (customize-save-variable 'font-name name)
-    (customize-save-variable 'font-height height)
-    (unless font-name-var
-      (customize-save-variable 'font-name-var font-name))))
+  "Query for a nerd-font and a height."
+  (let* ((prompt1 "Load nerd-font: ")
+		 (prompt2 "Font height: ")
+		 (font-list (font-nerds-fetch-list))
+		 (fonts (plist-get font-list :fonts))
+		 (max-name-len (plist-get font-list :max-name-len))
+		 (fun1 (lambda (cand)
+				 (let* ((info (plist-get (gethash cand fonts) :info))
+						(len (plist-get (gethash cand fonts) :len))
+						(ws (make-string (+ 2 (- max-name-len len)) ?\s))
+						(str (propertize info 'face 'completions-annotations)))
+				   (concat ws str))))
+		 (fun (lambda (str pred flag)
+				(pcase flag
+				  ('metadata `(metadata (annotation-function . ,fun1)))
+				  (_ (all-completions str fonts pred)))))
+		 (name (completing-read prompt1 fun nil nil nil t nil nil))
+		 (height (round (read-number prompt2 nil t)))
+		 (file (plist-get (gethash name fonts) :file)))
+	`(:name ,name :height ,height :file ,file)))
 
 (defun font-load (&optional prefix)
-  "Load current fonts.
+  "Load font.
 
 If `font-nerds-mode' is active, handle nerd-font loading.
 If `font-name' or `font-height' is nil, query for them.
@@ -129,9 +101,13 @@ If optional PREFIX is non-nil, query for them anyways."
   (when (and font-nerds-mode
              (or prefix
                  (not (and font-name font-name-var font-height))))
-    (font-nerds-fetch-list)
-    (font-nerds-query-font)
-    (font-nerds-ensure-font))
+    (let* ((font (font-nerds-query-font))
+		   (name (plist-get font :name)))
+	  (font-nerds-ensure-font name (plist-get font :file))
+	  (customize-set-value 'font-name name)
+	  (customize-set-value 'font-height (plist-get font :height))
+	  (unless font-name-var
+        (customize-set-value 'font-name-var name))))
   (set-face-attribute 'default nil :font font-name :height (* font-height 10))
   (set-face-attribute 'fixed-pitch nil :family font-name)
   (set-face-attribute 'fixed-pitch-serif nil :family font-name)

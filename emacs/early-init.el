@@ -5,18 +5,17 @@
   "Non-nil means system is posix.")
 
 (defconst rc-mswin-p (pcase system-type
-                         ('windows-nt t)
-                         ('cygwin t)
-                         ('ms-dos t))
-  "Non-nil means system is windows.")
+                       ('windows-nt t)
+                       ('cygwin t)
+                       ('ms-dos t))
+  "Non-nil means system is mswin.")
 
-(defun rc-expand (&optional file directory)
-  "Expand FILE from DIRECTORY.
-If DIRECTORY is nil, expand from `user-emacs-directory'."
-  (file-truename
-   (expand-file-name (or file "./")
-                     (or directory
-                         (file-truename user-emacs-directory)))))
+(defun rc-expand (&optional file dir)
+  "Expand FILE from DIR.
+If DIR is nil, expand from `user-emacs-directory'."
+  (let ((file (or file "./"))
+		(dir (or dir (file-truename user-emacs-directory))))
+	(file-truename (expand-file-name file dir))))
 
 (defun rc-cache (&optional file)
   "Expand FILE from emacs cache directory.
@@ -25,14 +24,12 @@ Cache directories are system dependent:
     posix   -> ~/.cache/emacs
     windows -> %APPDATA%/emacs
     others  -> `user-emacs-directory'/var"
-  (rc-expand file
-             (cond (rc-posix-p "~/.cache/emacs/")
-                   (rc-mswin-p (rc-expand "Emacs/"
-                                            (getenv "APPDATA")))
-                   (t (rc-expand "var/")))))
+  (rc-expand file (cond (rc-posix-p "~/.cache/emacs/")
+						(rc-mswin-p (rc-expand "Emacs/" (getenv "APPDATA")))
+						(t (rc-expand "var/")))))
 
 (defun rc-dots (&optional file)
-  "Expand FILE from the dotfiles dots directory."
+  "Expand FILE from the dotfiles dots/ directory."
   (rc-expand file (rc-expand "../dots/")))
 
 (when (native-comp-available-p)

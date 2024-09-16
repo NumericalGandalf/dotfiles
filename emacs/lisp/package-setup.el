@@ -23,12 +23,10 @@ If optional PREFIX is non-nil, force the upgrade."
         (day (time-to-days (current-time))))
     (when (or prefix
               (not (file-exists-p file))
-              (>= day (string-to-number
-                       (with-temp-buffer
-                         (insert-file-contents file)
-                         (buffer-string)))))
-      (package-upgrade-all)
-      (package-autoremove)
+              (>= day (with-temp-buffer
+						(insert-file-contents file)
+						(string-to-number (buffer-string)))))
+      (package-upgrade-all nil)
       (with-temp-file file
         (erase-buffer)
         (insert (int-to-string (+ day package-auto-upgrade-interval)))))))
