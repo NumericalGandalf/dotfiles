@@ -25,7 +25,7 @@
     (with-temp-file (expand-file-name ".emacs-profiles.el" home-dir)
       (insert (format "((%s . ((user-emacs-directory . %s))))"
                       (prin1-to-string "default")
-                      (prin1-to-string (rc-expand)))))))
+                      (prin1-to-string (rc/expand)))))))
 
 (defun mswin-icons-install-fonts ()
   "Install fonts for icons."

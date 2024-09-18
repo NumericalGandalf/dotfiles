@@ -27,6 +27,15 @@
         auto-revert-remote-files t
         auto-revert-verbose nil))
 
+(with-eval-after-load 'ibuffer
+  (setq ibuffer-use-other-window t))
+
+(with-eval-after-load 'help
+  (setq help-window-select t))
+
+(with-eval-after-load 'man
+  (setq Man-notify-method 'aggressive))
+
 (use-package sudo-edit)
 
 (use-package multiple-cursors)

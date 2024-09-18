@@ -25,7 +25,7 @@
    "r b" 'consult-bookmark
    
    "C-c" 'save-buffers-kill-emacs
-   "C-b" 'ibuffer-other-window)
+   "C-b" 'ibuffer)
 
   (general-define-key
    :prefix "M-g"
@@ -42,22 +42,23 @@
 
    "z l" 'load-file
    "z f" 'font-load
+   "z t" 'consult-theme
 
    "p l" 'package-list-packages
    "p i" 'package-install
    "p d" 'package-delete
    "p r" 'package-reinstall
-   "p P" 'use-package-report
+   "p y" 'use-package-report
 
    "h f" 'describe-face
    "h g" 'customize-group
    "h t" 'describe-theme
 
+   "r e" 'eshell
    "r f" 'consult-fd
    "r g" 'consult-ripgrep
    "r y" 'consult-git-grep
-   "r s" 'shell-command
-   "r S" 'async-shell-command
+   "r s" 'async-shell-command
    "r q" 'query-replace-regexp
 
    "o ." (lambda ()
@@ -65,10 +66,10 @@
            (find-file user-init-file))
    "o ," (lambda ()
            (interactive)
-           (find-file (rc-cache)))
+           (find-file (rc/cache)))   
    "o /" (lambda ()
            (interactive)
-           (find-file (rc-dots)))
+           (find-file (rc/expand "../")))
 
    "w h" 'buf-move-left
    "w j" 'buf-move-down
@@ -98,7 +99,13 @@
       "M-g i" 'lsp-ui-imenu
       "M-g f" 'lsp-ui-flycheck-list))
 
-  (when rc-posix-p
+  (when init-file-debug
+	(general-define-key
+	 :prefix "C-h 4"
+	 "u" 'use-package-report
+	 "p" 'profiler-report))
+
+  (when rc/posix-p
     (general-define-key
      :prefix "C-c"
      "r m" 'man

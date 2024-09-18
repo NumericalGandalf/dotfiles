@@ -5,8 +5,12 @@
   "Interval in days for package auto upgrading."
   :type 'natnum)
 
-(setq package-user-dir (rc-cache "packages/")
-      package-gnupghome-dir (rc-expand "gnupg/" package-user-dir))
+(defcustom package-auto-upgrade-hook nil
+  "Hook to run after `package-auto-upgrade'."
+  :type 'hook)
+
+(setq package-user-dir (rc/cache "packages/")
+      package-gnupghome-dir (rc/expand "gnupg/" package-user-dir))
 
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 
@@ -17,19 +21,23 @@
 
 (defun package-auto-upgrade (&optional prefix)
   "Upgrade packages if `package-auto-upgrade-interval' has passed.
-If optional PREFIX is non-nil, force the upgrade."
+If optional PREFIX is non-nil, force the upgrade.
+
+Also run `package-auto-upgrade-hook' after the upgrade."
   (interactive "P")
-  (let ((file (rc-expand "next-upgrade" package-user-dir))
-        (day (time-to-days (current-time))))
+  (let ((file (rc/expand "next-upgrade" package-user-dir))
+        (day (time-to-days (current-time)))
+		(vc--inhibit-async-window t))
     (when (or prefix
               (not (file-exists-p file))
               (>= day (with-temp-buffer
 						(insert-file-contents file)
 						(string-to-number (buffer-string)))))
-      (package-upgrade-all nil)
+	  (package-upgrade-all)
       (with-temp-file file
         (erase-buffer)
-        (insert (int-to-string (+ day package-auto-upgrade-interval)))))))
+        (insert (int-to-string (+ day package-auto-upgrade-interval))))
+	  (run-hooks 'package-auto-upgrade-hook))))
 
 (add-hook 'after-init-hook 'package-auto-upgrade)
 
@@ -39,12 +47,12 @@ If optional PREFIX is non-nil, force the upgrade."
 
 (when init-file-debug
   (setq use-package-verbose t
-        use-package-compute-statistics t))
+		use-package-compute-statistics t))
 
 (use-package no-littering
   :init
-  (setq no-littering-etc-directory (rc-expand)
-        no-littering-var-directory (rc-cache)
+  (setq no-littering-etc-directory (rc/expand)
+        no-littering-var-directory (rc/cache)
         server-auth-dir (no-littering-expand-var-file-name "server/")))
 
 (provide 'package-setup)

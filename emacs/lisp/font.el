@@ -3,31 +3,37 @@
   :prefix "font-"
   :group 'emacs)
 
-(defcustom font-name (cond (rc-mswin-p "Cascadia Code"))
+(defcustom font-name (cond (rc/mswin-p "Cascadia Code"))
   "Default font name."
   :type 'string)
 
-(defcustom font-name-var (cond (rc-posix-p "DejaVu Sans")
-                               (rc-mswin-p "Microsoft Sans Serif"))
+(defcustom font-name-var (cond (rc/posix-p "DejaVu Sans")
+                               (rc/mswin-p "Microsoft Sans Serif"))
   "Variable pitch font name."
   :type 'string)
 
-(defcustom font-height (cond (rc-mswin-p 12))
+(defcustom font-height (cond (rc/mswin-p 12))
   "Default font height."
   :type 'natnum)
 
-(define-minor-mode font-nerds-mode
-  "If non-nil, usage of nerd-fonts is enabled."
-  :init-value t
-  :global t
-  :lighter nil)
+(defun font-load ()
+  "Load font."
+  (interactive)
+  (when (and font-name font-name-var font-height)
+	(let ((height (* font-height 10)))
+	  (set-face-attribute 'default nil :font font-name :height height)
+	  (set-face-attribute 'fixed-pitch nil :family font-name)
+	  (set-face-attribute 'fixed-pitch-serif nil :family font-name)
+	  (set-face-attribute 'variable-pitch nil :family font-name-var))))
 
-(defun font-nerds-ensure-font (font-name file)
+(add-hook 'emacs-startup-hook 'font-load)
+
+(defun font-nerds--ensure-font (font-name file)
   "Ensure that FONT-NAME with FILE is installed."
   (let* ((font-name (prin1-to-string font-name))
 		 (url (concat "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/" file))
-		 (dir (rc-expand "./" "~/.local/share/fonts/nerds/"))
-		 (file (rc-expand file dir))
+		 (dir (rc/expand "./" "~/.local/share/fonts/nerds/"))
+		 (file (rc/expand file dir))
 		 (cmd (format "fc-list : file family | grep %s | grep -q %s" dir font-name)))
     (make-directory dir t)
     (unless (= (call-process-shell-command cmd) 0)
@@ -35,9 +41,9 @@
 		(url-copy-file url file t)
 		(dired-compress-file file)
 		(call-process-shell-command "fc-cache -f")
-		(delete-file (rc-expand file))))))
+		(delete-file (rc/expand file))))))
 
-(defun font-nerds-fetch-list ()
+(defun font-nerds--fetch-list ()
   "Fetch a list of downloadable nerd-fonts.
 
 Return a plist with :font-list and :max-name-len."
@@ -69,11 +75,11 @@ Return a plist with :font-list and :max-name-len."
 			 fonts))))
 	  `(:fonts ,fonts :max-name-len ,max-name-len))))
 
-(defun font-nerds-query-font ()
+(defun font-nerds--query-font ()
   "Query for a nerd-font and a height."
   (let* ((prompt1 "Load nerd-font: ")
 		 (prompt2 "Font height: ")
-		 (font-list (font-nerds-fetch-list))
+		 (font-list (font-nerds--fetch-list))
 		 (fonts (plist-get font-list :fonts))
 		 (max-name-len (plist-get font-list :max-name-len))
 		 (fun1 (lambda (cand)
@@ -91,28 +97,24 @@ Return a plist with :font-list and :max-name-len."
 		 (file (plist-get (gethash name fonts) :file)))
 	`(:name ,name :height ,height :file ,file)))
 
-(defun font-load (&optional prefix)
-  "Load font.
-
-If `font-nerds-mode' is active, handle nerd-font loading.
-If `font-name' or `font-height' is nil, query for them.
-If optional PREFIX is non-nil, query for them anyways."
-  (interactive "P")
-  (when (and font-nerds-mode
-             (or prefix
-                 (not (and font-name font-name-var font-height))))
-    (let* ((font (font-nerds-query-font))
+(define-advice font-load (:before (&rest _) nerds)
+  "Load nerd-font, if called interactively."
+  (when (called-interactively-p)
+	(let* ((font (font-nerds--query-font))
 		   (name (plist-get font :name)))
-	  (font-nerds-ensure-font name (plist-get font :file))
-	  (customize-set-value 'font-name name)
-	  (customize-set-value 'font-height (plist-get font :height))
+	  (font-nerds--ensure-font name (plist-get font :file))
+	  (customize-save-variable 'font-name name)
+	  (customize-save-variable 'font-height (plist-get font :height))
 	  (unless font-name-var
-        (customize-set-value 'font-name-var name))))
-  (set-face-attribute 'default nil :font font-name :height (* font-height 10))
-  (set-face-attribute 'fixed-pitch nil :family font-name)
-  (set-face-attribute 'fixed-pitch-serif nil :family font-name)
-  (set-face-attribute 'variable-pitch nil :family font-name-var))
+        (customize-save-variable 'font-name-var name)))))
 
-(add-hook 'emacs-startup-hook 'font-load)
+(define-minor-mode font-nerds-mode
+  "If non-nil, usage of nerd-fonts is enabled."
+  :init-value t
+  :global t
+  :lighter nil
+  (if font-nerds-mode
+	  (advice-add 'font-load :before 'font-load@nerds)
+	(advice-remove 'font-load 'font-load@nerds)))
 
 (provide 'font)

@@ -18,7 +18,7 @@ and will not be traversed any further.
 These directories are relative to the dotfiles dots directory."
   :type '(repeat string))
 
-(defcustom posix-loose-dir (rc-cache "loose/")
+(defcustom posix-loose-dir (rc/cache "loose/")
   "Backup directory for `posix-loose-files'."
   :type 'string)
 
@@ -48,9 +48,13 @@ These files are relative to the users home directory."
 
 (use-package guix)
 
+(unless (package-installed-p 'app-launcher)
+  (package-vc-install
+   '(app-launcher :url "https://github.com/NumericalGandalf/app-launcher.git")))
+
 ;; (use-package app-launcher
-;;   :ensure
-;;   (:host github :repo "NumericalGandalf/app-launcher")
+;;   :vc
+;;   (:url "https://github.com/NumericalGandalf/app-launcher.git")
 ;;   :defer)
 
 (defun posix-link-emacs-dir (&optional unlink)
@@ -68,7 +72,7 @@ If optional UNLINK is non-nil, unlink it."
                 ((file-exists-p file)
                  (delete-file file)))))
       (unless unlink
-        (make-symbolic-link (rc-expand) config-dir)))))
+        (make-symbolic-link (rc/expand) config-dir)))))
 
 (defun posix-loose-backup ()
   "Backup `posix-loose-files' to `posix-loose-dir'."
@@ -76,9 +80,9 @@ If optional UNLINK is non-nil, unlink it."
   (when (file-exists-p posix-loose-dir)
     (delete-directory posix-loose-dir t))
   (dolist (file posix-loose-files)
-    (let ((file (rc-expand file "~/"))
+    (let ((file (rc/expand file "~/"))
           (target (file-name-parent-directory
-                   (rc-expand file posix-loose-dir))))
+                   (rc/expand file posix-loose-dir))))
       (make-directory target t)
       (if (file-directory-p file)
           (copy-directory file target)
@@ -95,24 +99,24 @@ If optional RESET is non-nil, reset them."
     (dolist (item list)
       (let* ((key (car item))
              (key1 (prin1-to-string key))
-         (name (symbol-value (cdr item)))
-         (height (int-to-string (1- font-height)))
+			 (name (symbol-value (cdr item)))
+			 (height (int-to-string (1- font-height)))
              (val (prin1-to-string (format "%s %s" name height)))
-         (cmd (if reset
-              (format "gsettings reset %s %s" scheme key)
-            (format "gsettings set %s %s %s" scheme key val))))
+			 (cmd (if reset
+					  (format "gsettings reset %s %s" scheme key)
+					(format "gsettings set %s %s %s" scheme key val))))
         (call-process-shell-command cmd nil 0)))))
 
 (defun posix-font-write-waybar ()
   "Write `font-name' into waybar config."
   (let ((name (prin1-to-string font-name)))
-    (with-temp-file (rc-dots ".config/waybar/font.css")
+    (with-temp-file (rc/dot ".config/waybar/font.css")
       (erase-buffer)
       (insert (format "*{font-family:%s;font-size:%d}" name font-height)))))
 
 (defun posix-font-write-sway ()
   "Write `font-name' into sway config."
-  (with-temp-file (rc-dots ".config/sway/font")
+  (with-temp-file (rc/dot ".config/sway/font")
     (erase-buffer)
     (insert (format "font pango:%s %d" font-name (- font-height 3))))
   (call-process-shell-command "sway reload" nil 0))
@@ -133,16 +137,16 @@ If optional RESET is non-nil, reset the scheme keys."
            (key (nth 1 item))
            (key1 (prin1-to-string key))
            (value (prin1-to-string (nth 2 item)))
-       (cmd (if reset
-            (format "gsettings reset %s %s" scheme key)
-          (format "gsettings set %s %s %s" scheme key value))))
+		   (cmd (if reset
+					(format "gsettings reset %s %s" scheme key)
+				  (format "gsettings set %s %s %s" scheme key value))))
       (call-process-shell-command cmd nil 0)))
   (posix-font-set-gsettings reset))
 
 (defun posix-sway-write-wallpaper ()
   "Write wallpaper into sway config."
-  (let ((wallpaper (rc-dots ".config/sway/butterfly.png")))
-    (with-temp-file (rc-dots ".config/sway/wallpaper")
+  (let ((wallpaper (rc/dot ".config/sway/butterfly.png")))
+    (with-temp-file (rc/dot ".config/sway/wallpaper")
       (erase-buffer)
       (insert (format "set $wallpaper %s" wallpaper)))
     (call-process-shell-command "sway reload" nil 0)))
@@ -154,15 +158,15 @@ If DIR is nil, start from the dotfiles dots directory.
 If optional UNSTOW is non-nil, unstow the files.
 
 Whether a child dir is stowed depends on `posix-stow-parents'."
-  (dolist (target (cdr (cdr (directory-files (rc-dots dir) t))))
+  (dolist (target (cdr (cdr (directory-files (rc/dot dir) t))))
     (if (or (file-regular-p target)
             (cl-dolist (parent posix-stow-parents)
-              (let ((parent (rc-dots parent)))
+              (let ((parent (rc/dot parent)))
                 (when (and (file-in-directory-p target parent)
                            (not (file-equal-p target parent)))
                   (cl-return target)))))
-        (let* ((rel-name (file-relative-name (rc-dots target) (rc-dots)))
-           (link-name (expand-file-name rel-name "~/")))
+        (let* ((rel-name (file-relative-name (rc/dot target) (rc/dot "./")))
+			   (link-name (expand-file-name rel-name "~/")))
           (when (file-exists-p link-name)
             (cond ((file-symlink-p link-name)
                    (delete-file link-name))
@@ -208,21 +212,21 @@ and, if non-nil, run it, or execute BODY otherwise."
            ,@body)))))
 
 (posix-program launcher
-           "Run posix launcher or create frame for `app-launcher-run-app'."
-           (with-selected-frame
-           (make-frame `((name . "posix-launcher")
-                 (height . ,posix-launcher-height)
-                 (width . ,(* posix-launcher-height 4))
-                 (minibuffer . only)))
-         (unwind-protect
-             (let ((vertico-count (1- posix-launcher-height)))
-               (app-launcher-run-app t))
-           (delete-frame))))
+  "Run posix launcher or create frame for `app-launcher-run-app'."
+  (with-selected-frame
+      (make-frame `((name . "posix-launcher")
+					(height . ,posix-launcher-height)
+					(width . ,(* posix-launcher-height 4))
+					(minibuffer . only)))
+    (unwind-protect
+        (let ((vertico-count (1- posix-launcher-height)))
+          (app-launcher-run-app t))
+      (delete-frame))))
 
 (posix-program terminal
-           "Run posix terminal or `vterm'."
-           (with-selected-frame (make-frame)
-         (vterm)))
+  "Run posix terminal or `vterm'."
+  (with-selected-frame (make-frame)
+    (vterm)))
 
 (posix-program browser)
 

@@ -1,7 +1,8 @@
 (setq use-short-answers t
 	  inhibit-startup-screen t
-      ring-bell-function nil
-      scroll-step 1
+      ring-bell-function nil)
+
+(setq scroll-step 1
       scroll-margin 4
       scroll-preserve-screen-position t)
 
@@ -65,14 +66,6 @@
   (doom-modeline-buffer-file-name-style 'file-name-with-project)
   (doom-modeline-highlight-modified-buffer-name nil))
 
-(use-package emojify
-  :hook
-  (())
-  :config
-  (global-emojify-mode)
-  :custom
-  (emojify-download-emojis-p t))
-
 (use-package dashboard
   :hook
   ((window-size-change-functions . dashboard-resize-on-hook)
@@ -91,7 +84,7 @@
   (dashboard-center-content t)
   (dashboard-show-shortcuts nil)
   (dashboard-startup-banner 'ascii)
-  (dashboard-banner-ascii (rc-expand "banner.txt"))
+  (dashboard-banner-ascii (rc/expand "banner.txt"))
   (dashboard-items '((recents   . 5)
                      (projects  . 5)
                      (bookmarks . 5)
@@ -113,19 +106,14 @@
                              (projects  . "nf-oct-rocket")
                              (registers . "nf-oct-database"))))
 
-(add-hook
- 'after-init-hook
- (lambda ()
-   (unless (string= inhibit-startup-echo-area-message user-login-name)
-	 (customize-save-variable 'inhibit-startup-echo-area-message user-login-name))))
+(unless (daemonp)
+  (defun display-startup-echo-area-message ()))
 
 (pixel-scroll-mode)
 (pixel-scroll-precision-mode)
 
-(global-prettify-symbols-mode)
-(global-visual-line-mode)
-
 (global-display-line-numbers-mode)
 (column-number-mode)
+(global-visual-line-mode)
 
 (provide 'theming)

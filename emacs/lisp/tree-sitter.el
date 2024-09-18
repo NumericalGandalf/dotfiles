@@ -1,4 +1,4 @@
-(add-to-list 'treesit-extra-load-path (rc-cache "tree-sitter/"))
+(add-to-list 'treesit-extra-load-path (rc/cache "tree-sitter/"))
 
 (with-eval-after-load 'files
   (add-to-list 'auto-mode-alist '("\\.jsonc\\'" . json-ts-mode)))

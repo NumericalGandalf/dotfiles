@@ -1,11 +1,17 @@
-(setq ad-redefinition-action 'accept)
+(defun rc/dot (file)
+  "Expand FILE from the dotfiles `dots' directory."
+  (rc/expand file (rc/expand "../dots/")))
 
-(add-to-list 'load-path (rc-expand "lisp/"))
+(defun rc/script (name)
+  "Expand NAME from the dotfiles `scripts' directory."
+  (rc/expand name (rc/expand "../scripts/")))
+
+(add-to-list 'load-path (rc/expand "lisp/"))
 
 (require 'package-setup)
 
-(cond (rc-posix-p (require 'posix))
-      (rc-mswin-p (require 'mswin)))
+(cond (rc/posix-p (require 'posix))
+      (rc/mswin-p (require 'mswin)))
 
 (require 'font)
 (require 'theming)
@@ -20,10 +26,8 @@
 
 (require 'keybindings)
 
-(setq custom-file (rc-cache "custom.el"))
+(setq custom-file (rc/cache "custom.el"))
 (load custom-file t t)
-
-(add-hook 'kill-emacs-hook 'custom-save-all)
 
 (define-advice custom-save-all (:around (fun &rest args) silent)
   "Save custom variables silently."
