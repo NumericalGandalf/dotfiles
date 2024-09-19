@@ -1,10 +1,10 @@
 #!/usr/bin/sh
 
-. "$HOME/.bashrc"
+. "${HOME}/.bashrc"
 
 gentoo-pipewire-launcher &
 
-if [[ -z "${WAYLAND_DISPLAY}" ]]
+if [[ "${XDG_VTNR}" = "1" ]]
 then 
     export WLR_NO_HARDWARE_CURSORS=1
     exec sway

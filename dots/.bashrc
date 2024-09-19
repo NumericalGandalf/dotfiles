@@ -18,7 +18,7 @@ export ALTERNATE_EDITOR="emacs"
 
 export BROWSER="firefox"
 
-if [[ "${INSIDE_EMACS}" -eq "vterm" ]]
+if [[ "${INSIDE_EMACS}" = "vterm" ]]
 then
     . "${EMACS_VTERM_PATH}/etc/emacs-vterm-bash.sh"
 fi
