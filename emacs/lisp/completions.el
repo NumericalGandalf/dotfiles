@@ -1,14 +1,12 @@
 (setq resize-mini-windows t
       enable-recursive-minibuffers t
       completion-ignore-case  t
-      read-buffer-completion-ignore-case t)
+      read-buffer-completion-ignore-case t
+      tab-always-indent 'complete)
 
 (with-eval-after-load 'minibuffer
   (setq completions-detailed t
         read-file-name-completion-ignore-case t))
-
-(with-eval-after-load 'indent
-  (setq tab-always-indent 'complete))
 
 (use-package orderless
   :init
@@ -31,12 +29,12 @@
 (use-package consult
   :custom
   (consult-line-start-from-top t)
-  (xref-show-xrefs-function 'consult-xref)
-  (xref-show-definitions-function 'consult-xref))
+  (xref-show-xrefs-function #'consult-xref)
+  (xref-show-definitions-function #'consult-xref))
 
 (use-package embark
   :custom
-  (prefix-help-command 'embark-prefix-help-command))
+  (prefix-help-command #'embark-prefix-help-command))
 
 (use-package embark-consult
   :after (embark consult)

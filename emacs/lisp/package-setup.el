@@ -27,19 +27,19 @@ Also run `package-auto-upgrade-hook' after the upgrade."
   (interactive "P")
   (let ((file (rc/expand "next-upgrade" package-user-dir))
         (day (time-to-days (current-time)))
-		(vc--inhibit-async-window t))
+        (vc--inhibit-async-window t))
     (when (or prefix
               (not (file-exists-p file))
               (>= day (with-temp-buffer
-						(insert-file-contents file)
-						(string-to-number (buffer-string)))))
-	  (package-upgrade-all)
+                        (insert-file-contents file)
+                        (string-to-number (buffer-string)))))
+      (package-upgrade-all)
       (with-temp-file file
         (erase-buffer)
         (insert (int-to-string (+ day package-auto-upgrade-interval))))
-	  (run-hooks 'package-auto-upgrade-hook))))
+      (run-hooks 'package-auto-upgrade-hook))))
 
-(add-hook 'after-init-hook 'package-auto-upgrade)
+(add-hook 'after-init-hook #'package-auto-upgrade)
 
 (setq use-package-always-ensure t
       use-package-always-defer t
@@ -47,7 +47,7 @@ Also run `package-auto-upgrade-hook' after the upgrade."
 
 (when init-file-debug
   (setq use-package-verbose t
-		use-package-compute-statistics t))
+        use-package-compute-statistics t))
 
 (use-package no-littering
   :init

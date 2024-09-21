@@ -12,18 +12,25 @@
   (global-treesit-auto-mode))
 
 (defun treesit-ensure-all (&optional prefix)
-	"Ensure all available tree-sitter libraries.
+  "Ensure all available tree-sitter libraries.
 If optional PREFIX is non-nil, force all builds."
-	(interactive "P")
-	(when-let (outdir (nth 0 treesit-extra-load-path))
-      (dolist (source (treesit-auto--build-treesit-source-alist))
-		(let ((lang (nth 0 source)))
-          (when (and (or prefix
-						 (not (treesit-ready-p lang t)))
-					 (not (member lang '(janet latex markdown))))
-			(apply 'treesit--install-language-grammar-1 outdir source))))))
+  (interactive "P")
+  (let ((outdir (nth 0 treesit-extra-load-path))
+        (fun #'treesit--install-language-grammar-1)
+        (sources (treesit-auto--build-treesit-source-alist))
+        (msg "Building tree-sitter library for language:"))
+    (when prefix
+      (delete-directory outdir t))
+    (dolist (source sources)
+      (let ((lang (nth 0 source)))
+        (unless (or (treesit-ready-p lang t)
+                    (member lang '(janet latex markdown)))
+          (message (format "%s %s" msg lang))
+          (let ((inhibit-message t)
+                (message-log-max nil))
+            (apply fun outdir source)))))))
 
-(add-hook 'posix-deploy-hook 'treesit-ensure-all)
-(add-hook 'mswin-deploy-hook 'treesit-ensure-all)
+(add-hook 'posix-deploy-hook #'treesit-ensure-all)
+(add-hook 'mswin-deploy-hook #'treesit-ensure-all)
 
 (provide 'tree-sitter)

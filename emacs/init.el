@@ -28,8 +28,3 @@
 
 (setq custom-file (rc/cache "custom.el"))
 (load custom-file t t)
-
-(define-advice custom-save-all (:around (fun &rest args) silent)
-  "Save custom variables silently."
-  (let ((save-silently t))
-    (apply fun args)))

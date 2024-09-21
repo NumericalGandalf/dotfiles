@@ -99,12 +99,12 @@ If optional RESET is non-nil, reset them."
     (dolist (item list)
       (let* ((key (car item))
              (key1 (prin1-to-string key))
-			 (name (symbol-value (cdr item)))
-			 (height (int-to-string (1- font-height)))
+             (name (symbol-value (cdr item)))
+             (height (int-to-string (1- font-height)))
              (val (prin1-to-string (format "%s %s" name height)))
-			 (cmd (if reset
-					  (format "gsettings reset %s %s" scheme key)
-					(format "gsettings set %s %s %s" scheme key val))))
+             (cmd (if reset
+                      (format "gsettings reset %s %s" scheme key)
+                    (format "gsettings set %s %s %s" scheme key val))))
         (call-process-shell-command cmd nil 0)))))
 
 (defun posix-font-write-waybar ()
@@ -137,9 +137,9 @@ If optional RESET is non-nil, reset the scheme keys."
            (key (nth 1 item))
            (key1 (prin1-to-string key))
            (value (prin1-to-string (nth 2 item)))
-		   (cmd (if reset
-					(format "gsettings reset %s %s" scheme key)
-				  (format "gsettings set %s %s %s" scheme key value))))
+           (cmd (if reset
+                    (format "gsettings reset %s %s" scheme key)
+                  (format "gsettings set %s %s %s" scheme key value))))
       (call-process-shell-command cmd nil 0)))
   (posix-font-set-gsettings reset))
 
@@ -166,7 +166,7 @@ Whether a child dir is stowed depends on `posix-stow-parents'."
                            (not (file-equal-p target parent)))
                   (cl-return target)))))
         (let* ((rel-name (file-relative-name (rc/dot target) (rc/dot "./")))
-			   (link-name (expand-file-name rel-name "~/")))
+               (link-name (expand-file-name rel-name "~/")))
           (when (file-exists-p link-name)
             (cond ((file-symlink-p link-name)
                    (delete-file link-name))
@@ -191,7 +191,7 @@ If PREFIX is non-nil, unstow them."
   (interactive)
   (posix-link-emacs-dir)
   (posix-stow)
-  (funcall-interactively 'font-load t)
+  (funcall-interactively #'font-load t)
   (run-hooks 'posix-deploy-hook))
 
 (defmacro posix-program (program &optional doc &rest body)
@@ -208,25 +208,25 @@ and, if non-nil, run it, or execute BODY otherwise."
        (interactive)
        (if-let ((command (getenv (upcase ,name))))
            (call-process-shell-command command nil 0)
-         (progn 
+         (progn
            ,@body)))))
 
 (posix-program launcher
-  "Run posix launcher or create frame for `app-launcher-run-app'."
-  (with-selected-frame
-      (make-frame `((name . "posix-launcher")
-					(height . ,posix-launcher-height)
-					(width . ,(* posix-launcher-height 4))
-					(minibuffer . only)))
-    (unwind-protect
-        (let ((vertico-count (1- posix-launcher-height)))
-          (app-launcher-run-app t))
-      (delete-frame))))
+               "Run posix launcher or create frame for `app-launcher-run-app'."
+               (with-selected-frame
+                   (make-frame `((name . "posix-launcher")
+                                 (height . ,posix-launcher-height)
+                                 (width . ,(* posix-launcher-height 4))
+                                 (minibuffer . only)))
+                 (unwind-protect
+                     (let ((vertico-count (1- posix-launcher-height)))
+                       (app-launcher-run-app t))
+                   (delete-frame))))
 
 (posix-program terminal
-  "Run posix terminal or `vterm'."
-  (with-selected-frame (make-frame)
-    (vterm)))
+               "Run posix terminal or `vterm'."
+               (with-selected-frame (make-frame)
+                 (vterm)))
 
 (posix-program browser)
 

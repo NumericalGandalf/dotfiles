@@ -12,8 +12,9 @@
         dired-clean-confirm-killing-deleted-buffers nil))
 
 (with-eval-after-load 'files
+  (setq make-backup-files nil
+        save-silently t)
   (setq-default auto-save-default nil)
-  (setq make-backup-files nil)
   (auto-save-visited-mode 1))
 
 (with-eval-after-load 'auth-source
@@ -55,21 +56,17 @@
           (indent-region (region-beginning) (region-end))
         (indent-region (line-beginning-position) (line-end-position)))
       (setq deactivate-mark deactivate)))
-  (advice-add 'move-text-up :after 'move-text@indent-after)
-  (advice-add 'move-text-down :after 'move-text@indent-after))
-
-(global-auto-revert-mode)
-
-(use-package editorconfig)
-(editorconfig-mode)
-
-(electric-pair-mode)
-
-(ffap-bindings)
-(use-package which-key)
-(which-key-mode)
+  (advice-add 'move-text-up :after #'move-text@indent-after)
+  (advice-add 'move-text-down :after #'move-text@indent-after))
 
 (save-place-mode)
 (savehist-mode)
+
+(editorconfig-mode)
+(global-auto-revert-mode)
+
+(ffap-bindings)
+(electric-pair-mode)
+(which-key-mode)
 
 (provide 'editing)

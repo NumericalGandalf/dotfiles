@@ -1,8 +1,8 @@
 (setq use-short-answers t
-	  inhibit-startup-screen t
-      ring-bell-function nil)
-
-(setq scroll-step 1
+      inhibit-startup-screen t
+      ring-bell-function nil
+      echo-keystrokes 0
+      scroll-step 1
       scroll-margin 4
       scroll-preserve-screen-position t)
 
@@ -71,9 +71,9 @@
   ((window-size-change-functions . dashboard-resize-on-hook)
    (window-setup-hook . dashboard-resize-on-hook)
    (emacs-startup-hook . (lambda ()
-						   (when (and (string= (buffer-name) "*scratch*")
-									  (= (length (window-list)) 1))
-							 (dashboard-open)))))
+                           (when (and (string= (buffer-name) "*scratch*")
+                                      (= (length (window-list)) 1))
+                             (dashboard-open)))))
   :config
   (setq initial-buffer-choice (lambda () (get-buffer-create dashboard-buffer-name)))
   :custom

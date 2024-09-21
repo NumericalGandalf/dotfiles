@@ -8,7 +8,7 @@
   (setq-default c-basic-offset 4))
 
 (with-eval-after-load 'simple
-  indent-tabs-mode nil)
+  (setq-default indent-tabs-mode nil))
 
 (use-package magit
   :init

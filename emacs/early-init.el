@@ -2,31 +2,34 @@
                        ('gnu t)
                        ('gnu/linux t)
                        ('gnu/kfreebsd t))
-  "Non-nil means system is posix.")
+  "Non-nil means the system follows POSIX standards.")
 
 (defconst rc/mswin-p (pcase system-type
                        ('windows-nt t)
                        ('cygwin t)
                        ('ms-dos t))
-  "Non-nil means system is mswin.")
+  "Non-nil means the system is MS Windows.")
+
+(defconst rc/macos-p (pcase system-type
+                       ('darwin t))
+  "Non-nil means the system is MacOS.")
 
 (defun rc/expand (&optional file dir)
   "Expand FILE from DIR.
 If DIR is nil, expand from `user-emacs-directory'."
   (let ((file (or file "./"))
-		(dir (or dir (file-truename user-emacs-directory))))
-	(file-truename (expand-file-name file dir))))
+        (dir (or dir (file-truename user-emacs-directory))))
+    (file-truename (expand-file-name file dir))))
 
 (defun rc/cache (&optional file)
   "Expand FILE from emacs cache directory.
 
 Cache directories are system dependent:
-    posix   -> ~/.cache/emacs
-    windows -> %APPDATA%/emacs
-    others  -> `user-emacs-directory'/var"
-  (rc/expand file (cond (rc/posix-p "~/.cache/emacs/")
-						(rc/mswin-p (rc/expand "Emacs/" (getenv "APPDATA")))
-						(t (rc/expand "var/")))))
+    POSIX      -> ~/.cache/emacs
+    MS Windows -> %APPDATA%/emacs"
+  (let ((dir (cond (rc/posix-p "~/.cache/emacs/")
+                   (rc/mswin-p (rc/expand "Emacs/" (getenv "APPDATA"))))))
+    (rc/expand file dir)))
 
 (when (native-comp-available-p)
   (startup-redirect-eln-cache (rc/cache "eln/"))

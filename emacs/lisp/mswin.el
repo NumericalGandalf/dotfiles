@@ -10,9 +10,9 @@
 (defun mswin-chemacs-setup ()
   "Setup chemacs2 for config management."
   (let* ((home-dir (expand-file-name "./" (getenv "APPDATA")))
-		 (emacs-dir (expand-file-name ".emacs.d/" home-dir))
-		 (chemacs-repo "https://github.com/plexus/chemacs2.git")
-		 (cmd (format "git clone %s %s" chemacs-repo emacs-dir)))
+         (emacs-dir (expand-file-name ".emacs.d/" home-dir))
+         (chemacs-repo "https://github.com/plexus/chemacs2.git")
+         (cmd (format "git clone %s %s" chemacs-repo emacs-dir)))
     (dolist (file '(".emacs" ".emacs-profiles.el" ".emacs.d/"))
       (let ((file (expand-file-name file home-dir)))
         (cond ((file-symlink-p file)
@@ -33,7 +33,7 @@
   )
 
 (defun mswin-deploy ()
-  "Deploy windows configs."
+  "Deploy windows configs and run `mswin-deploy-hook'."
   (interactive)
   (mswin-chemacs-setup)
   (run-hooks 'mswin-deploy-hook))
