@@ -3,10 +3,6 @@
   :prefix "mswin-"
   :group 'emacs)
 
-(defcustom mswin-deploy-hook nil
-  "Hooks to run after mswin config deployment."
-  :type 'hook)
-
 (defun mswin-chemacs-setup ()
   "Setup chemacs2 for config management."
   (let* ((home-dir (expand-file-name "./" (getenv "APPDATA")))
@@ -27,15 +23,18 @@
                       (prin1-to-string "default")
                       (prin1-to-string (rc/expand)))))))
 
-(defun mswin-icons-install-fonts ()
-  "Install fonts for icons."
-  (interactive)
-  )
+(define-advice nerd-icons-install-fonts (:around (&rest _) mswin)
+  "Install fonts for `nerd-icons' on MS Windows."
+  (let* ((url "https://raw.githubusercontent.com/rainstormstudio/nerd-icons.el/main/fonts/")
+         (dest (rc/temp t))
+         (sysdir (rc/cache "../../Local/Microsoft/Windows/Fonts/"))
+         (default-directory dest))
+    (dolist (font nerd-icons-font-names)
+      (let ((file (rc/expand font dest))
+            (sysfile (rc/expand font sysdir)))
+        (unless (file-exists-p sysfile)
+          (url-copy-file (concat url font) file t))))
+    (rc/script "fonts-install.ps1")))
 
-(defun mswin-deploy ()
-  "Deploy windows configs and run `mswin-deploy-hook'."
-  (interactive)
-  (mswin-chemacs-setup)
-  (run-hooks 'mswin-deploy-hook))
-
-(provide 'mswin)
+(rc/deploy
+ (mswin-chemacs-setup))

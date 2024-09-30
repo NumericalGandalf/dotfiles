@@ -17,20 +17,16 @@ If optional PREFIX is non-nil, force all builds."
   (interactive "P")
   (let ((outdir (nth 0 treesit-extra-load-path))
         (fun #'treesit--install-language-grammar-1)
-        (sources (treesit-auto--build-treesit-source-alist))
-        (msg "Building tree-sitter library for language:"))
+        (sources (treesit-auto--build-treesit-source-alist)))
     (when prefix
       (delete-directory outdir t))
     (dolist (source sources)
       (let ((lang (nth 0 source)))
         (unless (or (treesit-ready-p lang t)
                     (member lang '(janet latex markdown)))
-          (message (format "%s %s" msg lang))
+          (message "Building tree-sitter library for language: %s" lang)
           (let ((inhibit-message t)
                 (message-log-max nil))
             (apply fun outdir source)))))))
 
-(add-hook 'posix-deploy-hook #'treesit-ensure-all)
-(add-hook 'mswin-deploy-hook #'treesit-ensure-all)
-
-(provide 'tree-sitter)
+(rc/deploy (treesit-ensure-all))

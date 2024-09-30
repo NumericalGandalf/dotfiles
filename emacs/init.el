@@ -1,30 +1,25 @@
-(defun rc/dot (file)
-  "Expand FILE from the dotfiles `dots' directory."
-  (rc/expand file (rc/expand "../dots/")))
+(setq custom-theme-directory user-emacs-directory)
+(load-theme 'zenburn t)
 
-(defun rc/script (name)
-  "Expand NAME from the dotfiles `scripts' directory."
-  (rc/expand name (rc/expand "../scripts/")))
+(rc/require 'font)
 
-(add-to-list 'load-path (rc/expand "lisp/"))
+(rc/require 'package-setup)
 
-(require 'package-setup)
+(cond (rc/posix-p (rc/require 'posix))
+      (rc/mswin-p (rc/require 'mswin)))
 
-(cond (rc/posix-p (require 'posix))
-      (rc/mswin-p (require 'mswin)))
-
-(require 'font)
-(require 'theming)
-
-(require 'completions)
-(require 'editing)
-
-(require 'programming)
+(rc/require 'completions)
+(rc/require 'editing)
+(rc/require 'programming)
 
 (when (treesit-available-p)
-  (require 'tree-sitter))
+  (rc/require 'tree-sitter))
 
-(require 'keybindings)
+(if (rc/cmdline-p "--doomed")
+    (rc/require 'doomed)
+  (rc/deploy (rc/require 'doomed)))
+
+(rc/require 'keybindings)
 
 (setq custom-file (rc/cache "custom.el"))
 (load custom-file t t)

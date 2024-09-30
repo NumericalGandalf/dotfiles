@@ -49,10 +49,12 @@ Also run `package-auto-upgrade-hook' after the upgrade."
   (setq use-package-verbose t
         use-package-compute-statistics t))
 
+(use-package diminish)
+
 (use-package no-littering
+  :demand
   :init
   (setq no-littering-etc-directory (rc/expand)
-        no-littering-var-directory (rc/cache)
-        server-auth-dir (no-littering-expand-var-file-name "server/")))
-
-(provide 'package-setup)
+        no-littering-var-directory (rc/cache))
+  :custom
+  (server-auth-dir (rc/cache "server/")))

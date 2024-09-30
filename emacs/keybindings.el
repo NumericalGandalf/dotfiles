@@ -25,7 +25,10 @@
    "r b" #'consult-bookmark
 
    "C-c" #'save-buffers-kill-emacs
-   "C-b" #'ibuffer)
+   "C-b" #'ibuffer
+   "O" (lambda (prefix)
+         (interactive "p")
+         (other-window (- prefix))))
 
   (general-define-key
    :prefix "M-g"
@@ -43,6 +46,7 @@
    "z l" #'load-file
    "z f" #'font-load
    "z t" #'consult-theme
+   "z b" #'eval-buffer
 
    "p l" #'package-list-packages
    "p i" #'package-install
@@ -63,7 +67,7 @@
 
    "o ." (lambda ()
            (interactive)
-           (find-file user-init-file))
+           (find-file user-emacs-directory))
    "o ," (lambda ()
            (interactive)
            (find-file (rc/cache)))
@@ -85,19 +89,18 @@
     "C-;" #'embark-dwin
     "C-h B" #'embark-bindings)
 
-  (general-with-eval-after-load 'corfu
-    (general-def corfu-map
-      "RET" nil
-      "SPC" #'corfu-insert-separator))
+  (general-def corfu-map
+    "RET" nil
+    "SPC" #'corfu-insert-separator)
 
   (general-with-eval-after-load 'lsp-mode
-    (setq lsp-keymap-prefix "C-c l")
+    (setq lsp-keymap-prefix "C-c l"))
 
-    (general-def lsp-mode-map
-      "M-?" #'consult-lsp-symbols
-      "C-h ." #'lsp-ui-doc-toggle
-      "M-g i" #'lsp-ui-imenu
-      "M-g f" #'lsp-ui-flycheck-list))
+  (general-def lsp-mode-map
+    "M-?" #'consult-lsp-symbols
+    "C-h ." #'lsp-ui-doc-toggle
+    "M-g i" #'lsp-ui-imenu
+    "M-g f" #'lsp-ui-flycheck-list)
 
   (when init-file-debug
     (general-define-key
@@ -113,10 +116,7 @@
 
      "p g" #'guix)
 
-    (general-with-eval-after-load 'vterm
-      (general-def vterm-mode-map
-        "C-j" (lambda ()
-                (interactive)
-                (vterm-send "C-c"))))))
-
-(provide 'keybindings)
+    (general-def vterm-mode-map
+      "C-j" (lambda ()
+              (interactive)
+              (vterm-send "C-c")))))

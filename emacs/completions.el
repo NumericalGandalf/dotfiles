@@ -23,8 +23,7 @@
   (vertico-mode)
   :custom
   (vertico-cycle t)
-  (vertico-preselect 'no-prompt)
-  (vertico-count 17))
+  (vertico-preselect 'no-prompt))
 
 (use-package consult
   :custom
@@ -49,8 +48,7 @@
   (corfu-cycle t)
   (corfu-auto t)
   (corfu-auto-prefix 1)
+  (corfu-auto-delay 0)
   (corfu-min-width 45)
   (corfu-separator ?\s)
   (corfu-quit-no-match t))
-
-(provide 'completions)

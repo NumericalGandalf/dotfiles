@@ -1,4 +1,21 @@
+(setq use-short-answers t
+      inhibit-startup-screen t
+      ring-bell-function #'ignore
+      echo-keystrokes 0)
+
+(setq scroll-step 1
+      scroll-margin 4
+      scroll-preserve-screen-position t)
+
 (setq create-lockfiles nil)
+
+(setq mode-line-percent-position '(6 "%q"))
+
+(with-eval-after-load 'simple
+  (setq suggest-key-bindings nil))
+
+(with-eval-after-load 'server
+  (setq server-client-instructions nil))
 
 (with-eval-after-load 'vc-hooks
   (setq vc-follow-symlinks t))
@@ -10,6 +27,11 @@
         dired-dwim-target t
         dired-auto-revert-buffer t
         dired-clean-confirm-killing-deleted-buffers nil))
+
+(with-eval-after-load 'display-line-numbers
+  (setq display-line-numbers-width-start t
+        display-line-numbers-grow-only t
+        display-line-numbers-type 'relative))
 
 (with-eval-after-load 'files
   (setq make-backup-files nil
@@ -50,23 +72,40 @@
 
 (use-package move-text
   :config
-  (defun move-text@indent-after (&rest _)
+  (defun move-text@indent (&rest _)
+    "Indent region after text moved."
     (let ((deactivate deactivate-mark))
       (if (region-active-p)
           (indent-region (region-beginning) (region-end))
         (indent-region (line-beginning-position) (line-end-position)))
       (setq deactivate-mark deactivate)))
-  (advice-add 'move-text-up :after #'move-text@indent-after)
-  (advice-add 'move-text-down :after #'move-text@indent-after))
+  (advice-add 'move-text-up :after #'move-text@indent)
+  (advice-add 'move-text-down :after #'move-text@indent))
+
+;; (defun duplicate-region (&optional n)
+;;   "Duplicates")
+
+(unless (daemonp)
+  (defun display-startup-echo-area-message ()))
+
+(global-display-line-numbers-mode)
+(column-number-mode)
+
+(global-visual-line-mode)
+(diminish 'visual-line-mode)
+
+(pixel-scroll-mode)
+(pixel-scroll-precision-mode)
 
 (save-place-mode)
 (savehist-mode)
+(global-auto-revert-mode)
 
 (editorconfig-mode)
-(global-auto-revert-mode)
+(diminish 'editorconfig-mode)
 
 (ffap-bindings)
 (electric-pair-mode)
-(which-key-mode)
 
-(provide 'editing)
+(which-key-mode)
+(diminish 'which-key-mode)

@@ -30,10 +30,6 @@ These directories are relative to the dotfiles dots directory."
 These files are relative to the users home directory."
   :type '(repeat string))
 
-(defcustom posix-deploy-hook nil
-  "Hooks to run after posix config deployment."
-  :type 'hook)
-
 (defcustom posix-launcher-height 25
   "Height of `posix-run-launcher' frame."
   :type 'natnum)
@@ -186,13 +182,9 @@ If PREFIX is non-nil, unstow them."
   (unless prefix
     (posix-sway-write-wallpaper)))
 
-(defun posix-deploy ()
-  "Deploy posix configs and run `posix-deploy-hook'."
-  (interactive)
-  (posix-link-emacs-dir)
-  (posix-stow)
-  (funcall-interactively #'font-load t)
-  (run-hooks 'posix-deploy-hook))
+(rc/deploy
+ (posix-link-emacs-dir)
+ (posix-stow))
 
 (defmacro posix-program (program &optional doc &rest body)
   "Define function for PROGRAM with DOC and BODY.
@@ -234,5 +226,3 @@ and, if non-nil, run it, or execute BODY otherwise."
 (unless (or (daemonp)
             (server-running-p))
   (server-start))
-
-(provide 'posix)
