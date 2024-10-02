@@ -59,6 +59,7 @@ If GET-ONLY is non-nil, only return the scripts path."
   (let ((path (rc/expand script (rc/expand "../scripts/"))))
     (when (and (file-exists-p path) (not get-only))
       (let ((prefix (pcase (file-name-extension path)
+                      ("sh" "bash")
                       ("ps1" "powershell"))))
         (rc/shell (format "%s %s" prefix path))))
     path))
