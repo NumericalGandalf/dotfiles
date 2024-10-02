@@ -1,3 +1,5 @@
+(rc/load 'font)
+
 (rc/load 'package-setup)
 
 (cond (rc/posix-p (rc/load 'posix))
@@ -10,9 +12,9 @@
 (when (treesit-available-p)
   (rc/load 'tree-sitter))
 
-(if (rc/cmdline-p "--doomed")
-    (rc/load 'doomed)
-  (rc/deploy (rc/load 'doomed)))
+(if (rc/cmdline-p "--icons")
+    (rc/load 'icons)
+  (rc/deploy (rc/load 'icons)))
 
 (rc/load 'keybindings)
 

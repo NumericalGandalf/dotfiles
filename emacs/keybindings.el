@@ -25,10 +25,7 @@
    "r b" #'consult-bookmark
 
    "C-c" #'save-buffers-kill-emacs
-   "C-b" #'ibuffer
-   "O" (lambda (prefix)
-         (interactive "p")
-         (other-window (- prefix))))
+   "C-b" #'ibuffer)
 
   (general-define-key
    :prefix "M-g"
@@ -40,7 +37,8 @@
    :prefix "C-c"
    "b r" #'revert-buffer-quick
 
-   "f r" #'recentf
+   "f v" #'find-variable
+   "f f" #'find-function
    "f l" #'find-library
 
    "z l" #'load-file
@@ -65,16 +63,6 @@
    "r s" #'async-shell-command
    "r q" #'query-replace-regexp
 
-   "o ." (lambda ()
-           (interactive)
-           (find-file user-emacs-directory))
-   "o ," (lambda ()
-           (interactive)
-           (find-file (rc/cache)))
-   "o /" (lambda ()
-           (interactive)
-           (find-file (rc/expand "../")))
-
    "w h" #'buf-move-left
    "w j" #'buf-move-down
    "w k" #'buf-move-up
@@ -93,14 +81,8 @@
     "RET" nil
     "SPC" #'corfu-insert-separator)
 
-  (general-with-eval-after-load 'lsp-mode
-    (setq lsp-keymap-prefix "C-c l"))
-
-  (general-def lsp-mode-map
-    "M-?" #'consult-lsp-symbols
-    "C-h ." #'lsp-ui-doc-toggle
-    "M-g i" #'lsp-ui-imenu
-    "M-g f" #'lsp-ui-flycheck-list)
+  (general-def vterm-mode-map
+    "C-j" #'vterm-send-C-c)
 
   (when init-file-debug
     (general-define-key
@@ -114,9 +96,4 @@
      "r m" #'man
      "r t" #'vterm
 
-     "p g" #'guix)
-
-    (general-def vterm-mode-map
-      "C-j" (lambda ()
-              (interactive)
-              (vterm-send "C-c")))))
+     "p g" #'guix)))

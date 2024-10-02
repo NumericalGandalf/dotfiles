@@ -21,5 +21,3 @@
 
 (setq custom-theme-directory user-emacs-directory)
 (load-theme 'zenburn t)
-
-(rc/load 'font)

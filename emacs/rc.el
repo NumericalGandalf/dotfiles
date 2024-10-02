@@ -69,10 +69,7 @@ If GET-ONLY is non-nil, only return the scripts path."
     `(add-hook 'rc/deploy-hook (lambda () ,@body))))
 
 (when (rc/cmdline-p "--deploy")
-  (defvar rc/deploy t
-    "Bound means config deployment has been run.")
-  (defvar rc/deploy-hook nil
-    "Hooks to run on config deployment.")
-  (defvar rc/deploy-fun (lambda () (run-hooks 'rc/deploy-hook))
-    "Entry function for config deployment.")
+  (defvar rc/deploy t)
+  (defvar rc/deploy-hook nil)
+  (defvar rc/deploy-fun (lambda () (run-hooks 'rc/deploy-hook)))
   (add-hook 'window-setup-hook 'rc/deploy-fun 100))

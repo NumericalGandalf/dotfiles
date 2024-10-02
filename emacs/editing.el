@@ -14,9 +14,6 @@
 (with-eval-after-load 'simple
   (setq suggest-key-bindings nil))
 
-(with-eval-after-load 'server
-  (setq server-client-instructions nil))
-
 (with-eval-after-load 'vc-hooks
   (setq vc-follow-symlinks t))
 
@@ -34,8 +31,7 @@
         display-line-numbers-type 'relative))
 
 (with-eval-after-load 'files
-  (setq make-backup-files nil
-        save-silently t)
+  (setq make-backup-files nil)
   (setq-default auto-save-default nil)
   (auto-save-visited-mode 1))
 
@@ -83,7 +79,7 @@
   (advice-add 'move-text-down :after #'move-text@indent))
 
 (unless (daemonp)
-  (defun display-startup-echo-area-message ()))
+  (defun display-startup-echo-area-message()))
 
 (global-display-line-numbers-mode 1)
 (column-number-mode 1)
@@ -96,6 +92,7 @@
 
 (save-place-mode 1)
 (savehist-mode 1)
+
 (global-auto-revert-mode 1)
 
 (editorconfig-mode 1)

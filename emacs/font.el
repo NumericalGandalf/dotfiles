@@ -89,14 +89,16 @@
 
 (define-advice font-load (:before (&rest _) nerds)
   "Load nerd-font, if called interactively."
-  (when (called-interactively-p)
+  (when (or (not (and font-name font-height))
+            (called-interactively-p))
     (let* ((font-list (font-nerds--fetch-list))
            (fonts (plist-get font-list :fonts))
            (max-name-len (plist-get font-list :max-name-len))
            (fun #'font-nerds--completion-fun)
            (name (completing-read "Load nerd-font: " fun nil t nil 'font-nerds))
            (height (round (read-number "Font height: " 13)))
-           (file (plist-get (gethash name fonts) :file)))
+           (file (plist-get (gethash name fonts) :file))
+           (save-silently t))
       (font-nerds--ensure-font name file)
       (customize-save-variable 'font-name name)
       (customize-save-variable 'font-height height)
