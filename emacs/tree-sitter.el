@@ -9,7 +9,7 @@
 (use-package treesit-auto
   :demand
   :config
-  (global-treesit-auto-mode))
+  (global-treesit-auto-mode 1))
 
 (defun treesit-ensure-all (&optional prefix)
   "Ensure all available tree-sitter libraries.

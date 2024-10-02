@@ -1,25 +1,20 @@
-(setq custom-theme-directory user-emacs-directory)
-(load-theme 'zenburn t)
+(rc/load 'package-setup)
 
-(rc/require 'font)
+(cond (rc/posix-p (rc/load 'posix))
+      (rc/mswin-p (rc/load 'mswin)))
 
-(rc/require 'package-setup)
-
-(cond (rc/posix-p (rc/require 'posix))
-      (rc/mswin-p (rc/require 'mswin)))
-
-(rc/require 'completions)
-(rc/require 'editing)
-(rc/require 'programming)
+(rc/load 'completions)
+(rc/load 'editing)
+(rc/load 'programming)
 
 (when (treesit-available-p)
-  (rc/require 'tree-sitter))
+  (rc/load 'tree-sitter))
 
 (if (rc/cmdline-p "--doomed")
-    (rc/require 'doomed)
-  (rc/deploy (rc/require 'doomed)))
+    (rc/load 'doomed)
+  (rc/deploy (rc/load 'doomed)))
 
-(rc/require 'keybindings)
+(rc/load 'keybindings)
 
 (setq custom-file (rc/cache "custom.el"))
 (load custom-file t t)

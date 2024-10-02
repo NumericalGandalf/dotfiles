@@ -16,11 +16,11 @@
 
 (use-package marginalia
   :init
-  (marginalia-mode))
+  (marginalia-mode 1))
 
 (use-package vertico
   :init
-  (vertico-mode)
+  (vertico-mode 1)
   :custom
   (vertico-cycle t)
   (vertico-preselect 'no-prompt))
@@ -43,7 +43,7 @@
 (use-package corfu
   :defer 0
   :config
-  (global-corfu-mode)
+  (global-corfu-mode 1)
   :custom
   (corfu-cycle t)
   (corfu-auto t)

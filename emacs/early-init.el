@@ -1,8 +1,8 @@
-(defmacro rc/require (feature)
-  "Load FEATURE from the config `lisp' directory."
+(defmacro rc/load (feature)
+  "Load emacs config file FEATURE."
   `(load (locate-user-emacs-file (symbol-name ,feature)) t t))
 
-(rc/require 'rc)
+(rc/load 'rc)
 
 (when (native-comp-available-p)
   (startup-redirect-eln-cache (rc/cache "eln/"))
@@ -18,3 +18,8 @@
 (menu-bar-mode 0)
 (tool-bar-mode 0)
 (scroll-bar-mode 0)
+
+(setq custom-theme-directory user-emacs-directory)
+(load-theme 'zenburn t)
+
+(rc/load 'font)

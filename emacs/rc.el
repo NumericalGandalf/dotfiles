@@ -29,13 +29,14 @@ Cache directories are system dependent:
 
 (defun rc/temp (&optional unique file)
   "Expand (FILE) from a (UNIQUE) temp directory."
-  (let ((dir (rc/expand "Emacs/" (temporary-file-directory))))
+  (let ((dir (rc/expand "emacs/" (temporary-file-directory))))
     (when unique
       (let ((key (int-to-string (time-to-seconds))))
         (when rc/posix-p
           (setq key (format "%d.%s" (user-uid) key)))
         (setq dir (rc/expand (concat key "/") dir))))
-    (make-directory dir t)
+    (unless (file-directory-p dir)
+      (make-directory dir t))
     (rc/expand file dir)))
 
 (defun rc/dot (file)
@@ -64,10 +65,12 @@ If GET-ONLY is non-nil, only return the scripts path."
 
 (defmacro rc/deploy (&rest body)
   "Run BODY on config deployment."
-  (when (boundp 'rc/deploy-hook)
+  (when (boundp 'rc/deploy)
     `(add-hook 'rc/deploy-hook (lambda () ,@body))))
 
 (when (rc/cmdline-p "--deploy")
+  (defvar rc/deploy t
+    "Bound means config deployment has been run.")
   (defvar rc/deploy-hook nil
     "Hooks to run on config deployment.")
   (defvar rc/deploy-fun (lambda () (run-hooks 'rc/deploy-hook))

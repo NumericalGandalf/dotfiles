@@ -82,30 +82,27 @@
   (advice-add 'move-text-up :after #'move-text@indent)
   (advice-add 'move-text-down :after #'move-text@indent))
 
-;; (defun duplicate-region (&optional n)
-;;   "Duplicates")
-
 (unless (daemonp)
   (defun display-startup-echo-area-message ()))
 
-(global-display-line-numbers-mode)
-(column-number-mode)
+(global-display-line-numbers-mode 1)
+(column-number-mode 1)
 
-(global-visual-line-mode)
+(global-visual-line-mode 1)
 (diminish 'visual-line-mode)
 
-(pixel-scroll-mode)
-(pixel-scroll-precision-mode)
+(pixel-scroll-mode 1)
+(pixel-scroll-precision-mode 1)
 
-(save-place-mode)
-(savehist-mode)
-(global-auto-revert-mode)
+(save-place-mode 1)
+(savehist-mode 1)
+(global-auto-revert-mode 1)
 
-(editorconfig-mode)
+(editorconfig-mode 1)
 (diminish 'editorconfig-mode)
 
 (ffap-bindings)
-(electric-pair-mode)
+(electric-pair-mode 1)
 
-(which-key-mode)
+(which-key-mode 1)
 (diminish 'which-key-mode)

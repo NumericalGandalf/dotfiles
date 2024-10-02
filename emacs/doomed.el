@@ -1,6 +1,7 @@
 (use-package doom-modeline
   :init
-  (doom-modeline-mode)
+  (unless after-init-time
+    (doom-modeline-mode 1))
   :custom
   (doom-modeline-percent-position 'mode-line-percent-position)
   (doom-modeline-buffer-file-name-style 'file-name-with-project)
