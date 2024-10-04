@@ -1,46 +1,28 @@
-(defgroup font nil
-  "Font Management."
-  :prefix "font-"
+(defgroup nerd-fonts nil
+  "Nerd-fonts management."
+  :prefix "nerd-fonts-"
   :group 'emacs)
 
-(defcustom font-name nil
-  "Default font name."
+(defcustom nerd-fonts-name nil
+  "Nerd-font name."
   :type 'string)
 
-(defcustom font-name-var (cond (rc/posix-p "DejaVu Sans")
-                               (rc/mswin-p "Microsoft Sans Serif"))
-  "Variable pitch font name."
-  :type 'string)
-
-(defcustom font-height nil
-  "Default font height."
+(defcustom nerd-fonts-height nil
+  "Nerd-font height."
   :type 'natnum)
 
-(defun font-load ()
-  "Load font."
-  (interactive)
-  (when (and font-name font-name-var font-height)
-    (let ((height (* font-height 10)))
-      (set-face-attribute 'default nil :font font-name :height height)
-      (set-face-attribute 'fixed-pitch nil :family font-name)
-      (set-face-attribute 'fixed-pitch-serif nil :family font-name)
-      (set-face-attribute 'variable-pitch nil :family font-name-var))))
+(defun nerd-fonts--ensure-font (font-name font-file)
+  "Ensure FONT-NAME with FONT-FILE is installed."
+  (let* ((target-dir (rc/temp t))
+         (target-file (rc/expand font-file target-dir))
+         (default-directory target-dir)
+         (url "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/"))
+    (url-copy-file (concat url font-file) target-file t)
+    (let* ((default-directory (dired-compress-file target-file)))
+      (rc/script (cond (rc/posix-p "fonts-install.sh")
+                       (rc/mswin-p "fonts-install.ps1"))))))
 
-(add-hook 'emacs-startup-hook #'font-load)
-
-(defun font-nerds--ensure-font (font-name font-file)
-  "Ensure that FONT-NAME with FONT-FILE is installed."
-  (unless (member font-name (font-family-list))
-    (let* ((target-dir (rc/temp t))
-           (target-file (rc/expand font-file target-dir))
-           (default-directory target-dir)
-           (url "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/"))
-      (url-copy-file (concat url font-file) target-file t)
-      (let* ((default-directory (dired-compress-file target-file)))
-        (rc/script (cond (rc/posix-p "fonts-install.sh")
-                         (rc/mswin-p "fonts-install.ps1")))))))
-
-(defun font-nerds--fetch-list ()
+(defun nerd-fonts--fetch-list ()
   "Fetch a list of downloadable nerd-fonts."
   (let ((fonts (make-hash-table :test 'equal))
         (max-name-len 0)
@@ -73,7 +55,7 @@
               (puthash name (list :file file :info info :len name-len) fonts))))))
     `(:fonts ,fonts :max-name-len ,max-name-len)))
 
-(defun font-nerds--completion-fun (str pred flag)
+(defun nerd-fonts--completion-fun (str pred flag)
   "Completion function for nerd-fonts."
   (pcase flag
     ('metadata
@@ -87,29 +69,23 @@
               (concat ws str))))))
     (_ (all-completions str fonts pred))))
 
-(define-advice font-load (:before (&rest _) nerds)
-  "Load nerd-font, if called interactively."
-  (when (or (not (and font-name font-height))
+(defun nerd-fonts-load ()
+  "Load font `nerd-fonts-name' with height `nerd-fonts-height'."
+  (when (or (not (and nerd-fonts-name nerd-fonts-height))
             (called-interactively-p))
-    (let* ((font-list (font-nerds--fetch-list))
+    (let* ((font-list (nerd-fonts--fetch-list))
            (fonts (plist-get font-list :fonts))
            (max-name-len (plist-get font-list :max-name-len))
-           (fun #'font-nerds--completion-fun)
-           (name (completing-read "Load nerd-font: " fun nil t nil 'font-nerds))
-           (height (round (read-number "Font height: " 13)))
+           (fun #'nerd-fonts--completion-fun)
+           (name (completing-read "Load nerd-font: " fun nil t nil 'nerd-fonts))
+           (height (round (read-number "Nerd-font height: " 13)))
            (file (plist-get (gethash name fonts) :file))
            (save-silently t))
-      (font-nerds--ensure-font name file)
-      (customize-save-variable 'font-name name)
-      (customize-save-variable 'font-height height)
-      (unless font-name-var
-        (customize-save-variable 'font-name-var name)))))
+      (unless (member name (font-family-list))
+        (nerd-fonts--ensure-font name file))
+      (customize-save-variable 'nerd-fonts-name name)
+      (customize-save-variable 'nerd-fonts-height height)))
+  (let ((height (* nerd-fonts-height 10)))
+    (set-face-attribute 'default nil :font nerd-fonts-name :height height)))
 
-(define-minor-mode font-nerds-mode
-  "If non-nil, usage of nerd-fonts is enabled."
-  :init-value t
-  :global t
-  :lighter nil
-  (if font-nerds-mode
-      (advice-add 'font-load :before #'font-load@nerds)
-    (advice-remove 'font-load #'font-load@nerds)))
+(add-hook 'after-init-hook #'nerd-fonts-load)

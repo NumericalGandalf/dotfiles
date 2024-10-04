@@ -35,28 +35,14 @@
 
   (general-define-key
    :prefix "C-c"
-   "b r" #'revert-buffer-quick
-
    "f v" #'find-variable
    "f f" #'find-function
    "f l" #'find-library
-
-   "z l" #'load-file
-   "z f" #'font-load
-   "z t" #'consult-theme
-   "z b" #'eval-buffer
-
-   "p l" #'package-list-packages
-   "p i" #'package-install
-   "p d" #'package-delete
-   "p r" #'package-reinstall
-   "p y" #'use-package-report
 
    "h f" #'describe-face
    "h g" #'customize-group
    "h t" #'describe-theme
 
-   "r e" #'eshell
    "r f" #'consult-fd
    "r g" #'consult-ripgrep
    "r y" #'consult-git-grep
@@ -84,16 +70,8 @@
   (general-def vterm-mode-map
     "C-j" #'vterm-send-C-c)
 
-  (when init-file-debug
-    (general-define-key
-     :prefix "C-h 4"
-     "u" #'use-package-report
-     "p" #'profiler-report))
-
   (when rc/posix-p
     (general-define-key
      :prefix "C-c"
      "r m" #'man
-     "r t" #'vterm
-
-     "p g" #'guix)))
+     "r t" #'vterm)))

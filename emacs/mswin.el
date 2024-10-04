@@ -1,10 +1,11 @@
 (defgroup mswin nil
-  "Windows OS management."
+  "MS Windows config management."
   :prefix "mswin-"
   :group 'emacs)
 
 (defun mswin-chemacs-setup ()
   "Setup chemacs2 for config management."
+  (interactive)
   (let* ((home-dir (expand-file-name "./" (getenv "APPDATA")))
          (emacs-dir (expand-file-name ".emacs.d/" home-dir))
          (chemacs-repo "https://github.com/plexus/chemacs2.git")
@@ -22,19 +23,3 @@
       (insert (format "((%s . ((user-emacs-directory . %s))))"
                       (prin1-to-string "default")
                       (prin1-to-string (rc/expand)))))))
-
-(define-advice nerd-icons-install-fonts (:around (&rest _) mswin)
-  "Install fonts for `nerd-icons' on MS Windows."
-  (let* ((url "https://raw.githubusercontent.com/rainstormstudio/nerd-icons.el/main/fonts/")
-         (dest (rc/temp t))
-         (sysdir (rc/cache "../../Local/Microsoft/Windows/Fonts/"))
-         (default-directory dest))
-    (dolist (font nerd-icons-font-names)
-      (let ((file (rc/expand font dest))
-            (sysfile (rc/expand font sysdir)))
-        (unless (file-exists-p sysfile)
-          (url-copy-file (concat url font) file t))))
-    (rc/script "fonts-install.ps1")))
-
-(rc/deploy
- (mswin-chemacs-setup))
