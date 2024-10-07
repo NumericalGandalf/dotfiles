@@ -21,19 +21,17 @@
       ring-bell-function #'ignore
       echo-keystrokes 0)
 
-(setq scroll-step 1
-      scroll-margin 4
-      scroll-preserve-screen-position t)
-
 (setq resize-mini-windows t
       enable-recursive-minibuffers t
       completion-ignore-case  t
       read-buffer-completion-ignore-case t
       tab-always-indent 'complete)
 
-(setq mode-line-percent-position '(6 "%q"))
+(setq scroll-step 1
+      scroll-margin 4
+      scroll-preserve-screen-position t)
 
-(setq-default tab-width 4)
+(setq mode-line-percent-position '(6 "%q"))
 
 (with-eval-after-load 'compile
   (setq compilation-ask-about-save nil
@@ -49,9 +47,6 @@
 (with-eval-after-load 'minibuffer
   (setq completions-detailed t
         read-file-name-completion-ignore-case t))
-
-(with-eval-after-load 'simple
-  (setq suggest-key-bindings nil))
 
 (with-eval-after-load 'vc-hooks
   (setq vc-follow-symlinks t))
@@ -72,13 +67,19 @@
 (with-eval-after-load 'files
   (setq make-backup-files nil)
   (setq-default auto-save-default nil)
-  (auto-save-visited-mode 1))
+  (add-to-list 'auto-mode-alist '("\\.jsonc\\'" . js-json-mode)))
+
+(with-eval-after-load 'eglot
+  (setq eglot-ignored-server-capabilities
+        '(:documentHighlightProvider
+          :codeLensProvider
+          :documentOnTypeFormattingProvider
+          :colorProvider
+          :foldingRangeProvider
+          :inlayHintProvider)))
 
 (with-eval-after-load 'auth-source
   (setq auth-source-save-behavior nil))
-
-(with-eval-after-load 'shell
-  (setq shell-kill-buffer-on-exit t))
 
 (with-eval-after-load 'autorevert
   (setq global-auto-revert-non-file-buffers t
@@ -101,8 +102,6 @@
         no-littering-var-directory (rc/cache))
   :custom
   (server-auth-dir (rc/cache "server/")))
-
-(use-package diminish)
 
 (use-package orderless
   :init
@@ -136,6 +135,11 @@
   :hook
   (embark-collect-mode-hook . consult-preview-at-point-mode))
 
+(use-package cape
+  :hook
+  ((completion-at-point-functions . cape-dabbrev)
+   (completion-at-point-functions . cape-file)))
+
 (use-package corfu
   :defer 0
   :config
@@ -153,69 +157,80 @@
   :init
   (setq magit-auto-revert-mode nil))
 
-(use-package sudo-edit)
-
-(use-package multiple-cursors)
-
-(use-package buffer-move)
-
-(use-package move-text
-  :config
-  (defun move-text@indent (&rest _)
-    "Indent region after text moved."
-    (let ((deactivate deactivate-mark))
-      (if (region-active-p)
-          (indent-region (region-beginning) (region-end))
-        (indent-region (line-beginning-position) (line-end-position)))
-      (setq deactivate-mark deactivate)))
-  (advice-add 'move-text-up :after #'move-text@indent)
-  (advice-add 'move-text-down :after #'move-text@indent))
-
 (use-package wgrep
   :custom
   (wgrep-enable-key "e")
   (wgrep-auto-save-buffer t))
 
-(defun rc/temp (&optional unique file)
-  "Expand (FILE) from a (UNIQUE) temp directory."
-  (let ((dir (rc/expand "emacs/" (temporary-file-directory))))
-    (when unique
-      (let ((key (int-to-string (time-to-seconds))))
-        (when rc/posix-p
-          (setq key (format "%d.%s" (user-uid) key)))
-        (setq dir (rc/expand (concat key "/") dir))))
-    (unless (file-directory-p dir)
-      (make-directory dir t))
-    (rc/expand file dir)))
+(use-package sudo-edit)
+(use-package multiple-cursors)
+(use-package move-text)
 
-(defun rc/script (script)
-  "Execute SCRIPT located in the dotfiles `scripts' directory.
-If GET-ONLY is non-nil, only return the scripts path."
-  (let* ((path (rc/expand script (rc/expand "../scripts/")))
-         (prefix (pcase (file-name-extension path)
-                   ("sh" "bash")
-                   ("ps1" "powershell"))))
-    (call-process-shell-command (format "%s %s" prefix path))))
+(use-package rust-mode)
+(use-package yaml-mode)
+(use-package cmake-mode)
 
-(defmacro rc/dot (file)
-  "Expand FILE from the dotfiles `dots' directory."
-  `(rc/expand ,file (rc/expand "../dots/")))
+(use-package general
+  :defer 0
+  :config
+  (general-define-key
+   "C-S-N" #'next-buffer
+   "C-S-P" #'previous-buffer
+   "M-y" #'consult-yank-pop
+   "C-s" #'consult-line
+   "C-r" #'sudo-edit
+   "C-S-r" #'sudo-edit-find-file
+   "M-P" #'move-text-up
+   "M-N" #'move-text-down
+   "C->" #'mc/mark-next-like-this
+   "C-<" #'mc/unmark-next-like-this)
 
-(defmacro rc/load (file)
-  "Load user config file FEATURE."
-  `(load (rc/expand (symbol-name ,file)) t t))
+  (general-define-key
+   :prefix "C-x"
+   "b" #'consult-buffer
+   "4 b" #'consult-buffer-other-window
+   "5 b" #'consult-buffer-other-frame
+   "r b" #'consult-bookmark
+   "C-b" #'ibuffer)
 
-(cond (rc/posix-p (rc/load 'posix))
-      (rc/mswin-p (rc/load 'mswin)))
+  (general-define-key
+   :prefix "M-g"
+   "e" #'consult-compile-error
+   "o" #'consult-outline
+   "i" #'consult-imenu)
 
-(rc/load 'nerd-fonts)
-(rc/load 'keybindings)
+  (general-define-key
+   :prefix "C-c"
+   "r f" #'consult-fd
+   "r g" #'consult-ripgrep
+   "r y" #'consult-git-grep
+   "C->" #'mc/mark-all-like-this
+   "C-<" #'mc/edit-lines
+   "l s" #'eglot)
+
+  (general-def minibuffer-local-map
+    "C-." #'embark-export
+    "C-;" #'embark-act)
+
+  (general-def corfu-map
+    "RET" nil)
+
+  (general-def eglot-mode-map
+    :prefix "C-c l"
+    "d" #'eglot-find-declaration
+    "t" #'eglot-find-typeDefinition
+    "i" #'eglot-find-implementation
+    "r" #'eglot-rename
+    "f" #'eglot-format
+    "a" #'eglot-code-actions
+    "e" #'consult-flymake)
+
+  (general-def vterm-mode-map
+    "C-j" #'vterm-send-C-c))
 
 (global-display-line-numbers-mode 1)
 (column-number-mode 1)
-
 (global-visual-line-mode 1)
-(diminish 'visual-line-mode)
 
 (pixel-scroll-mode 1)
 (pixel-scroll-precision-mode 1)
@@ -224,14 +239,16 @@ If GET-ONLY is non-nil, only return the scripts path."
 (savehist-mode 1)
 
 (global-auto-revert-mode 1)
+(auto-save-visited-mode 1)
 
+(use-package editorconfig)
 (editorconfig-mode 1)
-(diminish 'editorconfig-mode)
 
 (ffap-bindings)
 (electric-pair-mode 1)
 
-(which-key-mode 1)
-(diminish 'which-key-mode)
-
-(load custom-file t t)
+(dolist (file `("nerd-fonts.el"
+                ,(cond (rc/posix-p "posix.el")
+                       (rc/mswin-p "mswin.el"))
+                ,custom-file))
+  (load (rc/expand file) t t))

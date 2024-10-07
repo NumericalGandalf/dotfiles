@@ -3,6 +3,8 @@
   :prefix "mswin-"
   :group 'emacs)
 
+(use-package powershell)
+
 (defun mswin-chemacs-setup ()
   "Setup chemacs2 for config management."
   (interactive)

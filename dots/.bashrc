@@ -1,9 +1,7 @@
-#!/usr/bin/sh
+#!/usr/bin/bash
 
-function path_prepend ()
-{
-    if [[ -d "$1" ]]
-    then 
+function path_prepend () {
+    if [[ -d "$1" ]]; then 
         case ":$PATH:" in
             *:"$1":*) ;;
             *) PATH="$1${PATH:+:${PATH}}"
@@ -18,7 +16,6 @@ export ALTERNATE_EDITOR="emacs"
 
 export BROWSER="firefox"
 
-if [[ "${INSIDE_EMACS}" = "vterm" ]]
-then
+if [[ "${INSIDE_EMACS}" = "vterm" ]]; then
     . "${EMACS_VTERM_PATH}/etc/emacs-vterm-bash.sh"
 fi

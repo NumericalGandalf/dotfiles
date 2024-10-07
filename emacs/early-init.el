@@ -34,5 +34,7 @@ If DIR is nil, expand from `user-emacs-directory'."
 (tool-bar-mode 0)
 (scroll-bar-mode 0)
 
+;; (set-face-attribute 'default nil :font "Iosevka" :height 140)
+
 (setq custom-theme-directory user-emacs-directory)
 (load-theme 'zenburn t)
