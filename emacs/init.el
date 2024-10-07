@@ -1,3 +1,9 @@
+(menu-bar-mode 0)
+(tool-bar-mode 0)
+(scroll-bar-mode 0)
+
+(set-face-attribute 'default nil :font "Iosevka-14")
+
 (require 'package)
 (require 'use-package)
 
@@ -103,11 +109,24 @@
   :custom
   (server-auth-dir (rc/cache "server/")))
 
+(use-package zenburn-theme
+  :init
+  (load-theme 'zenburn t)
+  :config
+  (zenburn-with-color-variables
+    (custom-theme-set-faces
+     'zenburn
+     `(fringe ((t (:inherit default))))
+     `(mode-line ((t (:foreground ,zenburn-green+1 :background ,zenburn-bg-1))))
+     `(mode-line-inactive ((t (:foreground ,zenburn-green-2 :background ,zenburn-bg-05))))
+     `(vertical-border ((t (:foreground ,zenburn-fg-1))))
+     `(line-number ((t (:inherit default :foreground ,zenburn-bg+3))))))
+  (enable-theme 'zenburn))
+
 (use-package orderless
   :init
-  (setq completion-styles '(orderless))
-  :custom
-  (completion-category-defaults nil))
+  (setq completion-styles '(orderless)
+        completion-category-defaults nil))
 
 (use-package marginalia
   :init
@@ -232,10 +251,7 @@
 (column-number-mode 1)
 (global-visual-line-mode 1)
 
-(pixel-scroll-mode 1)
-(pixel-scroll-precision-mode 1)
-
-(save-place-mode 1)
+(recentf-mode 1)
 (savehist-mode 1)
 
 (global-auto-revert-mode 1)
@@ -247,8 +263,9 @@
 (ffap-bindings)
 (electric-pair-mode 1)
 
-(dolist (file `("nerd-fonts.el"
-                ,(cond (rc/posix-p "posix.el")
-                       (rc/mswin-p "mswin.el"))
-                ,custom-file))
+(dolist (file `(,(cond (rc/posix-p "posix.el")
+                       (rc/mswin-p "mswin.el"))))
   (load (rc/expand file) t t))
+
+(when (file-exists-p custom-file)
+  (load-file custom-file))

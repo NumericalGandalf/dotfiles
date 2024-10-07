@@ -26,15 +26,3 @@ If DIR is nil, expand from `user-emacs-directory'."
 (when (native-comp-available-p)
   (startup-redirect-eln-cache (rc/cache "eln/"))
   (setq native-comp-async-report-warnings-errors 'silent))
-
-(setq frame-inhibit-implied-resize t
-      frame-resize-pixelwise t)
-
-(menu-bar-mode 0)
-(tool-bar-mode 0)
-(scroll-bar-mode 0)
-
-;; (set-face-attribute 'default nil :font "Iosevka" :height 140)
-
-(setq custom-theme-directory user-emacs-directory)
-(load-theme 'zenburn t)
