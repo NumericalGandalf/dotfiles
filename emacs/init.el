@@ -2,7 +2,9 @@
 (tool-bar-mode 0)
 (scroll-bar-mode 0)
 
-(set-face-attribute 'default nil :font "Iosevka-14")
+(let ((font "Iosevka-14"))
+  (set-face-attribute 'default nil :font font)
+  (add-to-list 'default-frame-alist `(font . ,font)))
 
 (require 'package)
 (require 'use-package)
