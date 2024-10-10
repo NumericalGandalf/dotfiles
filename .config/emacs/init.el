@@ -183,24 +183,25 @@
   :defer 0
   :config
   (general-define-key
-   "C-S-N" #'next-buffer
-   "C-S-P" #'previous-buffer
+   "C-S-n" #'next-buffer
+   "C-S-p" #'previous-buffer
    "M-y" #'consult-yank-pop
    "C-s" #'consult-line
    "C-r" #'sudo-edit
    "C-S-r" #'sudo-edit-find-file
-   "M-P" #'move-text-up
-   "M-N" #'move-text-down
+   "M-S-p" #'move-text-up
+   "M-S-n" #'move-text-down
    "C->" #'mc/mark-next-like-this
    "C-<" #'mc/unmark-next-like-this)
 
   (general-define-key
    :prefix "C-x"
+   "C-b" #'ibuffer
+   "C-S-f" #'recentf
    "b" #'consult-buffer
    "4 b" #'consult-buffer-other-window
    "5 b" #'consult-buffer-other-frame
-   "r b" #'consult-bookmark
-   "C-b" #'ibuffer)
+   "r b" #'consult-bookmark)
 
   (general-define-key
    :prefix "M-g"
