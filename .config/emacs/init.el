@@ -1,11 +1,3 @@
-(menu-bar-mode 0)
-(tool-bar-mode 0)
-(scroll-bar-mode 0)
-
-(let ((font "Iosevka-14"))
-  (set-face-attribute 'default nil :font font)
-  (add-to-list 'default-frame-alist `(font . ,font)))
-
 (require 'package)
 (require 'use-package)
 
@@ -147,10 +139,6 @@
   (xref-show-xrefs-function #'consult-xref)
   (xref-show-definitions-function #'consult-xref))
 
-(use-package embark
-  :custom
-  (prefix-help-command #'embark-prefix-help-command))
-
 (use-package embark-consult
   :after (embark consult)
   :hook
@@ -222,8 +210,8 @@
 
   (general-define-key
    :prefix "C-c"
-   "r f" #'consult-fd
-   "r g" #'consult-ripgrep
+   "r f" #'consult-find
+   "r g" #'consult-grep
    "r y" #'consult-git-grep
    "C->" #'mc/mark-all-like-this
    "C-<" #'mc/edit-lines
@@ -244,10 +232,7 @@
     "r" #'eglot-rename
     "f" #'eglot-format
     "a" #'eglot-code-actions
-    "e" #'consult-flymake)
-
-  (general-def vterm-mode-map
-    "C-j" #'vterm-send-C-c))
+    "e" #'consult-flymake))
 
 (global-display-line-numbers-mode 1)
 (column-number-mode 1)
@@ -264,10 +249,6 @@
 
 (ffap-bindings)
 (electric-pair-mode 1)
-
-(dolist (file `(,(cond (rc/posix-p "posix.el")
-                       (rc/mswin-p "mswin.el"))))
-  (load (rc/expand file) t t))
 
 (when (file-exists-p custom-file)
   (load-file custom-file))
