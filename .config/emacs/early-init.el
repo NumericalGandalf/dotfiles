@@ -13,15 +13,14 @@
 (defun rc/expand (&optional file dir)
   "Expand FILE from DIR.
 If DIR is nil, expand from `user-emacs-directory'."
-  (let ((file (or file "./"))
-        (dir (or dir (file-truename user-emacs-directory))))
-    (file-truename (expand-file-name file dir))))
+  (file-truename
+   (expand-file-name (or file "./")
+                     (or dir (file-truename user-emacs-directory)))))
 
 (defun rc/cache (&optional file)
   "Expand FILE from emacs cache directory."
-  (let ((dir (cond (rc/posix-p "~/.cache/emacs/")
-                   (rc/mswin-p (rc/expand "Emacs/" (getenv "APPDATA"))))))
-    (rc/expand file dir)))
+  (rc/expand file (cond (rc/posix-p "~/.cache/emacs/")
+                        (rc/mswin-p (rc/expand "Emacs/" (getenv "APPDATA"))))))
 
 (when (native-comp-available-p)
   (startup-redirect-eln-cache (rc/cache "eln/"))

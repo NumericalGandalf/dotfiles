@@ -103,19 +103,8 @@
   :custom
   (server-auth-dir (rc/cache "server/")))
 
-(use-package zenburn-theme
-  :init
-  (load-theme 'zenburn t)
-  :config
-  (zenburn-with-color-variables
-    (custom-theme-set-faces
-     'zenburn
-     `(fringe ((t (:inherit default))))
-     `(mode-line ((t (:foreground ,zenburn-green+1 :background ,zenburn-bg-1))))
-     `(mode-line-inactive ((t (:foreground ,zenburn-green-2 :background ,zenburn-bg-05))))
-     `(vertical-border ((t (:foreground ,zenburn-fg-1))))
-     `(line-number ((t (:inherit default :foreground ,zenburn-bg+3))))))
-  (enable-theme 'zenburn))
+(use-package ef-themes
+  )
 
 (use-package orderless
   :init
