@@ -38,77 +38,71 @@ bindsym $mod+Shift+7 move container workspace 7, workspace 7
 bindsym $mod+Shift+8 move container workspace 8, workspace 8
 bindsym $mod+Shift+9 move container workspace 9, workspace 9
 
-set $font Hack Nerd Font
-font pango:$font 10
-
 popup_during_fullscreen smart
 focus_on_window_activation smart
 smart_borders on
 
+font pango:Iosevka 11
+titlebar_padding 3 1
+
 for_window [window_role="pop-up"] floating enable
 for_window [window_role="task_dialog"] floating enable
 for_window [shell="xwayland"] title_format "[XWayland] %title"
+for_window [title="^app-launcher.el"] floating enable, border pixel
 
 bindsym $mod+Shift+q kill
-bindsym $mod+Shift+d exec wmenu-run -bi -p "Run" -f "$font 13"
-bindsym $mod+Shift+t exec $TERMINAL
-bindsym $mod+Shift+w exec $BROWSER
+bindsym $mod+Shift+v layout toggle split tabbed
+bindsym $mod+Shift+b split toggle
+bindsym $mod+Shift+f floating toggle
+bindsym $mod+Shift+z fullscreen toggle
 
-bindsym $mod+Shift+y layout toggle split tabbed
-bindsym $mod+Shift+u split toggle
-bindsym $mod+Shift+i floating toggle
-bindsym $mod+Shift+o fullscreen toggle
+bindsym $mod+Shift+d exec emacsclient -r -e "(app-launcher)"
+bindsym $mod+Shift+e exec emacsclient -c
+bindsym $mod+Shift+t exec alacritty
+bindsym $mod+Shift+w exec firefox
 
 bindsym $mod+Shift+s mode "System"
 mode "System" {
     bindsym e exit
     bindsym c reload
-
-    bindsym l exec loginctl lock-session, mode "default"
+    bindsym l exec systemctl suspend, mode "default"
+    bindsym Shift+l exec loginctl lock-session, mode "default"
     bindsym r exec systemctl reboot, mode "default"
-    bindsym s exec systemctl suspend, mode "default"
     bindsym p exec systemctl poweroff, mode "default"
     bindsym h exec systemctl hibernate, mode "default"
     
     bindsym Escape mode "default"
 }
 
-set $step 10
-
 bindsym $mod+Shift+r mode "Resize"
 mode "Resize" {
-    bindsym $right resize grow right $step px or $step ppt
-    bindsym Shift+$right resize shrink right $step px or $step ppt
+    bindsym $right resize grow right 10 ppt
+    bindsym Shift+$right resize shrink right 10 ppt
+    bindsym Ctrl+$right resize grow right 5 ppt
+    bindsym Ctrl+Shift+$right resize shrink right 5 ppt
     
-    bindsym $down resize grow down $step px or $step ppt
-    bindsym Shift+$down resize shrink down $step px or $step ppt
+    bindsym $left resize grow left 10 ppt
+    bindsym Shift+$left resize shrink left 10 ppt
+    bindsym Ctrl+$left resize grow left 5 ppt
+    bindsym Ctrl+Shift+$left resize shrink left 5 ppt    
     
-    bindsym $up resize grow up $step px or $step ppt
-    bindsym Shift+$up resize shrink up $step px or $step ppt
+    bindsym $down resize grow down 10 ppt
+    bindsym Shift+$down resize shrink down 10 ppt
+    bindsym Ctrl+$down resize grow down 5 ppt
+    bindsym Ctrl+Shift+$down resize shrink down 5 ppt
     
-    bindsym $left resize grow left $step px or $step ppt
-    bindsym Shift+$left resize shrink left $step px or $step ppt
-    
-    bindsym Escape mode "default"
-}
-
-bindsym XF86AudioRaiseVolume exec amixer -q sset Master $step%+
-bindsym XF86AudioLowerVolume exec amixer -q sset Master $step%-
-bindsym XF86AudioMute exec amixer -q sset Master toggle"
-
-bindsym $mod+Shift+a mode "Audio"
-mode "Audio" {
-    bindsym $up exec amixer -q sset Master $step%+
-    bindsym $down exec amixer -q sset Master $step%-
-    bindsym n exec amixer -q sset Master toggle, mode "default"
-    
-    bindsym $left exec amixer -q sset Capture $step%+
-    bindsym $right exec amixer -q sset Capture $step%-
-    bindsym m exec amixer -q sset Capture toggle, mode "default"
+    bindsym $up resize grow up 10 ppt
+    bindsym Shift+$up resize shrink up 10 ppt
+    bindsym Ctrl+$up resize grow up 5 ppt
+    bindsym Ctrl+Shift+$up resize shrink up 5 ppt
     
     bindsym Escape mode "default"
 }
 
+bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -5%
+bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +5%
+bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
+bindsym XF86AudioMicMute exec pactl set-source-mute @DEFAULT_SOURCE@ toggle
 
 bar {
     swaybar_command swaybar
@@ -117,13 +111,15 @@ bar {
 
 input * {
     xkb_layout us,de
-    xkb_options grp:win_space_toggle,caps:swapescape
+    xkb_options grp:win_space_toggle
 }
 
-set $bg "~/.config/sway/ArchLinux.png"
+set $bg "~/.config/sway/wallpaper.png"
+
+set $lock "swaylock -i $bg -s fit"
+exec swayidle -w before-sleep $lock lock $lock
 
 output * bg $bg fit
 output "Dell Inc. AW2724DM 66YZHV3" mode 2560x1440@165Hz scale 1.25
 
-set $lock "swaylock -i $bg -s fit"
-exec swayidle -w before-sleep $lock lock $lock
+exec emacs --daemon

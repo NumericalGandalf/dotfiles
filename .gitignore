@@ -1,0 +1,4 @@
+.config/emacs/elpa/
+.config/emacs/var/
+.config/emacs/eln-cache/
+.config/emacs/custom.el

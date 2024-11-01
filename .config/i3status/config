@@ -45,13 +45,13 @@ cpu_usage {
     format = "CPU: %usage"
 }
 
-load {
-    format = "Load: %5min"
-}
-
-disk "/" {
+disk / {
     format = "Disk: %used (%percentage_used)"
     prefix_type = "decimal"
+}
+
+load {
+    format = "Load: %5min"
 }
 
 memory {

@@ -1,9 +1,6 @@
 (require 'package)
 (require 'use-package)
 
-(setq package-user-dir (rc/cache "packages/")
-      package-gnupghome-dir (rc/expand "gnupg/" package-user-dir))
-
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 
 (package-initialize)
@@ -13,7 +10,7 @@
       use-package-always-defer t
       use-package-hook-name-suffix nil)
 
-(setq custom-file (rc/cache "custom.el")
+(setq custom-file (locate-user-emacs-file "custom.el")
       create-lockfiles nil)
 
 (setq use-short-answers t
@@ -69,15 +66,6 @@
   (setq-default auto-save-default nil)
   (add-to-list 'auto-mode-alist '("\\.jsonc\\'" . js-json-mode)))
 
-(with-eval-after-load 'eglot
-  (setq eglot-ignored-server-capabilities
-        '(:documentHighlightProvider
-          :codeLensProvider
-          :documentOnTypeFormattingProvider
-          :colorProvider
-          :foldingRangeProvider
-          :inlayHintProvider)))
-
 (with-eval-after-load 'auth-source
   (setq auth-source-save-behavior nil))
 
@@ -95,16 +83,12 @@
 (with-eval-after-load 'man
   (setq Man-notify-method 'aggressive))
 
-(use-package no-littering
-  :demand
-  :init
-  (setq no-littering-etc-directory (rc/expand)
-        no-littering-var-directory (rc/cache))
-  :custom
-  (server-auth-dir (rc/cache "server/")))
+(use-package no-littering :demand)
+(use-package diminish)
 
-(use-package ef-themes
-  )
+(use-package doom-themes
+  :init
+  (load-theme 'doom-gruvbox t))
 
 (use-package orderless
   :init
@@ -139,8 +123,7 @@
    (completion-at-point-functions . cape-file)))
 
 (use-package corfu
-  :defer 0
-  :config
+  :init
   (global-corfu-mode 1)
   :custom
   (corfu-cycle t)
@@ -155,39 +138,69 @@
   :init
   (setq magit-auto-revert-mode nil))
 
-(use-package wgrep
-  :custom
-  (wgrep-enable-key "e")
-  (wgrep-auto-save-buffer t))
+(use-package projectile
+  :diminish
+  :init
+  (projectile-mode 1))
 
 (use-package sudo-edit)
-(use-package multiple-cursors)
 (use-package move-text)
 
 (use-package rust-mode)
 (use-package yaml-mode)
 (use-package cmake-mode)
 
+(use-package flycheck
+  :hook
+  (lsp-mode-hook . flycheck-mode))
+
+(use-package lsp-mode
+  :hook
+  ((c-mode-hook c++-mode-hook rust-mode-hook python-mode-hook) . lsp-deferred)
+  :custom
+  (lsp-completion-provider :none)
+  (lsp-auto-guess-root t)
+  (lsp-headerline-breadcrumb-enable nil))
+
+(use-package yasnippet
+  :after lsp-mode)
+
+(use-package all-the-icons
+  :after lsp-mode)
+
+(use-package lsp-java
+  :after lsp-mode)
+
+(unless (package-installed-p 'app-launcher)
+  (package-vc-install '(app-launcher :url "https://github.com/NumericalGandalf/app-launcher.git")))
+
+(defun app-launcher ()
+  "Create frame for `app-launcher-run-app'"
+  (interactive)
+  (let* ((height 21)
+         (vertico-count (1- height)))
+    (with-selected-frame (make-frame `((name . "app-launcher.el")
+                                       (height . ,height)
+                                       (width . ,(* height 5))
+                                       (minibuffer . only)))
+      (unwind-protect
+          (app-launcher-run-app t)
+        (delete-frame)))))
+
 (use-package general
-  :defer 0
-  :config
+  :init
   (general-define-key
-   "C-S-n" #'next-buffer
-   "C-S-p" #'previous-buffer
    "M-y" #'consult-yank-pop
    "C-s" #'consult-line
-   "C-r" #'sudo-edit
-   "C-S-r" #'sudo-edit-find-file
-   "M-S-p" #'move-text-up
-   "M-S-n" #'move-text-down
-   "C->" #'mc/mark-next-like-this
-   "C-<" #'mc/unmark-next-like-this)
+   "M-P" #'move-text-up
+   "M-N" #'move-text-down)
 
   (general-define-key
    :prefix "C-x"
    "C-b" #'ibuffer
-   "C-S-f" #'recentf
    "b" #'consult-buffer
+   "u" #'sudo-edit-find-file
+   "U" #'sudo-edit
    "4 b" #'consult-buffer-other-window
    "5 b" #'consult-buffer-other-frame
    "r b" #'consult-bookmark)
@@ -200,29 +213,31 @@
 
   (general-define-key
    :prefix "C-c"
-   "r f" #'consult-find
-   "r g" #'consult-grep
-   "r y" #'consult-git-grep
-   "C->" #'mc/mark-all-like-this
-   "C-<" #'mc/edit-lines
-   "l s" #'eglot)
+   "f" #'consult-find
+   "g" #'consult-grep
+   "y" #'consult-git-grep
+   "q" #'query-replace-regexp)
 
   (general-def minibuffer-local-map
-    "C-." #'embark-export
-    "C-;" #'embark-act)
+    "C-," #'embark-act
+    "C-." #'embark-export)
 
   (general-def corfu-map
     "RET" nil)
 
-  (general-def eglot-mode-map
-    :prefix "C-c l"
-    "d" #'eglot-find-declaration
-    "t" #'eglot-find-typeDefinition
-    "i" #'eglot-find-implementation
-    "r" #'eglot-rename
-    "f" #'eglot-format
-    "a" #'eglot-code-actions
-    "e" #'consult-flymake))
+  (general-def projectile-mode-map
+    "C-x p" #'projectile-command-map)
+
+  (setq lsp-keymap-prefix "C-,")
+  (general-def lsp-mode-map
+    "C-." #'lsp-describe-thing-at-point
+    "M-," #'lsp-find-definition
+    "M-?" #'lsp-find-references
+    "C-r" #'lsp-rename)
+
+  (general-def flycheck-mode-map
+    "M-n" #'flycheck-next-error
+    "M-p" #'flycheck-previous-error))
 
 (global-display-line-numbers-mode 1)
 (column-number-mode 1)
@@ -230,6 +245,7 @@
 
 (recentf-mode 1)
 (savehist-mode 1)
+(save-place-mode 1)
 
 (global-auto-revert-mode 1)
 (auto-save-visited-mode 1)

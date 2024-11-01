@@ -10,7 +10,7 @@ do
     line=$(jq -Mc '[.[] | select(.full_text != "Wifi: down")]' <<< "$line")
         
     kb=$(swaymsg -t get_inputs | jq -cMr 'map(select(.type == "keyboard")) | .[0].xkb_active_layout_name')
-    line=$(echo $line | sed "s/KEYBOARD/Kb: ${kb}/")
+    line=$(echo $line | sed "s/KEYBOARD/Kb: $kb/")
     
     if [ $has_comma -eq 1 ]; then
         line=",${line}" 
