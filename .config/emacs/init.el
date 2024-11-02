@@ -1,3 +1,10 @@
+(menu-bar-mode 0)
+(tool-bar-mode 0)
+(tooltip-mode 0)
+(scroll-bar-mode 0)
+
+(add-to-list 'default-frame-alist '(font . "Iosevka-14"))
+
 (require 'package)
 (require 'use-package)
 
@@ -143,6 +150,10 @@
   :init
   (projectile-mode 1))
 
+(use-package flycheck
+  :init
+  (global-flycheck-mode))
+
 (use-package sudo-edit)
 (use-package move-text)
 
@@ -150,22 +161,16 @@
 (use-package yaml-mode)
 (use-package cmake-mode)
 
-(use-package flycheck
-  :hook
-  (lsp-mode-hook . flycheck-mode))
-
 (use-package lsp-mode
   :hook
-  ((c-mode-hook c++-mode-hook rust-mode-hook python-mode-hook) . lsp-deferred)
+  ((c-mode-hook c++-mode-hook rust-mode-hook python-mode-hook) . lsp)
   :custom
   (lsp-completion-provider :none)
   (lsp-auto-guess-root t)
-  (lsp-headerline-breadcrumb-enable nil))
+  (lsp-headerline-breadcrumb-enable nil)
+  (lsp-modeline-code-actions-segments '(count)))
 
 (use-package yasnippet
-  :after lsp-mode)
-
-(use-package all-the-icons
   :after lsp-mode)
 
 (use-package lsp-java
@@ -175,7 +180,7 @@
   (package-vc-install '(app-launcher :url "https://github.com/NumericalGandalf/app-launcher.git")))
 
 (defun app-launcher ()
-  "Create frame for `app-launcher-run-app'"
+  "Create frame for `app-launcher-run-app'."
   (interactive)
   (let* ((height 21)
          (vertico-count (1- height)))
@@ -207,7 +212,7 @@
 
   (general-define-key
    :prefix "M-g"
-   "e" #'consult-compile-error
+   "f" #'flycheck-list-errors
    "o" #'consult-outline
    "i" #'consult-imenu)
 
@@ -233,11 +238,7 @@
     "C-." #'lsp-describe-thing-at-point
     "M-," #'lsp-find-definition
     "M-?" #'lsp-find-references
-    "C-r" #'lsp-rename)
-
-  (general-def flycheck-mode-map
-    "M-n" #'flycheck-next-error
-    "M-p" #'flycheck-previous-error))
+    "C-r" #'lsp-rename))
 
 (global-display-line-numbers-mode 1)
 (column-number-mode 1)

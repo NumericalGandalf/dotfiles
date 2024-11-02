@@ -1,18 +1,18 @@
 #!/usr/bin/bash
 
-path_prepend() {
-    case ":$PATH:" in
-        *:"$1":*) ;;
-        *) PATH="$1${PATH:+:$PATH}"
-    esac
-}
-
-path_prepend "$HOME/.local/bin/"
-
 export EDITOR="emacsclient -c"
 export ALTERNATE_EDITOR=/usr/bin/emacs
+export TERMINAL=alacritty
+export BROWSER=firefox
 
-export GTK_THEME="Adwaita:dark"
-
-alias ls="ls --color=auto"
 alias emacs="emacsclient -c"
+alias ls="ls --color=auto"
+
+for path in "$HOME/.local/bin"; do
+    case ":$PATH:" in
+        *:"$path":*) ;;
+        *) PATH="$path${PATH:+:$PATH}"
+    esac
+done
+
+[[ -f "$HOME/.cargo/env" ]] && . "$HOME/.cargo/env"

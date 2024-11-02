@@ -58,8 +58,8 @@ bindsym $mod+Shift+z fullscreen toggle
 
 bindsym $mod+Shift+d exec emacsclient -r -e "(app-launcher)"
 bindsym $mod+Shift+e exec emacsclient -c
-bindsym $mod+Shift+t exec alacritty
-bindsym $mod+Shift+w exec firefox
+bindsym $mod+Shift+t exec $TERMINAL
+bindsym $mod+Shift+w exec $BROWSER
 
 bindsym $mod+Shift+s mode "System"
 mode "System" {
