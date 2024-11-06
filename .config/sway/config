@@ -53,8 +53,8 @@ for_window [title="^app-launcher.el"] floating enable, border pixel
 bindsym $mod+Shift+q kill
 bindsym $mod+Shift+v layout toggle split tabbed
 bindsym $mod+Shift+b split toggle
-bindsym $mod+Shift+f floating toggle
-bindsym $mod+Shift+z fullscreen toggle
+bindsym $mod+Shift+f fullscreen toggle
+bindsym $mod+Shift+z floating toggle
 
 bindsym $mod+Shift+d exec emacsclient -r -e "(app-launcher)"
 bindsym $mod+Shift+e exec emacsclient -c
@@ -102,7 +102,6 @@ mode "Resize" {
 bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -5%
 bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +5%
 bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
-bindsym XF86AudioMicMute exec pactl set-source-mute @DEFAULT_SOURCE@ toggle
 
 bar {
     swaybar_command swaybar

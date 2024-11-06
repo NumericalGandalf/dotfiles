@@ -2,4 +2,4 @@
 
 [[ -f "$HOME/.bashrc" ]] && . "$HOME/.bashrc"
 
-[[ "$XDG_VTNR" = "1" ]] && exec sway --unsupported-gpu
+[[ -z "$WAYLAND_DISPLAY" ]] && [[ "$XDG_VTNR" = "1" ]] && exec sway --unsupported-gpu
