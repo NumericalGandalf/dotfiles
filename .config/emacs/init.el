@@ -3,7 +3,12 @@
 (tooltip-mode 0)
 (scroll-bar-mode 0)
 
-(add-to-list 'default-frame-alist '(font . "Iosevka-14"))
+(let ((font "Iosevka-14"))
+  (if (daemonp)
+      (add-to-list 'default-frame-alist `(font . ,font))
+    (set-frame-font font nil t)))
+
+(load-theme 'zenburn t)
 
 (require 'package)
 (require 'use-package)
@@ -94,10 +99,6 @@
   :custom
   (custom-file (no-littering-expand-var-file-name "custom.el")))
 
-(use-package doom-themes
-  :init
-  (load-theme 'doom-gruvbox t))
-
 (use-package orderless
   :init
   (setq completion-styles '(orderless)
@@ -169,7 +170,7 @@
 (use-package lsp-mode
   :init
   (dolist (mode '(c c++ rust java python))
-    (add-hook (intern (concat (symbol-name mode) "-mode-hook")) #'lsp))
+    (add-hook (intern (concat (symbol-name mode) "-mode-hook")) #'lsp-deferred))
   :custom
   (lsp-auto-guess-root t)
   (lsp-headerline-breadcrumb-enable nil)
@@ -189,21 +190,31 @@
 
 (use-package dap-mode
   :after lsp-mode
+  :hook
+  ((dap-terminated . dap-hide-output-win)
+   (dap-session-created . (lambda (_) (dap-delete-all-sessions))))
   :config
-  (require 'dap-ui)
-  (setq dap-ui-buffer-configurations
-        `((,dap-ui--breakpoints-buffer . ((side . right) (slot . 0) (window-width . 0.2)))
-          (,dap-ui--locals-buffer . ((side . right) (slot . 1)))
-          (,dap-ui--expressions-buffer . ((side . right) (slot . 2)))
-          (,dap-ui--sessions-buffer . ((side . right) (slot . 3)))
-          (,dap-ui--repl-buffer . ((side . bottom) (slot . 0) (window-height . 0.2)))))
+  (with-eval-after-load 'dap-ui
+    (setq dap-ui-buffer-configurations
+          `((,dap-ui--breakpoints-buffer . ((side . right) (slot . 0) (window-width . 0.2)))
+            (,dap-ui--locals-buffer . ((side . right) (slot . 1)))
+            (,dap-ui--expressions-buffer . ((side . right) (slot . 2)))
+            (,dap-ui--sessions-buffer . ((side . right) (slot . 3)))
+            (,dap-ui--repl-buffer . ((side . bottom) (slot . 0) (window-height . 0.2))))))
+
   (defun dap-go-to-output-buffer (&optional no-select)
     "Go to output buffer."
     (interactive)
     (let* ((buf (dap--debug-session-output-buffer (dap--cur-session-or-die)))
            (win (display-buffer-in-side-window buf `((side . bottom) (slot . -1)))))
-      (unless no-select
-        (select-window win))))
+      (unless no-select (select-window win))))
+ 
+  (defun dap-hide-output-win (session)
+    "Hide output-buffer window after `session' termination."
+    (when-let* ((buf (dap--debug-session-output-buffer session))
+                (win (get-buffer-window buf)))
+      (delete-window win)))
+  
   :custom
   (dap-auto-configure-features '(breakpoints locals expressions repl))
   (dap-ui-repl-history-dir (no-littering-expand-var-file-name "dap/")))
@@ -288,7 +299,7 @@
     "C-9" #'dap-next
     "C-0" #'dap-step-in
     "C--" #'dap-step-out
-    "C-=" #'dap-delete-session)
+    "C-=" #'dap-disconnect)
   (general-def lsp-mode-map
     :prefix lsp-keymap-prefix
     "C-." #'consult-lsp-symbols
