@@ -131,7 +131,7 @@ Each element has the form (NAME . HEX).
   "`let' bind all colors defined in `zenburn-colors-alist' around BODY.
 Also bind `class' to ((class color) (min-colors 89))."
   (declare (indent 0))
-  `(let ((class '((class color) (min-colors 89)))
+  `(let ((class '((type graphic)))
          ,@(mapcar (lambda (cons)
                      (list (intern (car cons)) (cdr cons)))
                    (append zenburn-default-colors-alist

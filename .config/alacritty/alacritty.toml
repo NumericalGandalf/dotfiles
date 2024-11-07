@@ -1,27 +1,3 @@
 [font]
 size = 14
 normal = { family = "Iosevka" }
-
-[colors.primary]
-foreground = "#DCDCCC"
-background = "#3F3F3F"
-
-[colors.normal]
-black   = "#000000"
-red     = "#CC9393"
-green   = "#60B48A"
-yellow  = "#F0DFAF"
-blue    = "#8CD0D3"
-magenta = "#DC8CC3"
-cyan    = "#93E0E3"
-white   = "#FFFFEF"
-
-[colors.bright]
-black   = "#2B2B2B"
-red     = "#DCA3A3"
-green   = "#8FB28F"
-yellow  = "#F0DFAF"
-blue    = "#94BFF3"
-magenta = "#DC8CC3"
-cyan    = "#93E0E3"
-white   = "#FFFFFD"
