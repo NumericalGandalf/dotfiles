@@ -57,9 +57,9 @@ bindsym $mod+Shift+f fullscreen toggle
 bindsym $mod+Shift+z floating toggle
 
 bindsym $mod+Shift+d exec emacsclient -r -e "(app-launcher)"
-bindsym $mod+Shift+e exec emacsclient -c
-bindsym $mod+Shift+t exec $TERMINAL
-bindsym $mod+Shift+w exec $BROWSER
+bindsym $mod+Shift+e exec emacsclient -ca emacs
+bindsym $mod+Shift+t exec emacsclient -ce "(vterm)"
+bindsym $mod+Shift+w exec firefox
 
 bindsym $mod+Shift+s mode "System"
 mode "System" {

@@ -1,9 +1,6 @@
 #!/usr/bin/bash
 
-export EDITOR="emacsclient -c"
-export ALTERNATE_EDITOR=/usr/bin/emacs
-export TERMINAL=alacritty
-export BROWSER=firefox
+alias ls="ls --color=auto"
 
 for path in "$HOME/.local/bin"; do
     case ":$PATH:" in
@@ -13,3 +10,5 @@ for path in "$HOME/.local/bin"; do
 done
 
 [[ -f "$HOME/.cargo/env" ]] && . "$HOME/.cargo/env"
+
+[[ "$INSIDE_EMACS" = "vterm" ]] && . "$HOME/.config/emacs/vterm.sh"

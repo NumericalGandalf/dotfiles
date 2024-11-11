@@ -3,10 +3,18 @@
 (tooltip-mode 0)
 (scroll-bar-mode 0)
 
-(let ((font "Iosevka-14"))
-  (if (daemonp)
-      (add-to-list 'default-frame-alist `(font . ,font))
-    (set-frame-font font nil t)))
+(defun set-font ()
+  "Set font."
+  (interactive)
+  (let ((font "Iosevka-14"))
+    (set-face-attribute 'default nil :font font)
+    (set-face-attribute 'fixed-pitch nil :font font)
+    (set-face-attribute 'fixed-pitch-serif nil :font font)
+    (set-face-attribute 'variable-pitch nil :font font)))
+
+(if (daemonp)
+    (add-hook 'server-after-make-frame-hook #'set-font)
+  (set-font))
 
 (load-theme 'zenburn t)
 
@@ -175,7 +183,8 @@
   (lsp-auto-guess-root t)
   (lsp-headerline-breadcrumb-enable nil)
   (lsp-modeline-code-actions-segments '(count))
-  (lsp-keep-workspace-alive nil))
+  (lsp-keep-workspace-alive nil)
+  (lsp-warn-no-matched-clients nil))
 
 (use-package consult-lsp
   :after (consult lsp-mode))
@@ -219,6 +228,14 @@
   (dap-auto-configure-features '(breakpoints locals expressions repl))
   (dap-ui-repl-history-dir (no-littering-expand-var-file-name "dap/")))
 
+(use-package vterm
+  :config
+  (setq vterm-timer-delay nil)
+  :custom
+  (vterm-max-scrollback 10000)
+  (vterm-clear-scrollback-when-clearing t)
+  (vterm-always-compile-module t))
+
 (unless (package-installed-p 'app-launcher)
   (package-vc-install '(app-launcher :url "https://github.com/NumericalGandalf/app-launcher.git")))
 
@@ -238,6 +255,7 @@
 (use-package general
   :init
   (general-define-key
+   "C-<tab>" #'fill-region
    "M-<tab>" #'company-complete
    "M-y" #'consult-yank-pop
    "C-s" #'consult-line
@@ -247,6 +265,7 @@
   (general-define-key
    :prefix "C-x"
    "C-b" #'ibuffer
+   "C-c" #'save-buffers-kill-emacs
    "o" #'switch-window
    "O f" #'switch-window-then-find-file
    "O d" #'switch-window-then-dired
@@ -255,6 +274,8 @@
    "b" #'consult-buffer
    "u" #'sudo-edit-find-file
    "C-u" #'sudo-edit
+   "!" #'shell-command
+   "&" #'async-shell-command
    "4 b" #'consult-buffer-other-window
    "5 b" #'consult-buffer-other-frame
    "r b" #'consult-bookmark)
@@ -286,6 +307,9 @@
   (general-def projectile-mode-map
     "C-x p" #'projectile-command-map)
 
+  (general-def vterm-mode-map
+    "C-j" (lambda () (interactive) (vterm-send "C-c")))
+
   (setq lsp-keymap-prefix "C-z")
   (general-def lsp-mode-map
     "C-." #'lsp-describe-thing-at-point
@@ -302,8 +326,8 @@
     "C-=" #'dap-disconnect)
   (general-def lsp-mode-map
     :prefix lsp-keymap-prefix
-    "C-." #'consult-lsp-symbols
-    "C-;" #'consult-lsp-file-symbols
+    "C-," #'consult-lsp-symbols
+    "C-." #'consult-lsp-file-symbols
     "j r" #'dap-java-debug
     "j m" #'dap-java-run-test-method
     "j M" #'dap-java-run-test-class
@@ -322,12 +346,13 @@
     "d t" #'dap-switch-thread
     "d T" #'dap-stop-thread))
 
-(dolist (mode '(prog conf))
+(dolist (mode '(prog conf dired vterm))
   (add-hook (intern (concat (symbol-name mode) "-mode-hook")) #'display-line-numbers-mode))
 
 (column-number-mode 1)
 (global-visual-line-mode 1)
 
+(desktop-save-mode 1)
 (recentf-mode 1)
 (savehist-mode 1)
 (save-place-mode 1)
