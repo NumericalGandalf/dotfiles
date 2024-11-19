@@ -9,6 +9,7 @@ for path in "$HOME/.local/bin"; do
     esac
 done
 
+
 [[ -f "$HOME/.cargo/env" ]] && . "$HOME/.cargo/env"
 
 [[ "$INSIDE_EMACS" = "vterm" ]] && . "$HOME/.config/emacs/vterm.sh"

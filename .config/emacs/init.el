@@ -1,33 +1,14 @@
-(menu-bar-mode 0)
-(tool-bar-mode 0)
-(tooltip-mode 0)
-(scroll-bar-mode 0)
+(let ((fun (lambda ()
+             (let ((font "Iosevka-14"))
+               (set-face-attribute 'default nil :font font)
+               (set-face-attribute 'fixed-pitch nil :font font)
+               (set-face-attribute 'fixed-pitch-serif nil :font font)
+               (set-face-attribute 'variable-pitch nil :font font)))))
+  (if (daemonp)
+      (add-hook 'server-after-make-frame-hook fun)
+    (funcall fun)))
 
-(defun set-font ()
-  "Set font."
-  (interactive)
-  (let ((font "Iosevka-14"))
-    (set-face-attribute 'default nil :font font)
-    (set-face-attribute 'fixed-pitch nil :font font)
-    (set-face-attribute 'fixed-pitch-serif nil :font font)
-    (set-face-attribute 'variable-pitch nil :font font)))
-
-(if (daemonp)
-    (add-hook 'server-after-make-frame-hook #'set-font)
-  (set-font))
-
-(load-theme 'zenburn t)
-
-(require 'package)
-(require 'use-package)
-
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
-
-(package-initialize)
-(package-refresh-contents t)
-
-(setq use-package-always-ensure t
-      use-package-always-defer t)
+(load-theme 'gruvbox t)
 
 (setq use-short-answers t
       use-dialog-box nil
@@ -47,14 +28,15 @@
         compile-command nil
         compilation-auto-jump-to-first-error t))
 
-(with-eval-after-load 'cc-vars
-  (setq-default c-basic-offset 4))
-
 (with-eval-after-load 'simple
   (setq-default indent-tabs-mode nil))
 
+(with-eval-after-load 'c-ts-mode
+  (setq c-ts-mode-indent-offset 4))
+
 (with-eval-after-load 'minibuffer
-  (setq completions-detailed t
+  (setq enable-recursive-minibuffers t
+        completions-detailed t
         read-file-name-completion-ignore-case t))
 
 (with-eval-after-load 'vc-hooks
@@ -76,8 +58,10 @@
 (with-eval-after-load 'files
   (setq make-backup-files nil
         create-lockfiles nil)
-  (setq-default auto-save-default nil)
-  (add-to-list 'auto-mode-alist '("\\.jsonc\\'" . js-json-mode)))
+  (setq-default auto-save-default nil))
+
+(with-eval-after-load 'treesit
+  (add-to-list 'treesit-extra-load-path (expand-cache-file "tree-sitter/")))
 
 (with-eval-after-load 'auth-source
   (setq auth-source-save-behavior nil))
@@ -86,6 +70,9 @@
   (setq global-auto-revert-non-file-buffers t
         auto-revert-remote-files t
         auto-revert-verbose nil))
+
+(with-eval-after-load 'server
+  (setq server-auth-dir (expand-cache-file "server/")))
 
 (with-eval-after-load 'ibuffer
   (setq ibuffer-use-other-window t))
@@ -99,13 +86,27 @@
 (with-eval-after-load 'man
   (setq Man-notify-method 'aggressive))
 
+(require 'package)
+(require 'use-package)
+
+(setq package-user-dir (expand-cache-file "packages/")
+      package-gnupghome-dir (expand-cache-file "gnupg/"))
+
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+
+(package-initialize)
+(package-refresh-contents t)
+
+(setq use-package-always-ensure t
+      use-package-always-defer t)
+
 (use-package diminish)
-(use-package delight)
 
 (use-package no-littering
   :demand
-  :custom
-  (custom-file (no-littering-expand-var-file-name "custom.el")))
+  :preface
+  (setq no-littering-var-directory "~/.cache/emacs/"
+        no-littering-etc-directory no-littering-var-directory))
 
 (use-package orderless
   :init
@@ -145,18 +146,16 @@
   :custom
   (company-minimum-prefix-length 1)
   (company-idle-delay 0)
+  (company-frontends '(company-pseudo-tooltip-frontend company-echo-metadata-frontend))
+  (company-format-margin-function #'company-text-icons-margin)
   (company-tooltip-flip-when-above t)
   (company-tooltip-align-annotations t)
-  (company-tooltip-offset-display 'lines))
+  (company-tooltip-scrollbar-width 0))
 
 (use-package projectile
   :diminish
   :init
   (projectile-mode 1))
-
-(use-package flycheck
-  :init
-  (global-flycheck-mode 1))
 
 (use-package switch-window
   :custom
@@ -168,17 +167,39 @@
   :init
   (editorconfig-mode 1))
 
-(use-package move-text)
-(use-package buffer-move)
+(use-package treesit-auto
+  :demand
+  :config
+  (global-treesit-auto-mode 1)
 
-(use-package rust-mode)
-(use-package yaml-mode)
-(use-package cmake-mode)
+  (defun treesit-ensure-all (&optional prefix)
+    "Ensure all available tree-sitter libraries.
+If optional PREFIX is non-nil, force all to build."
+    (interactive "P")
+    (let ((outdir (nth 0 treesit-extra-load-path)))
+      (when prefix (delete-directory outdir t))
+      (dolist (source (treesit-auto--build-treesit-source-alist))
+        (let ((lang (nth 0 source)))
+          (unless (or (treesit-ready-p lang t) (member lang '(janet latex markdown)))
+            (message "Building tree-sitter library for language: %s" lang)
+            (let ((inhibit-message t)
+                  (message-log-max nil))
+              (apply #'treesit--install-language-grammar-1 outdir source))))))))
+
+(use-package wgrep
+  :custom
+  (wgrep-enable-key "e"))
+
+(use-package move-text)
+
+(use-package buffer-move
+  :custom
+  (buffer-move-stay-after-swap t))
 
 (use-package lsp-mode
   :init
-  (dolist (mode '(c c++ rust java python))
-    (add-hook (intern (concat (symbol-name mode) "-mode-hook")) #'lsp-deferred))
+  (dolist (mode '(c c++ rust java python bash))
+    (add-hook (intern (concat (symbol-name mode) "-ts-mode-hook")) #'lsp-deferred))
   :custom
   (lsp-auto-guess-root t)
   (lsp-headerline-breadcrumb-enable nil)
@@ -186,13 +207,19 @@
   (lsp-keep-workspace-alive nil)
   (lsp-warn-no-matched-clients nil))
 
-(use-package consult-lsp
-  :after (consult lsp-mode))
+(use-package lsp-ui
+  :after lsp-mode)
+
+(use-package flycheck
+  :after lsp-mode)
 
 (use-package yasnippet
   :after lsp-mode
   :hook
   (lsp-mode . yas-minor-mode))
+
+(use-package consult-lsp
+  :after (consult lsp-mode))
 
 (use-package lsp-java
   :after lsp-mode)
@@ -226,7 +253,7 @@
   
   :custom
   (dap-auto-configure-features '(breakpoints locals expressions repl))
-  (dap-ui-repl-history-dir (no-littering-expand-var-file-name "dap/")))
+  (dap-ui-repl-history-dir (expand-cache-file "dap/")))
 
 (use-package vterm
   :config
@@ -315,15 +342,7 @@
     "C-." #'lsp-describe-thing-at-point
     "C-r" #'lsp-rename
     "M-." #'lsp-find-definition
-    "M-?" #'lsp-find-references
-    "C-5" #'dap-debug-last
-    "C-6" #'dap-debug-restart
-    "C-7" #'dap-continue
-    "C-8" #'dap-breakpoint-toggle
-    "C-9" #'dap-next
-    "C-0" #'dap-step-in
-    "C--" #'dap-step-out
-    "C-=" #'dap-disconnect)
+    "M-?" #'lsp-find-references)
   (general-def lsp-mode-map
     :prefix lsp-keymap-prefix
     "C-," #'consult-lsp-symbols
@@ -338,30 +357,45 @@
     "j o" #'lsp-java-generate-overrides
     "j s" #'lsp-java-generate-to-string
     "j g" #'lsp-java-generate-getters-and-setters
-    "j =" #'lsp-java-generate-equals-and-hash-code
-    "d e" #'dap-eval
-    "d c" #'dap-breakpoint-condition
-    "d h" #'dap-breakpoint-hit-condition
-    "d l" #'dap-ui-breakpoints-list
-    "d t" #'dap-switch-thread
-    "d T" #'dap-stop-thread))
+    "j =" #'lsp-java-generate-equals-and-hash-code)
 
-(dolist (mode '(prog conf dired vterm))
-  (add-hook (intern (concat (symbol-name mode) "-mode-hook")) #'display-line-numbers-mode))
+  (dolist (map '(lsp dap))
+    (setq map (intern (concat (symbol-name map) "-mode-map")))
+    (general-define-key
+     :keymaps map
+     "C-5" #'dap-debug-last
+     "C-6" #'dap-debug-restart
+     "C-7" #'dap-continue
+     "C-8" #'dap-breakpoint-toggle
+     "C-9" #'dap-next
+     "C-0" #'dap-step-in
+     "C--" #'dap-step-out
+     "C-=" #'dap-disconnect)
+    (general-define-key
+     :keymaps map
+     :prefix lsp-keymap-prefix
+     "d e" #'dap-eval
+     "d c" #'dap-breakpoint-condition
+     "d h" #'dap-breakpoint-hit-condition
+     "d l" #'dap-ui-breakpoints-list
+     "d t" #'dap-switch-thread
+     "d T" #'dap-stop-thread)))
 
-(column-number-mode 1)
+(global-display-line-numbers-mode 1)
 (global-visual-line-mode 1)
 
-(desktop-save-mode 1)
-(recentf-mode 1)
-(savehist-mode 1)
-(save-place-mode 1)
+(column-number-mode 1)
+(which-function-mode 1)
 
+(desktop-save-mode 1)
 (global-auto-revert-mode 1)
 (auto-save-visited-mode 1)
 
 (ffap-bindings)
 (electric-pair-mode 1)
 
-(when (file-exists-p custom-file)
-  (load-file custom-file))
+(setq custom-file (expand-cache-file "custom.el"))
+(when (file-exists-p custom-file) (load-file custom-file))
+
+(require 'server)
+(unless (or (daemonp) (server-running-p)) (server-start))
