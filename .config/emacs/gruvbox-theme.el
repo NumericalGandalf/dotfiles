@@ -514,6 +514,9 @@
    `(widget-field ((,class (:foreground ,gruvbox-light0 :background ,gruvbox-dark2))))
    `(widget-single-line-field ((,class (:foreground ,gruvbox-light0 :background ,gruvbox-dark2))))
 
+   ;; ibuffer
+   `(ibuffer-locked-buffer ((,class (:foreground ,gruvbox-dark_blue))))
+
    ;; dired
    `(dired-marked ((,class (:inherit match))))
 
@@ -723,6 +726,11 @@
    `(elpaca-ui-marked-fetch ((,class (:foreground ,gruvbox-bright_aqua :bold t))))
    `(elpaca-ui-marked-install ((,class (:foreground ,gruvbox-bright_blue :bold t))))
    `(elpaca-ui-marked-rebuild ((,class (:foreground ,gruvbox-bright_purple :bold t))))
-   `(elpaca-ui-marked-update ((,class (:foreground ,gruvbox-bright_orange :bold t))))))
+   `(elpaca-ui-marked-update ((,class (:foreground ,gruvbox-bright_orange :bold t)))))
+
+  (custom-theme-set-variables
+   'gruvbox
+   `(ibuffer-marked-face 'dired-marked)
+   `(ibuffer-deletion-face 'dired-marked)))
 
 (provide-theme 'gruvbox)

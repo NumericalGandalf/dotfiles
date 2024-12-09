@@ -1,12 +1,15 @@
-(let ((fun (lambda ()
-             (let ((font "Iosevka-14"))
-               (set-face-attribute 'default nil :font font)
-               (set-face-attribute 'fixed-pitch nil :font font)
-               (set-face-attribute 'fixed-pitch-serif nil :font font)
-               (set-face-attribute 'variable-pitch nil :font font)))))
-  (if (daemonp)
-      (add-hook 'server-after-make-frame-hook fun)
-    (funcall fun)))
+(defun font-apply ()
+  "Apply font."
+  (interactive)
+  (let ((font "Iosevka-14"))
+    (set-face-attribute 'default nil :font font)
+    (set-face-attribute 'fixed-pitch nil :font font)
+    (set-face-attribute 'fixed-pitch-serif nil :font font)
+    (set-face-attribute 'variable-pitch nil :font font)))
+
+(if (daemonp)
+    (add-hook 'server-after-make-frame-hook #'font-apply)
+  (font-apply))
 
 (load-theme 'gruvbox t)
 
@@ -90,7 +93,7 @@
 (require 'use-package)
 
 (setq package-user-dir (expand-cache-file "packages/")
-      package-gnupghome-dir (expand-cache-file "gnupg/"))
+      package-gnupghome-dir (expand-file-name "gnupg/" package-user-dir))
 
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 
@@ -99,6 +102,10 @@
 
 (setq use-package-always-ensure t
       use-package-always-defer t)
+
+(when init-file-debug
+  (setq use-package-compute-statistics t
+        use-package-verbose t))
 
 (use-package diminish)
 
@@ -163,6 +170,8 @@
 
 (use-package sudo-edit)
 
+(use-package multiple-cursors)
+
 (use-package editorconfig
   :init
   (editorconfig-mode 1))
@@ -192,23 +201,24 @@ If optional PREFIX is non-nil, force all to build."
 
 (use-package move-text)
 
-(use-package buffer-move
-  :custom
-  (buffer-move-stay-after-swap t))
+(use-package meson-mode)
 
 (use-package lsp-mode
+  :hook
+  (prog-mode . lsp-maybe)
   :init
-  (dolist (mode '(c c++ rust java python bash))
-    (add-hook (intern (concat (symbol-name mode) "-ts-mode-hook")) #'lsp-deferred))
+  (defun lsp-maybe ()
+    "Maybe run `lsp'."
+    (interactive)
+    (unless (derived-mode-p 'emacs-lisp-mode) (lsp)))
+
   :custom
   (lsp-auto-guess-root t)
   (lsp-headerline-breadcrumb-enable nil)
+  (lsp-lens-enable nil)
   (lsp-modeline-code-actions-segments '(count))
   (lsp-keep-workspace-alive nil)
   (lsp-warn-no-matched-clients nil))
-
-(use-package lsp-ui
-  :after lsp-mode)
 
 (use-package flycheck
   :after lsp-mode)
@@ -287,17 +297,16 @@ If optional PREFIX is non-nil, force all to build."
    "M-y" #'consult-yank-pop
    "C-s" #'consult-line
    "M-P" #'move-text-up
-   "M-N" #'move-text-down)
+   "M-N" #'move-text-down
+   "C->" #'mc/mark-next-like-this
+   "C-<" #'mc/unmark-next-like-this)
 
   (general-define-key
    :prefix "C-x"
    "C-b" #'ibuffer
    "C-c" #'save-buffers-kill-emacs
    "o" #'switch-window
-   "O f" #'switch-window-then-find-file
-   "O d" #'switch-window-then-dired
-   "O k" #'switch-window-then-delete
-   "O =" #'switch-window-then-swap-buffer
+   "O" #'switch-window-then-swap-buffer
    "b" #'consult-buffer
    "u" #'sudo-edit-find-file
    "C-u" #'sudo-edit
@@ -309,8 +318,6 @@ If optional PREFIX is non-nil, force all to build."
 
   (general-define-key
    :prefix "M-g"
-   "j" #'flycheck-list-errors
-   "k" #'consult-lsp-diagnostics
    "o" #'consult-outline
    "i" #'consult-imenu)
 
@@ -319,7 +326,9 @@ If optional PREFIX is non-nil, force all to build."
    "f" #'consult-find
    "g" #'consult-grep
    "y" #'consult-git-grep
-   "q" #'query-replace-regexp)
+   "q" #'query-replace-regexp
+   "C->" #'mc/mark-all-like-this
+   "C-<" #'mc/edit-lines)
 
   (general-def minibuffer-local-map
     "C-," #'embark-act
@@ -340,9 +349,11 @@ If optional PREFIX is non-nil, force all to build."
   (setq lsp-keymap-prefix "C-z")
   (general-def lsp-mode-map
     "C-." #'lsp-describe-thing-at-point
-    "C-r" #'lsp-rename
+    "C-;" #'lsp-rename
     "M-." #'lsp-find-definition
-    "M-?" #'lsp-find-references)
+    "M-?" #'lsp-find-references
+    "M-g j" #'flycheck-list-errors
+    "M-g k" #'consult-lsp-diagnostics)
   (general-def lsp-mode-map
     :prefix lsp-keymap-prefix
     "C-," #'consult-lsp-symbols
@@ -359,8 +370,7 @@ If optional PREFIX is non-nil, force all to build."
     "j g" #'lsp-java-generate-getters-and-setters
     "j =" #'lsp-java-generate-equals-and-hash-code)
 
-  (dolist (map '(lsp dap))
-    (setq map (intern (concat (symbol-name map) "-mode-map")))
+  (dolist (map '(lsp-mode-map dap-mode-map))
     (general-define-key
      :keymaps map
      "C-5" #'dap-debug-last
@@ -383,9 +393,7 @@ If optional PREFIX is non-nil, force all to build."
 
 (global-display-line-numbers-mode 1)
 (global-visual-line-mode 1)
-
 (column-number-mode 1)
-(which-function-mode 1)
 
 (desktop-save-mode 1)
 (global-auto-revert-mode 1)
