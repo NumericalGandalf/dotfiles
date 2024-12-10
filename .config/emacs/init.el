@@ -273,22 +273,6 @@ If optional PREFIX is non-nil, force all to build."
   (vterm-clear-scrollback-when-clearing t)
   (vterm-always-compile-module t))
 
-(unless (package-installed-p 'app-launcher)
-  (package-vc-install '(app-launcher :url "https://github.com/NumericalGandalf/app-launcher.git")))
-
-(defun app-launcher ()
-  "Create frame for `app-launcher-run-app'."
-  (interactive)
-  (let* ((height 21)
-         (vertico-count (1- height)))
-    (with-selected-frame (make-frame `((name . "app-launcher.el")
-                                       (height . ,height)
-                                       (width . ,(* height 5))
-                                       (minibuffer . only)))
-      (unwind-protect
-          (app-launcher-run-app t)
-        (delete-frame)))))
-
 (use-package general
   :init
   (general-define-key
@@ -390,6 +374,10 @@ If optional PREFIX is non-nil, force all to build."
      "d l" #'dap-ui-breakpoints-list
      "d t" #'dap-switch-thread
      "d T" #'dap-stop-thread)))
+
+(let ((file (locate-user-emacs-file "app-launcher.el")))
+  (autoload #'app-launcher-run-app file t)
+  (autoload #'app-launcher-frame file t))
 
 (global-display-line-numbers-mode 1)
 (global-visual-line-mode 1)
