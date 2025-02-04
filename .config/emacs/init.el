@@ -159,11 +159,6 @@
   (company-tooltip-align-annotations t)
   (company-tooltip-scrollbar-width 0))
 
-(use-package projectile
-  :diminish
-  :init
-  (projectile-mode 1))
-
 (use-package switch-window
   :custom
   (switch-window-background t))
@@ -230,48 +225,6 @@ If optional PREFIX is non-nil, force all to build."
 
 (use-package consult-lsp
   :after (consult lsp-mode))
-
-(use-package lsp-java
-  :after lsp-mode)
-
-(use-package dap-mode
-  :after lsp-mode
-  :hook
-  ((dap-terminated . dap-hide-output-win)
-   (dap-session-created . (lambda (_) (dap-delete-all-sessions))))
-  :config
-  (with-eval-after-load 'dap-ui
-    (setq dap-ui-buffer-configurations
-          `((,dap-ui--breakpoints-buffer . ((side . right) (slot . 0) (window-width . 0.2)))
-            (,dap-ui--locals-buffer . ((side . right) (slot . 1)))
-            (,dap-ui--expressions-buffer . ((side . right) (slot . 2)))
-            (,dap-ui--sessions-buffer . ((side . right) (slot . 3)))
-            (,dap-ui--repl-buffer . ((side . bottom) (slot . 0) (window-height . 0.2))))))
-
-  (defun dap-go-to-output-buffer (&optional no-select)
-    "Go to output buffer."
-    (interactive)
-    (let* ((buf (dap--debug-session-output-buffer (dap--cur-session-or-die)))
-           (win (display-buffer-in-side-window buf `((side . bottom) (slot . -1)))))
-      (unless no-select (select-window win))))
- 
-  (defun dap-hide-output-win (session)
-    "Hide output-buffer window after `session' termination."
-    (when-let* ((buf (dap--debug-session-output-buffer session))
-                (win (get-buffer-window buf)))
-      (delete-window win)))
-  
-  :custom
-  (dap-auto-configure-features '(breakpoints locals expressions repl))
-  (dap-ui-repl-history-dir (expand-cache-file "dap/")))
-
-(use-package vterm
-  :config
-  (setq vterm-timer-delay nil)
-  :custom
-  (vterm-max-scrollback 10000)
-  (vterm-clear-scrollback-when-clearing t)
-  (vterm-always-compile-module t))
 
 (use-package general
   :init
@@ -375,15 +328,10 @@ If optional PREFIX is non-nil, force all to build."
      "d t" #'dap-switch-thread
      "d T" #'dap-stop-thread)))
 
-(let ((file (locate-user-emacs-file "app-launcher.el")))
-  (autoload #'app-launcher-run-app file t)
-  (autoload #'app-launcher-frame file t))
-
 (global-display-line-numbers-mode 1)
 (global-visual-line-mode 1)
 (column-number-mode 1)
 
-(desktop-save-mode 1)
 (global-auto-revert-mode 1)
 (auto-save-visited-mode 1)
 
@@ -394,4 +342,4 @@ If optional PREFIX is non-nil, force all to build."
 (when (file-exists-p custom-file) (load-file custom-file))
 
 (require 'server)
-(unless (or (daemonp) (server-running-p)) (server-start))
+(unless (server-running-p) (server-start))

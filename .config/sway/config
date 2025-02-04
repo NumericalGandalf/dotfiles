@@ -56,9 +56,9 @@ bindsym $mod+Shift+b split toggle
 bindsym $mod+Shift+f fullscreen toggle
 bindsym $mod+Shift+z floating toggle
 
-bindsym $mod+Shift+d exec emacsclient -r -e "(app-launcher-frame)"
+bindsym $mod+Shift+d exec wmenu-run -if "Iosevka 13"
 bindsym $mod+Shift+e exec emacsclient -ca emacs
-bindsym $mod+Shift+t exec emacsclient -ce "(vterm)"
+bindsym $mod+Shift+t exec alacritty
 bindsym $mod+Shift+w exec firefox
 
 bindsym $mod+Shift+s mode "System"
@@ -113,12 +113,7 @@ input * {
     xkb_options grp:win_space_toggle
 }
 
-set $bg "~/.config/sway/wallpaper.png"
-
-set $lock "swaylock -i $bg -s fit"
-exec swayidle -w before-sleep $lock lock $lock
-
-output * bg $bg fit
 output "Dell Inc. AW2724DM 66YZHV3" mode 2560x1440@165Hz scale 1.25
 
-exec emacs --daemon
+set $lock "swaylock -c 000000"
+exec swayidle -w before-sleep $lock lock $lock
