@@ -57,9 +57,6 @@ bindsym $mod+Shift+f fullscreen toggle
 bindsym $mod+Shift+z floating toggle
 
 bindsym $mod+Shift+d exec wmenu-run -if "Iosevka 13"
-bindsym $mod+Shift+e exec emacsclient -ca emacs
-bindsym $mod+Shift+t exec alacritty
-bindsym $mod+Shift+w exec firefox
 
 bindsym $mod+Shift+s mode "System"
 mode "System" {

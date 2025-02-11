@@ -12,11 +12,7 @@ do
     kb=$(swaymsg -t get_inputs | jq -cMr 'map(select(.type == "keyboard")) | .[0].xkb_active_layout_name')
     line=$(echo $line | sed "s/KEYBOARD/Kb: $kb/")
     
-    if [ $has_comma -eq 1 ]; then
-        line=",${line}" 
-    else 
-        has_comma=1
-    fi
+    [ $has_comma -eq 1 ] && line=",${line}" || has_comma=1
 
     echo $line
 done)

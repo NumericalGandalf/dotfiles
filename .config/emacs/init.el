@@ -1,17 +1,8 @@
-(defun font-apply ()
-  "Apply font."
-  (interactive)
-  (let ((font "Iosevka-14"))
-    (set-face-attribute 'default nil :font font)
-    (set-face-attribute 'fixed-pitch nil :font font)
-    (set-face-attribute 'fixed-pitch-serif nil :font font)
-    (set-face-attribute 'variable-pitch nil :font font)))
-
-(if (daemonp)
-    (add-hook 'server-after-make-frame-hook #'font-apply)
-  (font-apply))
-
-(load-theme 'gruvbox t)
+(let ((font "Iosevka-14"))
+  (set-face-attribute 'default nil :font font)
+  (set-face-attribute 'fixed-pitch nil :font font)
+  (set-face-attribute 'fixed-pitch-serif nil :font font)
+  (set-face-attribute 'variable-pitch nil :font font))
 
 (setq use-short-answers t
       use-dialog-box nil
@@ -26,68 +17,75 @@
 
 (setq mode-line-percent-position '(6 "%q"))
 
-(with-eval-after-load 'compile
-  (setq compilation-ask-about-save nil
-        compile-command nil
-        compilation-auto-jump-to-first-error t))
+(setq xref-auto-jump-to-first-definition t
+      xref-auto-jump-to-first-xref t
+      xref-file-name-display 'abs
+      xref-prompt-for-identifier nil)
 
-(with-eval-after-load 'simple
-  (setq-default indent-tabs-mode nil))
+(setq compilation-ask-about-save nil
+      compile-command nil
+      compilation-auto-jump-to-first-error t)
 
-(with-eval-after-load 'c-ts-mode
-  (setq c-ts-mode-indent-offset 4))
+(defun compile-this ()
+  "Either `project-compile' or `compile'."
+  (interactive)
+  (if (project-current)
+      (project-compile)
+    (compile)))
 
-(with-eval-after-load 'minibuffer
-  (setq enable-recursive-minibuffers t
-        completions-detailed t
-        read-file-name-completion-ignore-case t))
+(setq search-upper-case t
+      isearch-repeat-on-direction-change t
+      isearch-allow-scroll 'unlimited)
 
-(with-eval-after-load 'vc-hooks
-  (setq vc-follow-symlinks t))
+(setq-default tab-width 4
+              indent-tabs-mode nil)
 
-(with-eval-after-load 'dired
-  (setq dired-listing-switches "-lah"
-        dired-free-space 'separate
-        dired-recursive-deletes 'always
-        dired-dwim-target t
-        dired-auto-revert-buffer t
-        dired-clean-confirm-killing-deleted-buffers nil))
+(setq c-default-style '((other . "user")))
 
-(with-eval-after-load 'display-line-numbers
-  (setq display-line-numbers-width-start t
-        display-line-numbers-grow-only t
-        display-line-numbers-type 'relative))
+(electric-pair-mode 1)
 
-(with-eval-after-load 'files
-  (setq make-backup-files nil
-        create-lockfiles nil)
-  (setq-default auto-save-default nil))
+(setq enable-recursive-minibuffers t
+      completions-detailed t
+      read-file-name-completion-ignore-case t
+      confirm-nonexistent-file-or-buffer nil)
 
-(with-eval-after-load 'treesit
-  (add-to-list 'treesit-extra-load-path (expand-cache-file "tree-sitter/")))
+(setq dired-listing-switches "-lah"
+      dired-free-space 'separate
+      dired-recursive-deletes 'always
+      dired-dwim-target t
+      dired-auto-revert-buffer t
+      dired-clean-confirm-killing-deleted-buffers nil)
 
-(with-eval-after-load 'auth-source
-  (setq auth-source-save-behavior nil))
+(setq display-line-numbers-width-start t
+      display-line-numbers-grow-only t
+      display-line-numbers-type 'relative)
 
-(with-eval-after-load 'autorevert
-  (setq global-auto-revert-non-file-buffers t
-        auto-revert-remote-files t
-        auto-revert-verbose nil))
+(global-display-line-numbers-mode 1)
+(global-visual-line-mode 1)
+(column-number-mode 1)
 
-(with-eval-after-load 'server
-  (setq server-auth-dir (expand-cache-file "server/")))
+(let* ((regex "\\`/.*/\\([^/]+\\)\\'")
+       (file (concat (expand-cache-file "locks/") "\\1")))
+  (setq lock-file-name-transforms `((,regex ,file t))))
 
-(with-eval-after-load 'ibuffer
-  (setq ibuffer-use-other-window t))
+(setq backup-directory-alist `(("." . ,(expand-cache-file "backups/")))
+      delete-old-versions t
+      kept-old-versions 0
+      kept-new-versions 5
+      backup-by-copying t)
+      
+(setq find-file-visit-truename t
+      vc-follow-symlinks t
+      auth-source-save-behavior nil)
 
-(with-eval-after-load 'shell
-  (setq shell-kill-buffer-on-exit t))
+(setq auto-revert-verbose nil
+      global-auto-revert-non-file-buffers t
+      auto-revert-remote-files t)
 
-(with-eval-after-load 'help
-  (setq help-window-select t))
+(global-auto-revert-mode 1)
 
-(with-eval-after-load 'man
-  (setq Man-notify-method 'aggressive))
+(setq Man-notify-method 'aggressive
+      help-window-select t)
 
 (require 'package)
 (require 'use-package)
@@ -103,16 +101,17 @@
 (setq use-package-always-ensure t
       use-package-always-defer t)
 
-(when init-file-debug
-  (setq use-package-compute-statistics t
-        use-package-verbose t))
-
 (use-package diminish)
+(use-package delight)
+
+(use-package gruber-darker-theme
+  :init
+  (load-theme 'gruber-darker t))
 
 (use-package no-littering
   :demand
   :preface
-  (setq no-littering-var-directory "~/.cache/emacs/"
+  (setq no-littering-var-directory (expand-cache-file "./")
         no-littering-etc-directory no-littering-var-directory))
 
 (use-package orderless
@@ -132,8 +131,11 @@
   (vertico-preselect 'no-prompt))
 
 (use-package consult
+  :init
+  (recentf-mode 1)
   :custom
   (consult-line-start-from-top t)
+  (consult-find-args "find .")
   (xref-show-xrefs-function #'consult-xref)
   (xref-show-definitions-function #'consult-xref))
 
@@ -147,7 +149,6 @@
   (setq magit-auto-revert-mode nil))
 
 (use-package company
-  :diminish
   :init
   (global-company-mode 1)
   :custom
@@ -159,77 +160,53 @@
   (company-tooltip-align-annotations t)
   (company-tooltip-scrollbar-width 0))
 
+(use-package projectile
+  :diminish
+  :init
+  (projectile-mode 1))
+
 (use-package switch-window
   :custom
   (switch-window-background t))
 
-(use-package sudo-edit)
-
 (use-package multiple-cursors)
+(use-package move-text)
 
 (use-package editorconfig
   :init
   (editorconfig-mode 1))
 
-(use-package treesit-auto
-  :demand
-  :config
-  (global-treesit-auto-mode 1)
-
-  (defun treesit-ensure-all (&optional prefix)
-    "Ensure all available tree-sitter libraries.
-If optional PREFIX is non-nil, force all to build."
-    (interactive "P")
-    (let ((outdir (nth 0 treesit-extra-load-path)))
-      (when prefix (delete-directory outdir t))
-      (dolist (source (treesit-auto--build-treesit-source-alist))
-        (let ((lang (nth 0 source)))
-          (unless (or (treesit-ready-p lang t) (member lang '(janet latex markdown)))
-            (message "Building tree-sitter library for language: %s" lang)
-            (let ((inhibit-message t)
-                  (message-log-max nil))
-              (apply #'treesit--install-language-grammar-1 outdir source))))))))
-
-(use-package wgrep
-  :custom
-  (wgrep-enable-key "e"))
-
-(use-package move-text)
-
-(use-package meson-mode)
-
 (use-package lsp-mode
   :hook
-  (prog-mode . lsp-maybe)
-  :init
-  (defun lsp-maybe ()
-    "Maybe run `lsp'."
-    (interactive)
-    (unless (derived-mode-p 'emacs-lisp-mode) (lsp)))
-
+  ((c-mode c++-mode java-mode) . lsp)
   :custom
-  (lsp-auto-guess-root t)
+  (lsp-enable-symbol-highlighting nil)
   (lsp-headerline-breadcrumb-enable nil)
   (lsp-lens-enable nil)
-  (lsp-modeline-code-actions-segments '(count))
-  (lsp-keep-workspace-alive nil)
-  (lsp-warn-no-matched-clients nil))
+  (lsp-enable-snippet nil)
+  (lsp-enable-folding nil)
+  (lsp-auto-guess-root t)
+  (lsp-modeline-code-actions-segments '(count)))
+
+(use-package lsp-java
+  :after lsp-mode)
 
 (use-package flycheck
   :after lsp-mode)
 
-(use-package yasnippet
-  :after lsp-mode
-  :hook
-  (lsp-mode . yas-minor-mode))
-
 (use-package consult-lsp
   :after (consult lsp-mode))
+
+(use-package rust-mode)
+(use-package yaml-mode)
+(use-package meson-mode)
+(use-package cmake-mode)
 
 (use-package general
   :init
   (general-define-key
-   "C-<tab>" #'fill-region
+   "C-\\" #'compile-this
+   "C-<tab>" #'align-regexp
    "M-<tab>" #'company-complete
    "M-y" #'consult-yank-pop
    "C-s" #'consult-line
@@ -240,15 +217,13 @@ If optional PREFIX is non-nil, force all to build."
 
   (general-define-key
    :prefix "C-x"
-   "C-b" #'ibuffer
+   "C-b" #'ibuffer-other-window
    "C-c" #'save-buffers-kill-emacs
    "o" #'switch-window
    "O" #'switch-window-then-swap-buffer
-   "b" #'consult-buffer
-   "u" #'sudo-edit-find-file
-   "C-u" #'sudo-edit
    "!" #'shell-command
    "&" #'async-shell-command
+   "b" #'consult-buffer
    "4 b" #'consult-buffer-other-window
    "5 b" #'consult-buffer-other-frame
    "r b" #'consult-bookmark)
@@ -280,66 +255,15 @@ If optional PREFIX is non-nil, force all to build."
   (general-def projectile-mode-map
     "C-x p" #'projectile-command-map)
 
-  (general-def vterm-mode-map
-    "C-j" (lambda () (interactive) (vterm-send "C-c")))
-
-  (setq lsp-keymap-prefix "C-z")
   (general-def lsp-mode-map
-    "C-." #'lsp-describe-thing-at-point
-    "C-;" #'lsp-rename
+    "C-." #'lsp-rename
+    "C-," #'consult-lsp-symbols
+    "C-|" #'flycheck-list-errors
+    "M-g i" #'consult-lsp-file-symbols
     "M-." #'lsp-find-definition
     "M-?" #'lsp-find-references
-    "M-g j" #'flycheck-list-errors
-    "M-g k" #'consult-lsp-diagnostics)
-  (general-def lsp-mode-map
-    :prefix lsp-keymap-prefix
-    "C-," #'consult-lsp-symbols
-    "C-." #'consult-lsp-file-symbols
-    "j r" #'dap-java-debug
-    "j m" #'dap-java-run-test-method
-    "j M" #'dap-java-run-test-class
-    "j e" #'lsp-java-extract-method
-    "j t" #'lsp-java-open-super-implementation
-    "j i" #'lsp-java-organize-imports
-    "j h" #'lsp-java-type-hierarchy
-    "j o" #'lsp-java-generate-overrides
-    "j s" #'lsp-java-generate-to-string
-    "j g" #'lsp-java-generate-getters-and-setters
-    "j =" #'lsp-java-generate-equals-and-hash-code)
-
-  (dolist (map '(lsp-mode-map dap-mode-map))
-    (general-define-key
-     :keymaps map
-     "C-5" #'dap-debug-last
-     "C-6" #'dap-debug-restart
-     "C-7" #'dap-continue
-     "C-8" #'dap-breakpoint-toggle
-     "C-9" #'dap-next
-     "C-0" #'dap-step-in
-     "C--" #'dap-step-out
-     "C-=" #'dap-disconnect)
-    (general-define-key
-     :keymaps map
-     :prefix lsp-keymap-prefix
-     "d e" #'dap-eval
-     "d c" #'dap-breakpoint-condition
-     "d h" #'dap-breakpoint-hit-condition
-     "d l" #'dap-ui-breakpoints-list
-     "d t" #'dap-switch-thread
-     "d T" #'dap-stop-thread)))
-
-(global-display-line-numbers-mode 1)
-(global-visual-line-mode 1)
-(column-number-mode 1)
-
-(global-auto-revert-mode 1)
-(auto-save-visited-mode 1)
-
-(ffap-bindings)
-(electric-pair-mode 1)
+    "C-h ." #'lsp-describe-thing-at-point))
 
 (setq custom-file (expand-cache-file "custom.el"))
-(when (file-exists-p custom-file) (load-file custom-file))
-
-(require 'server)
-(unless (server-running-p) (server-start))
+(when (file-exists-p custom-file)
+  (load-file custom-file))

@@ -1,3 +1,7 @@
 [font]
 normal = { family = "Iosevka" }
-size = 14
+size   = 14
+
+[colors.primary]
+background = "#181818"
+foreground = "#e4e4ef"
