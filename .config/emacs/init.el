@@ -31,7 +31,7 @@
   (interactive)
   (if (project-current)
       (project-compile)
-    (compile)))
+    (call-interactively (compile))))
 
 (setq search-upper-case t
       isearch-repeat-on-direction-change t
@@ -74,6 +74,8 @@
       kept-new-versions 5
       backup-by-copying t)
       
+(add-to-list 'treesit-extra-load-path (expand-cache-file "tree-sitter/"))
+
 (setq find-file-visit-truename t
       vc-follow-symlinks t
       auth-source-save-behavior nil)
@@ -104,9 +106,11 @@
 (use-package diminish)
 (use-package delight)
 
-(use-package gruber-darker-theme
+(use-package doom-themes
   :init
-  (load-theme 'gruber-darker t))
+  (load-theme 'doom-tomorrow-night t)
+  :custom
+  (doom-themes-enable-bold nil))
 
 (use-package no-littering
   :demand
@@ -149,12 +153,12 @@
   (setq magit-auto-revert-mode nil))
 
 (use-package company
+  :diminish
   :init
   (global-company-mode 1)
   :custom
   (company-minimum-prefix-length 1)
   (company-idle-delay 0)
-  (company-frontends '(company-pseudo-tooltip-frontend company-echo-metadata-frontend))
   (company-format-margin-function #'company-text-icons-margin)
   (company-tooltip-flip-when-above t)
   (company-tooltip-align-annotations t)
@@ -177,8 +181,9 @@
   (editorconfig-mode 1))
 
 (use-package lsp-mode
+  :diminish
   :hook
-  ((c-mode c++-mode java-mode) . lsp)
+  ((c-ts-mode c++-ts-mode java-ts-mode) . lsp)
   :custom
   (lsp-enable-symbol-highlighting nil)
   (lsp-headerline-breadcrumb-enable nil)
@@ -202,8 +207,28 @@
 (use-package meson-mode)
 (use-package cmake-mode)
 
+(use-package treesit-auto
+  :demand
+  :config
+  (defun treesit-install-grammars ()
+    "Install tree-sitter language grammmars."
+    (interactive)
+    (let ((outdir (nth 0 treesit-extra-load-path)))
+      (dolist (source (treesit-auto--build-treesit-source-alist))
+        (let ((grammar (nth 0 source)))
+          (unless (or (treesit-ready-p grammar t)
+                      (member grammar '(janet latex markdown)))
+            (message "Installing tree-sitter language grammer: %s" grammar)
+            (let ((inhibit-message t)
+                  (message-log-max nil))
+              (apply #'treesit--install-language-grammar-1 outdir source)))))))
+
+  (global-treesit-auto-mode 1))
+
 (use-package general
   :init
+  (ffap-bindings)
+  
   (general-define-key
    "C-\\" #'compile-this
    "C-<tab>" #'align-regexp
