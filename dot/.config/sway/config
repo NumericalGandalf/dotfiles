@@ -48,7 +48,7 @@ titlebar_padding 3 1
 for_window [window_role="pop-up"] floating enable
 for_window [window_role="task_dialog"] floating enable
 for_window [shell="xwayland"] title_format "[XWayland] %title"
-for_window [title="^app-launcher.el"] floating enable, border pixel
+for_window [title="^app-launcher.el$"] floating enable, border pixel
 
 bindsym $mod+Shift+q kill
 bindsym $mod+Shift+v layout toggle split tabbed
@@ -56,6 +56,10 @@ bindsym $mod+Shift+b split toggle
 bindsym $mod+Shift+f fullscreen toggle
 bindsym $mod+Shift+z floating toggle
 
+set $emacs "emacs --init-directory \"$HOME/dotfiles/.config/emacs/\""
+bindsym $mod+Shift+e exec emacsclient -ca $emacs
+bindsym $mod+Shift+t exec emacsclient -ce "(vterm)"
+# bindsym $mod+Shift+d exec emacsclient -r -e "(app-launcher-frame)"
 bindsym $mod+Shift+d exec wmenu-run -if "Iosevka 13"
 
 bindsym $mod+Shift+s mode "System"
@@ -114,3 +118,5 @@ output "Dell Inc. AW2724DM 66YZHV3" mode 2560x1440@165Hz scale 1.25
 
 set $lock "swaylock -c 000000"
 exec swayidle -w before-sleep $lock lock $lock
+
+exec $emacs

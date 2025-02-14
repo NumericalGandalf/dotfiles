@@ -1,8 +1,15 @@
-(let ((font "Iosevka-14"))
-  (set-face-attribute 'default nil :font font)
-  (set-face-attribute 'fixed-pitch nil :font font)
-  (set-face-attribute 'fixed-pitch-serif nil :font font)
-  (set-face-attribute 'variable-pitch nil :font font))
+(defun font-apply ()
+  "Apply font."
+  (interactive)
+  (let ((font "Iosevka-14"))
+    (set-face-attribute 'default nil :font font)
+    (set-face-attribute 'fixed-pitch nil :font font)
+    (set-face-attribute 'fixed-pitch-serif nil :font font)
+    (set-face-attribute 'variable-pitch nil :font font)))
+
+(if (daemonp)
+    (add-hook 'server-after-make-frame-hook #'font-apply)
+  (font-apply))
 
 (setq use-short-answers t
       use-dialog-box nil
@@ -60,9 +67,15 @@
       display-line-numbers-grow-only t
       display-line-numbers-type 'relative)
 
-(global-display-line-numbers-mode 1)
 (global-visual-line-mode 1)
 (column-number-mode 1)
+
+(defun line-numbers-here ()
+  "Enable (maybe) line numbers in current major mode."
+  (when (derived-mode-p 'prog-mode 'conf-mode)
+    (display-line-numbers-mode 1)))
+
+(add-to-list 'after-change-major-mode-hook #'line-numbers-here)
 
 (let* ((regex "\\`/.*/\\([^/]+\\)\\'")
        (file (concat (expand-cache-file "locks/") "\\1")))
@@ -77,8 +90,10 @@
 (add-to-list 'treesit-extra-load-path (expand-cache-file "tree-sitter/"))
 
 (setq find-file-visit-truename t
-      vc-follow-symlinks t
-      auth-source-save-behavior nil)
+      vc-follow-symlinks t)
+
+(setq auth-source-save-behavior nil
+      server-auth-dir (expand-cache-file "server/"))
 
 (setq auto-revert-verbose nil
       global-auto-revert-non-file-buffers t
@@ -86,8 +101,36 @@
 
 (global-auto-revert-mode 1)
 
-(setq Man-notify-method 'aggressive
+(setq Man-notify-method 'aggresive
       help-window-select t)
+
+(let ((file (locate-user-emacs-file "app-launcher.el")))
+  (autoload #'app-launcher-run-app file t)
+  (autoload #'app-launcher-frame file t))
+
+(defun stow-dotfiles (&optional prefix dir)
+  "Stow dotfiles."
+  (interactive "P\ni")
+  (dolist (target (cdr (cdr (directory-files
+                             (expand-dot-file (or dir "./")) t))))
+    (if (or (file-regular-p target)
+            (cl-dolist (parent '(".config/"))
+              (let ((parent (expand-dot-file parent)))
+                (when (and (file-in-directory-p target parent)
+                           (not (file-equal-p target parent)))
+                  (cl-return target)))))
+        (let* ((rel-name (file-relative-name (expand-dot-file target)
+                                             (expand-dot-file "./")))
+               (link-name (expand-file-name rel-name "~/")))
+          (when (file-exists-p link-name)
+            (cond ((file-symlink-p link-name)
+                   (delete-file link-name))
+                  ((file-directory-p link-name)
+                   (delete-directory link-name t))
+                  (t (delete-file link-name))))
+          (unless prefix
+            (make-symbolic-link target link-name)))
+      (posix-stow prefix target))))
 
 (require 'package)
 (require 'use-package)
@@ -101,7 +144,11 @@
 (package-refresh-contents t)
 
 (setq use-package-always-ensure t
-      use-package-always-defer t)
+      use-package-always-defer (not (daemonp)))
+
+(when init-file-debug
+  (setq use-package-verbose t
+        use-package-compute-statistics t))
 
 (use-package diminish)
 (use-package delight)
@@ -116,7 +163,11 @@
   :demand
   :preface
   (setq no-littering-var-directory (expand-cache-file "./")
-        no-littering-etc-directory no-littering-var-directory))
+        no-littering-etc-directory no-littering-var-directory)
+  :config
+  (recentf-mode 1)
+  (savehist-mode 1)
+  (save-place-mode 1))
 
 (use-package orderless
   :init
@@ -135,8 +186,8 @@
   (vertico-preselect 'no-prompt))
 
 (use-package consult
-  :init
-  (recentf-mode 1)
+  :config
+  (add-to-list 'consult-preview-allowed-hooks #'line-numbers-here)
   :custom
   (consult-line-start-from-top t)
   (consult-find-args "find .")
@@ -176,6 +227,8 @@
 (use-package multiple-cursors)
 (use-package move-text)
 
+(use-package sudo-edit)
+
 (use-package editorconfig
   :init
   (editorconfig-mode 1))
@@ -202,14 +255,11 @@
 (use-package consult-lsp
   :after (consult lsp-mode))
 
-(use-package rust-mode)
-(use-package yaml-mode)
 (use-package meson-mode)
-(use-package cmake-mode)
 
 (use-package treesit-auto
   :demand
-  :config
+  :init
   (defun treesit-install-grammars ()
     "Install tree-sitter language grammmars."
     (interactive)
@@ -223,7 +273,17 @@
                   (message-log-max nil))
               (apply #'treesit--install-language-grammar-1 outdir source)))))))
 
+  :config
   (global-treesit-auto-mode 1))
+
+(use-package vterm
+  :config
+  (setq vterm-timer-delay nil)
+  :custom
+  (vterm-module-cmake-args "-DUSE_SYSTEM_LIBVTERM=Off")
+  (vterm-always-compile-module t)
+  (vterm-max-scrollback 10000)
+  (vterm-clear-scrollback-when-clearing t))
 
 (use-package general
   :init
@@ -243,7 +303,6 @@
   (general-define-key
    :prefix "C-x"
    "C-b" #'ibuffer-other-window
-   "C-c" #'save-buffers-kill-emacs
    "o" #'switch-window
    "O" #'switch-window-then-swap-buffer
    "!" #'shell-command
@@ -279,6 +338,11 @@
 
   (general-def projectile-mode-map
     "C-x p" #'projectile-command-map)
+
+  (general-def vterm-mode-map
+    "C-j" (lambda ()
+            (interactive)
+            (vterm-send "C-c")))
 
   (general-def lsp-mode-map
     "C-." #'lsp-rename
