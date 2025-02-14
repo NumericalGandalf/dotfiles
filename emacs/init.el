@@ -1,3 +1,7 @@
+(require 'server)
+(require 'package)
+(require 'use-package)
+
 (defun font-apply ()
   "Apply font."
   (interactive)
@@ -6,107 +10,6 @@
     (set-face-attribute 'fixed-pitch nil :font font)
     (set-face-attribute 'fixed-pitch-serif nil :font font)
     (set-face-attribute 'variable-pitch nil :font font)))
-
-(if (daemonp)
-    (add-hook 'server-after-make-frame-hook #'font-apply)
-  (font-apply))
-
-(setq use-short-answers t
-      use-dialog-box nil
-      use-file-dialog nil
-      inhibit-startup-screen t
-      resize-mini-windows t
-      mouse-autoselect-window t)
-
-(setq scroll-step 1
-      scroll-margin 4
-      scroll-preserve-screen-position t)
-
-(setq mode-line-percent-position '(6 "%q"))
-
-(setq xref-auto-jump-to-first-definition t
-      xref-auto-jump-to-first-xref t
-      xref-file-name-display 'abs
-      xref-prompt-for-identifier nil)
-
-(setq compilation-ask-about-save nil
-      compile-command nil
-      compilation-auto-jump-to-first-error t)
-
-(defun compile-this ()
-  "Either `project-compile' or `compile'."
-  (interactive)
-  (if (project-current)
-      (project-compile)
-    (call-interactively (compile))))
-
-(setq search-upper-case t
-      isearch-repeat-on-direction-change t
-      isearch-allow-scroll 'unlimited)
-
-(setq-default tab-width 4
-              indent-tabs-mode nil)
-
-(setq c-default-style '((other . "user")))
-
-(electric-pair-mode 1)
-
-(setq enable-recursive-minibuffers t
-      completions-detailed t
-      read-file-name-completion-ignore-case t
-      confirm-nonexistent-file-or-buffer nil)
-
-(setq dired-listing-switches "-lah"
-      dired-free-space 'separate
-      dired-recursive-deletes 'always
-      dired-dwim-target t
-      dired-auto-revert-buffer t
-      dired-clean-confirm-killing-deleted-buffers nil)
-
-(setq display-line-numbers-width-start t
-      display-line-numbers-grow-only t
-      display-line-numbers-type 'relative)
-
-(global-visual-line-mode 1)
-(column-number-mode 1)
-
-(defun line-numbers-here ()
-  "Enable (maybe) line numbers in current major mode."
-  (when (derived-mode-p 'prog-mode 'conf-mode)
-    (display-line-numbers-mode 1)))
-
-(add-to-list 'after-change-major-mode-hook #'line-numbers-here)
-
-(let* ((regex "\\`/.*/\\([^/]+\\)\\'")
-       (file (concat (expand-cache-file "locks/") "\\1")))
-  (setq lock-file-name-transforms `((,regex ,file t))))
-
-(setq backup-directory-alist `(("." . ,(expand-cache-file "backups/")))
-      delete-old-versions t
-      kept-old-versions 0
-      kept-new-versions 5
-      backup-by-copying t)
-      
-(add-to-list 'treesit-extra-load-path (expand-cache-file "tree-sitter/"))
-
-(setq find-file-visit-truename t
-      vc-follow-symlinks t)
-
-(setq auth-source-save-behavior nil
-      server-auth-dir (expand-cache-file "server/"))
-
-(setq auto-revert-verbose nil
-      global-auto-revert-non-file-buffers t
-      auto-revert-remote-files t)
-
-(global-auto-revert-mode 1)
-
-(setq Man-notify-method 'aggresive
-      help-window-select t)
-
-(let ((file (locate-user-emacs-file "app-launcher.el")))
-  (autoload #'app-launcher-run-app file t)
-  (autoload #'app-launcher-frame file t))
 
 (defun stow-dotfiles (&optional prefix dir)
   "Stow dotfiles."
@@ -130,25 +33,118 @@
                   (t (delete-file link-name))))
           (unless prefix
             (make-symbolic-link target link-name)))
-      (posix-stow prefix target))))
+      (stow-dotfiles prefix target))))
 
-(require 'package)
-(require 'use-package)
+(defun compile-this ()
+  "Either `project-compile' or `compile'."
+  (interactive)
+  (if (project-current)
+      (project-compile)
+    (call-interactively (compile))))
 
-(setq package-user-dir (expand-cache-file "packages/")
-      package-gnupghome-dir (expand-file-name "gnupg/" package-user-dir))
+(defun line-numbers-here ()
+  "Enable (maybe) line numbers in current major mode."
+  (when (derived-mode-p 'prog-mode 'conf-mode)
+    (display-line-numbers-mode 1)))
+
+(defun treesit-install-grammars ()
+  "Install tree-sitter language grammmars."
+  (interactive)
+  (let ((outdir (nth 0 treesit-extra-load-path)))
+    (dolist (source (treesit-auto--build-treesit-source-alist))
+      (let ((grammar (nth 0 source)))
+        (unless (or (treesit-ready-p grammar t)
+                    (member grammar '(janet latex markdown)))
+          (message "Installing tree-sitter language grammer: %s" grammar)
+          (let ((inhibit-message t)
+                (message-log-max nil))
+            (apply #'treesit--install-language-grammar-1 outdir source)))))))
+
+(if (daemonp)
+    (add-hook 'server-after-make-frame-hook #'font-apply)
+  (font-apply))
+
+(setq use-short-answers t
+      use-dialog-box nil
+      use-file-dialog nil
+      inhibit-startup-screen t
+      resize-mini-windows t
+      mouse-autoselect-window t
+
+      scroll-step 1
+      scroll-margin 4
+      scroll-preserve-screen-position t
+
+      mode-line-percent-position '(6 "%q")
+
+      xref-auto-jump-to-first-definition t
+      xref-auto-jump-to-first-xref t
+      xref-file-name-display 'abs
+      xref-prompt-for-identifier nil
+
+      compilation-ask-about-save nil
+      compile-command nil
+      compilation-auto-jump-to-first-error t
+
+      search-upper-case t
+      isearch-repeat-on-direction-change t
+      isearch-allow-scroll 'unlimited
+
+      c-default-style '((other . "user"))
+
+      enable-recursive-minibuffers t
+      completions-detailed t
+      read-file-name-completion-ignore-case t
+      confirm-nonexistent-file-or-buffer nil
+
+      dired-listing-switches "-lah"
+      dired-free-space 'separate
+      dired-recursive-deletes 'always
+      dired-dwim-target t
+      dired-auto-revert-buffer t
+      dired-clean-confirm-killing-deleted-buffers nil
+
+      display-line-numbers-width-start t
+      display-line-numbers-grow-only t
+      display-line-numbers-type 'relative
+
+      backup-directory-alist `(("." . ,(expand-cache-file "backups/")))
+      delete-old-versions t
+      kept-old-versions 0
+      kept-new-versions 5
+      backup-by-copying t
+
+      find-file-visit-truename t
+      vc-follow-symlinks t
+
+      auth-source-save-behavior nil
+      server-auth-dir (expand-cache-file "server/")
+
+      auto-revert-verbose nil
+      global-auto-revert-non-file-buffers t
+      auto-revert-remote-files t
+
+      Man-notify-method 'aggresive
+      help-window-select t
+
+      package-user-dir (expand-cache-file "packages/")
+      package-gnupghome-dir (expand-file-name "gnupg/" package-user-dir)
+
+      use-package-always-ensure t
+      use-package-always-defer (not (daemonp))
+      use-package-verbose init-file-debug
+      use-package-compute-statistics use-package-verbose)
+
+(setq-default tab-width 4
+              indent-tabs-mode nil)
+
+(add-to-list 'after-change-major-mode-hook #'line-numbers-here)
+
+(add-to-list 'treesit-extra-load-path (expand-cache-file "tree-sitter/"))
 
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
-
 (package-initialize)
 (package-refresh-contents t)
-
-(setq use-package-always-ensure t
-      use-package-always-defer (not (daemonp)))
-
-(when init-file-debug
-  (setq use-package-verbose t
-        use-package-compute-statistics t))
 
 (use-package diminish)
 (use-package delight)
@@ -163,11 +159,7 @@
   :demand
   :preface
   (setq no-littering-var-directory (expand-cache-file "./")
-        no-littering-etc-directory no-littering-var-directory)
-  :config
-  (recentf-mode 1)
-  (savehist-mode 1)
-  (save-place-mode 1))
+        no-littering-etc-directory no-littering-var-directory))
 
 (use-package orderless
   :init
@@ -228,10 +220,7 @@
 (use-package move-text)
 
 (use-package sudo-edit)
-
-(use-package editorconfig
-  :init
-  (editorconfig-mode 1))
+(use-package editorconfig)
 
 (use-package lsp-mode
   :diminish
@@ -259,20 +248,6 @@
 
 (use-package treesit-auto
   :demand
-  :init
-  (defun treesit-install-grammars ()
-    "Install tree-sitter language grammmars."
-    (interactive)
-    (let ((outdir (nth 0 treesit-extra-load-path)))
-      (dolist (source (treesit-auto--build-treesit-source-alist))
-        (let ((grammar (nth 0 source)))
-          (unless (or (treesit-ready-p grammar t)
-                      (member grammar '(janet latex markdown)))
-            (message "Installing tree-sitter language grammer: %s" grammar)
-            (let ((inhibit-message t)
-                  (message-log-max nil))
-              (apply #'treesit--install-language-grammar-1 outdir source)))))))
-
   :config
   (global-treesit-auto-mode 1))
 
@@ -353,6 +328,26 @@
     "M-?" #'lsp-find-references
     "C-h ." #'lsp-describe-thing-at-point))
 
+(editorconfig-mode 1)
+(electric-pair-mode 1)
+
+(global-visual-line-mode 1)
+(column-number-mode 1)
+
+(global-auto-revert-mode 1)
+
+(recentf-mode 1)
+(savehist-mode 1)
+(save-place-mode 1)
+
+(let ((file (locate-user-emacs-file "app-launcher.el")))
+  (autoload #'app-launcher-run-app file t)
+  (autoload #'app-launcher-frame file t))
+
 (setq custom-file (expand-cache-file "custom.el"))
 (when (file-exists-p custom-file)
   (load-file custom-file))
+
+(unless (or (daemonp)
+            (server-running-p))
+  (server-start))

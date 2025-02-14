@@ -56,7 +56,7 @@ bindsym $mod+Shift+b split toggle
 bindsym $mod+Shift+f fullscreen toggle
 bindsym $mod+Shift+z floating toggle
 
-set $emacs "emacs --init-directory \"$HOME/dotfiles/.config/emacs/\""
+set $emacs "emacs --init-directory ~/dotfiles/emacs/"
 bindsym $mod+Shift+e exec emacsclient -ca $emacs
 bindsym $mod+Shift+t exec emacsclient -ce "(vterm)"
 # bindsym $mod+Shift+d exec emacsclient -r -e "(app-launcher-frame)"
