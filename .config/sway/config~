@@ -28,15 +28,15 @@ bindsym $mod+7 workspace 7
 bindsym $mod+8 workspace 8
 bindsym $mod+9 workspace 9
 
-bindsym $mod+Shift+1 move container workspace 1, workspace 1
-bindsym $mod+Shift+2 move container workspace 2, workspace 2
-bindsym $mod+Shift+3 move container workspace 3, workspace 3
-bindsym $mod+Shift+4 move container workspace 4, workspace 4
-bindsym $mod+Shift+5 move container workspace 5, workspace 5
-bindsym $mod+Shift+6 move container workspace 6, workspace 6
-bindsym $mod+Shift+7 move container workspace 7, workspace 7
-bindsym $mod+Shift+8 move container workspace 8, workspace 8
-bindsym $mod+Shift+9 move container workspace 9, workspace 9
+bindsym $mod+Ctrl+1 move container workspace 1, workspace 1
+bindsym $mod+Ctrl+2 move container workspace 2, workspace 2
+bindsym $mod+Ctrl+3 move container workspace 3, workspace 3
+bindsym $mod+Ctrl+4 move container workspace 4, workspace 4
+bindsym $mod+Ctrl+5 move container workspace 5, workspace 5
+bindsym $mod+Ctrl+6 move container workspace 6, workspace 6
+bindsym $mod+Ctrl+7 move container workspace 7, workspace 7
+bindsym $mod+Ctrl+8 move container workspace 8, workspace 8
+bindsym $mod+Ctrl+9 move container workspace 9, workspace 9
 
 popup_during_fullscreen smart
 focus_on_window_activation smart
@@ -56,10 +56,6 @@ bindsym $mod+Shift+b split toggle
 bindsym $mod+Shift+f fullscreen toggle
 bindsym $mod+Shift+z floating toggle
 
-set $emacs "emacs --init-directory ~/dotfiles/emacs/"
-bindsym $mod+Shift+e exec emacsclient -ca $emacs
-bindsym $mod+Shift+t exec emacsclient -ce "(vterm)"
-# bindsym $mod+Shift+d exec emacsclient -r -e "(app-launcher-frame)"
 bindsym $mod+Shift+d exec wmenu-run -if "Iosevka 13"
 
 bindsym $mod+Shift+s mode "System"
@@ -119,4 +115,4 @@ output "Dell Inc. AW2724DM 66YZHV3" mode 2560x1440@165Hz scale 1.25
 set $lock "swaylock -c 000000"
 exec swayidle -w before-sleep $lock lock $lock
 
-exec $emacs
+exec $emacs --daemon
