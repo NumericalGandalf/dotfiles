@@ -32,7 +32,6 @@
       ido-create-new-buffer 'always
       ido-use-filename-at-point 'guess
       ido-use-url-at-point t
-      ido-use-virtual-buffers t
 
       search-upper-case t
       isearch-repeat-on-direction-change t
@@ -46,6 +45,16 @@
       dired-dwim-target t
       dired-clean-confirm-killing-deleted-buffers nil
 
+      eldoc-echo-area-use-multiline-p 1
+      
+      eglot-report-progress nil
+      eglot-extend-to-xref t
+      eglot-ignored-server-capabilities '(:documentHighlightProvider
+                                          :codeLensProvider
+                                          :documentOnTypeFormattingProvider
+                                          :foldingRangeProvider
+                                          :inlayHintProvider)
+
       display-line-numbers-width-start t
       display-line-numbers-grow-only t
       display-line-numbers-type 'relative
@@ -57,8 +66,6 @@
 
 (setq-default tab-width 4
               indent-tabs-mode nil)
-
-(add-to-list 'auto-mode-alist '("\\.jsonc\\'" . js-json-mode))
 
 (require 'package)
 (require 'use-package)
@@ -86,6 +93,8 @@
   :custom
   (company-minimum-prefix-length 1)
   (company-idle-delay 0)
+  (company-frontends '(company-pseudo-tooltip-frontend
+                       company-echo-metadata-frontend))
   (company-format-margin-function #'company-text-icons-margin)
   (company-tooltip-flip-when-above t)
   (company-tooltip-align-annotations t)
@@ -97,31 +106,20 @@
 
 (use-package editorconfig)
 
-(use-package lsp-mode
-  :hook
-  ((c-mode c++-mode java-mode) . lsp)
-  :custom
-  (lsp-enable-symbol-highlighting nil)
-  (lsp-headerline-breadcrumb-enable nil)
-  (lsp-lens-enable nil)
-  (lsp-enable-snippet nil)
-  (lsp-enable-folding nil)
-  (lsp-auto-guess-root t)
-  (lsp-modeline-code-actions-segments '(count)))
+(use-package treesit-auto
+  :demand
+  :config
+  (global-treesit-auto-mode 1))
 
-(use-package lsp-java
-  :after lsp-mode)
-
-(use-package rust-mode)
-(use-package yaml-mode)
-(use-package cmake-mode)
 (use-package meson-mode)
 
 (use-package general
-  :init 
+  :init
   (general-define-key
    "C-<tab>" #'align-regexp
    "M-<tab>" #'company-complete
+   "C-x C-\\" #'eglot
+   "C-x C-|" #'eglot-shutdown
    "C-x o" #'switch-window
    "C-`" (lambda ()
            (interactive)
@@ -135,12 +133,11 @@
     "<tab>" #'company-complete-selection
     "TAB" #'company-complete-selection)
 
-  (general-def lsp-mode-map
-    "C-|" #'flymake-show-project-diagnostics
-    "C-." #'lsp-rename
-    "M-." #'lsp-find-definition
-    "M-?" #'lsp-find-references
-    "C-h ." #'lsp-describe-thing-at-point))
+  (general-def eglot-mode-map
+    "C-." #'eglot-rename
+    "C-," #'eglot-format
+    "C->" #'flymake-show-buffer-diagnostics
+    "C-<" #'flymake-show-project-diagnostics))
 
 (editorconfig-mode 1)
 (electric-pair-mode 1)
@@ -148,6 +145,3 @@
 (global-visual-line-mode 1)
 (global-display-line-numbers-mode 1)
 (column-number-mode 1)
-
-(savehist-mode 1)
-(save-place-mode 1)

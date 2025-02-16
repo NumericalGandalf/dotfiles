@@ -24,10 +24,6 @@ wireless _first_ {
     format_down = "Wifi: down"
 }
 
-path_exists VPN {
-    path = "/proc/sys/net/ipv4/conf/tun0"
-}
-
 volume master {
     format = "Vol: %volume"
     format_muted = "Vol: mute (%volume)"
