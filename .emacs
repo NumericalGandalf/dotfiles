@@ -18,14 +18,11 @@
 
       mode-line-percent-position '(6 "%q")
 
-      xref-auto-jump-to-first-definition t
-      xref-auto-jump-to-first-xref t
       xref-file-name-display 'abs
       xref-prompt-for-identifier nil
 
-      compilation-ask-about-save nil
       compile-command nil
-      compilation-auto-jump-to-first-error t
+      compilation-ask-about-save nil
 
       ido-enable-flex-matching t
       ido-enable-regexp t
@@ -67,6 +64,9 @@
 (setq-default tab-width 4
               indent-tabs-mode nil)
 
+(column-number-mode 1)
+(global-display-line-numbers-mode 1)
+
 (require 'package)
 (require 'use-package)
 
@@ -85,63 +85,29 @@
   (ido-everywhere 1)
   (ido-ubiquitous-mode 1))
 
-(use-package magit)
-
 (use-package company
-  :init
-  (global-company-mode 1)
+  :hook
+  (eglot-managed-mode . company-mode)
+  :bind
+  (:map company-active-map
+        ("<return>" . nil)
+        ("RET" . nil)
+        ("<tab>" . #'company-complete-selection)
+        ("TAB" . #'company-complete-selection))
   :custom
   (company-minimum-prefix-length 1)
   (company-idle-delay 0)
-  (company-frontends '(company-pseudo-tooltip-frontend
-                       company-echo-metadata-frontend))
+  (company-frontends '(company-pseudo-tooltip-frontend))
   (company-format-margin-function #'company-text-icons-margin)
   (company-tooltip-flip-when-above t)
   (company-tooltip-align-annotations t)
   (company-tooltip-scrollbar-width 0))
-
-(use-package switch-window
-  :custom
-  (switch-window-background t))
-
-(use-package editorconfig)
 
 (use-package treesit-auto
   :demand
   :config
   (global-treesit-auto-mode 1))
 
+(use-package magit)
+
 (use-package meson-mode)
-
-(use-package general
-  :init
-  (general-define-key
-   "C-<tab>" #'align-regexp
-   "M-<tab>" #'company-complete
-   "C-x C-\\" #'eglot
-   "C-x C-|" #'eglot-shutdown
-   "C-x o" #'switch-window
-   "C-`" (lambda ()
-           (interactive)
-           (if (project-current)
-               (project-compile)
-             (call-interactively (compile)))))
-
-  (general-def company-active-map
-    "<return>" nil
-    "RET" nil
-    "<tab>" #'company-complete-selection
-    "TAB" #'company-complete-selection)
-
-  (general-def eglot-mode-map
-    "C-." #'eglot-rename
-    "C-," #'eglot-format
-    "C->" #'flymake-show-buffer-diagnostics
-    "C-<" #'flymake-show-project-diagnostics))
-
-(editorconfig-mode 1)
-(electric-pair-mode 1)
-
-(global-visual-line-mode 1)
-(global-display-line-numbers-mode 1)
-(column-number-mode 1)
