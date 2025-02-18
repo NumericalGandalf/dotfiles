@@ -1,7 +1,12 @@
 (menu-bar-mode 0)
 (tool-bar-mode 0)
-(tooltip-mode 0)
 (scroll-bar-mode 0)
+
+(column-number-mode 1)
+(global-display-line-numbers-mode 1)
+
+(electric-pair-mode 1)
+;; (editorconfig-mode 1)
 
 (let ((font "Iosevka-14"))
     (set-face-attribute 'default nil :font font)
@@ -9,40 +14,22 @@
     (set-face-attribute 'fixed-pitch-serif nil :font font)
     (set-face-attribute 'variable-pitch nil :font font))
 
-(setq inhibit-startup-screen t
-      use-short-answers t
-      use-dialog-box nil
-      use-file-dialog nil
+(setq use-short-answers t
       confirm-nonexistent-file-or-buffer nil
-      resize-mini-windows t
 
-      mode-line-percent-position '(6 "%q")
-
-      xref-file-name-display 'abs
-      xref-prompt-for-identifier nil
-
-      compile-command nil
-      compilation-ask-about-save nil
-
-      ido-enable-flex-matching t
-      ido-enable-regexp t
-      ido-create-new-buffer 'always
-      ido-use-filename-at-point 'guess
-      ido-use-url-at-point t
-
-      search-upper-case t
       isearch-repeat-on-direction-change t
       isearch-allow-scroll 'unlimited
 
       c-default-style '((other . "user"))
 
+      dired-dwim-target t
       dired-listing-switches "-lah"
       dired-free-space 'separate
       dired-recursive-deletes 'always
-      dired-dwim-target t
-      dired-clean-confirm-killing-deleted-buffers nil
 
-      eldoc-echo-area-use-multiline-p 1
+      display-line-numbers-width-start t
+      display-line-numbers-grow-only t
+      display-line-numbers-type 'relative
       
       eglot-report-progress nil
       eglot-extend-to-xref t
@@ -52,20 +39,16 @@
                                           :foldingRangeProvider
                                           :inlayHintProvider)
 
-      display-line-numbers-width-start t
-      display-line-numbers-grow-only t
-      display-line-numbers-type 'relative
+      eldoc-echo-area-use-multiline-p nil
 
       use-package-always-ensure t
       use-package-always-defer t
-
+      
+      inhibit-startup-screen t
       custom-file (locate-user-emacs-file "custom.el"))
 
 (setq-default tab-width 4
               indent-tabs-mode nil)
-
-(column-number-mode 1)
-(global-display-line-numbers-mode 1)
 
 (require 'package)
 (require 'use-package)
@@ -81,13 +64,17 @@
 
 (use-package ido-completing-read+
   :init
-  (ido-mode 0)
+  (ido-ubiquitous-mode 1)
   (ido-everywhere 1)
-  (ido-ubiquitous-mode 1))
+  :custom
+  (ido-enable-flex-matching t)
+  (ido-create-new-buffer 'always)
+  (ido-use-filename-at-point 'guess)
+  (ido-use-url-at-point t))
 
 (use-package company
   :hook
-  (eglot-managed-mode . company-mode)
+  ((emacs-lisp-mode eglot-managed-mode) . company-mode)
   :bind
   (:map company-active-map
         ("<return>" . nil)
