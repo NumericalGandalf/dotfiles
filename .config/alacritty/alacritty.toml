@@ -1,7 +1,0 @@
-[font]
-normal = { family = "Iosevka" }
-size = 14
-
-[colors.primary]
-foreground = "#e4e4ef"
-background = "#181818"

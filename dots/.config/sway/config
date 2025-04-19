@@ -1,22 +1,17 @@
 include /etc/sway/config.d/*
 
-set $mod Mod1
+set $mod Mod4
 floating_modifier $mod
 
-set $left h
-set $down j
-set $up k
-set $right l
+bindsym $mod+h focus left
+bindsym $mod+j focus down
+bindsym $mod+k focus up
+bindsym $mod+l focus right
 
-bindsym $mod+$left focus left
-bindsym $mod+$down focus down
-bindsym $mod+$up focus up
-bindsym $mod+$right focus right
-
-bindsym $mod+Shift+$left move left
-bindsym $mod+Shift+$down move down
-bindsym $mod+Shift+$up move up
-bindsym $mod+Shift+$right move right
+bindsym $mod+Ctrl+h move left
+bindsym $mod+Ctrl+j move down
+bindsym $mod+Ctrl+k move up
+bindsym $mod+Ctrl+l move right
 
 bindsym $mod+1 workspace 1
 bindsym $mod+2 workspace 2
@@ -27,6 +22,7 @@ bindsym $mod+6 workspace 6
 bindsym $mod+7 workspace 7
 bindsym $mod+8 workspace 8
 bindsym $mod+9 workspace 9
+bindsym $mod+0 workspace 0
 
 bindsym $mod+Ctrl+1 move container workspace 1, workspace 1
 bindsym $mod+Ctrl+2 move container workspace 2, workspace 2
@@ -37,6 +33,7 @@ bindsym $mod+Ctrl+6 move container workspace 6, workspace 6
 bindsym $mod+Ctrl+7 move container workspace 7, workspace 7
 bindsym $mod+Ctrl+8 move container workspace 8, workspace 8
 bindsym $mod+Ctrl+9 move container workspace 9, workspace 9
+bindsym $mod+Ctrl+0 move container workspace 0, workspace 0
 
 popup_during_fullscreen smart
 focus_on_window_activation smart
@@ -50,48 +47,46 @@ for_window [window_role="task_dialog"] floating enable
 for_window [shell="xwayland"] title_format "[XWayland] %title"
 for_window [title="^app-launcher.el$"] floating enable, border pixel
 
-bindsym $mod+Shift+q kill
-bindsym $mod+Shift+v layout toggle split tabbed
-bindsym $mod+Shift+b split toggle
-bindsym $mod+Shift+f fullscreen toggle
-bindsym $mod+Shift+z floating toggle
+bindsym $mod+q kill
+bindsym $mod+v layout toggle split tabbed
+bindsym $mod+b split toggle
+bindsym $mod+f fullscreen toggle
+bindsym $mod+z floating toggle
 
-bindsym $mod+Shift+d exec wmenu-run -if "Iosevka 13"
+bindsym $mod+c reload
+bindsym $mod+Shift+c exit
+bindsym $mod+y exec systemctl suspend
+bindsym $mod+Shift+y exec systemctl hibernate
+bindsym $mod+Ctrl+y exec loginctl lock-session
+bindsym $mod+p exec systemctl poweroff
+bindsym $mod+Shift+p exec systemctl reboot
 
-bindsym $mod+Shift+s mode "System"
-mode "System" {
-    bindsym e exit
-    bindsym c reload
-    bindsym l exec systemctl suspend, mode "default"
-    bindsym Shift+l exec loginctl lock-session, mode "default"
-    bindsym r exec systemctl reboot, mode "default"
-    bindsym p exec systemctl poweroff, mode "default"
-    bindsym h exec systemctl hibernate, mode "default"
-    
-    bindsym Escape mode "default"
-}
+set $emacs emacsclient -ca emacs
+bindsym $mod+e exec $emacs
+bindsym $mod+t exec emacsclient -ce "(vterm)"
+bindsym $mod+d exec emacsclient -r -e "(app-launcher)"
 
-bindsym $mod+Shift+r mode "Resize"
+bindsym $mod+r mode "Resize"
 mode "Resize" {
-    bindsym $right resize grow right 10 ppt
-    bindsym Shift+$right resize shrink right 10 ppt
-    bindsym Ctrl+$right resize grow right 5 ppt
-    bindsym Ctrl+Shift+$right resize shrink right 5 ppt
+    bindsym l resize grow right 10 ppt
+    bindsym Shift+l resize shrink right 10 ppt
+    bindsym Ctrl+l resize grow right 5 ppt
+    bindsym Ctrl+Shift+l resize shrink right 5 ppt
     
-    bindsym $left resize grow left 10 ppt
-    bindsym Shift+$left resize shrink left 10 ppt
-    bindsym Ctrl+$left resize grow left 5 ppt
-    bindsym Ctrl+Shift+$left resize shrink left 5 ppt    
+    bindsym h resize grow left 10 ppt
+    bindsym Shift+h resize shrink left 10 ppt
+    bindsym Ctrl+h resize grow left 5 ppt
+    bindsym Ctrl+Shift+h resize shrink left 5 ppt    
     
-    bindsym $down resize grow down 10 ppt
-    bindsym Shift+$down resize shrink down 10 ppt
-    bindsym Ctrl+$down resize grow down 5 ppt
-    bindsym Ctrl+Shift+$down resize shrink down 5 ppt
+    bindsym j resize grow down 10 ppt
+    bindsym Shift+j resize shrink down 10 ppt
+    bindsym Ctrl+j resize grow down 5 ppt
+    bindsym Ctrl+Shift+j resize shrink down 5 ppt
     
-    bindsym $up resize grow up 10 ppt
-    bindsym Shift+$up resize shrink up 10 ppt
-    bindsym Ctrl+$up resize grow up 5 ppt
-    bindsym Ctrl+Shift+$up resize shrink up 5 ppt
+    bindsym k resize grow up 10 ppt
+    bindsym Shift+k resize shrink up 10 ppt
+    bindsym Ctrl+k resize grow up 5 ppt
+    bindsym Ctrl+Shift+k resize shrink up 5 ppt
     
     bindsym Escape mode "default"
 }
