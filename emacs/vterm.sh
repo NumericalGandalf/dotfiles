@@ -33,3 +33,6 @@ vterm_prompt_end() {
 
 PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND; }"'echo -ne "\033]0;${HOSTNAME}:${PWD}\007"'
 PS1=$PS1'\[$(vterm_prompt_end)\]'
+
+alias ls="ls --color=auto"
+alias grep="grep --color=auto"

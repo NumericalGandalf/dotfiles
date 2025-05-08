@@ -3,6 +3,18 @@ include /etc/sway/config.d/*
 set $mod Mod4
 floating_modifier $mod
 
+popup_during_fullscreen smart
+focus_on_window_activation smart
+smart_borders on
+
+font pango:Iosevka 11
+titlebar_padding 3 1
+
+for_window [window_role="pop-up"] floating enable
+for_window [window_role="task_dialog"] floating enable
+for_window [shell="xwayland"] title_format "[XWayland] %title"
+for_window [title="^app-launcher.el$"] floating enable, border pixel
+
 bindsym $mod+h focus left
 bindsym $mod+j focus down
 bindsym $mod+k focus up
@@ -35,18 +47,6 @@ bindsym $mod+Ctrl+8 move container workspace 8, workspace 8
 bindsym $mod+Ctrl+9 move container workspace 9, workspace 9
 bindsym $mod+Ctrl+0 move container workspace 0, workspace 0
 
-popup_during_fullscreen smart
-focus_on_window_activation smart
-smart_borders on
-
-font pango:Iosevka 11
-titlebar_padding 3 1
-
-for_window [window_role="pop-up"] floating enable
-for_window [window_role="task_dialog"] floating enable
-for_window [shell="xwayland"] title_format "[XWayland] %title"
-for_window [title="^app-launcher.el$"] floating enable, border pixel
-
 bindsym $mod+q kill
 bindsym $mod+v layout toggle split tabbed
 bindsym $mod+b split toggle
@@ -61,9 +61,8 @@ bindsym $mod+Ctrl+y exec loginctl lock-session
 bindsym $mod+p exec systemctl poweroff
 bindsym $mod+Shift+p exec systemctl reboot
 
-set $emacs emacsclient -ca emacs
-bindsym $mod+e exec $emacs
-bindsym $mod+t exec emacsclient -ce "(vterm)"
+bindsym $mod+e exec emacsclient -ca emacs
+bindsym $mod+t exec emacsclient -ce "(vterm t)"
 bindsym $mod+d exec emacsclient -r -e "(app-launcher)"
 
 bindsym $mod+r mode "Resize"
@@ -109,5 +108,3 @@ output "Dell Inc. AW2724DM 66YZHV3" mode 2560x1440@165Hz scale 1.25
 
 set $lock "swaylock -c 000000"
 exec swayidle -w before-sleep $lock lock $lock
-
-exec $emacs --daemon

@@ -1,50 +1,3 @@
-(defun font-apply ()
-  "Apply font."
-  (interactive)
-  (let ((font "Iosevka-14"))
-    (set-face-attribute 'default nil :font font)
-    (set-face-attribute 'fixed-pitch nil :font font)
-    (set-face-attribute 'fixed-pitch-serif nil :font font)
-    (set-face-attribute 'variable-pitch nil :font font)))
-
-(defmacro expand-dots-file (file)
-  "Expand FILE from dotfiles `dots' directory."
-  (let ((dir (expand-file-name
-              "../dots/" (file-truename user-emacs-directory))))
-    `(expand-file-name ,file ,dir)))
-
-(defun stow-dotfiles (&optional prefix dir)
-  "Stow dotfiles.
-If PREFIX is non-nil, unstow dotfiles."
-  (interactive "P\ni")
-  (dolist (target (cdr (cdr (directory-files
-                             (expand-dots-file (or dir "./")) t))))
-    (if (or (file-regular-p target)
-            (cl-dolist (parent '(".config/"))
-              (let ((parent (expand-dots-file parent)))
-                (when (and (file-in-directory-p target parent)
-                           (not (file-equal-p target parent)))
-                  (cl-return target)))))
-        (let* ((rel-name (file-relative-name (expand-dots-file target)
-                                             (expand-dots-file "./")))
-               (link-name (expand-file-name rel-name "~/")))
-          (when (file-exists-p link-name)
-            (cond ((file-symlink-p link-name)
-                   (delete-file link-name))
-                  ((file-directory-p link-name)
-                   (delete-directory link-name t))
-                  (t (delete-file link-name)))
-            (when prefix
-              (message "Unlink: %s" link-name)))
-          (unless prefix
-            (make-symbolic-link target link-name)
-            (message "Link: %s -> %s" target link-name)))
-      (stow-dotfiles prefix target))))
-
-(if (daemonp)
-    (add-hook 'server-after-make-frame-hook #'font-apply)
-  (font-apply))
-
 (require 'server)
 (require 'package)
 (require 'use-package)
@@ -57,7 +10,10 @@ If PREFIX is non-nil, unstow dotfiles."
       split-width-threshold nil
       split-height-threshold 0
       
+      ffap-require-prefix t
       confirm-nonexistent-file-or-buffer nil
+      
+      ibuffer-use-other-window t
       Man-notify-method 'aggressive
 
       scroll-step 1
@@ -75,6 +31,7 @@ If PREFIX is non-nil, unstow dotfiles."
 
       find-file-visit-truename t
       vc-follow-symlinks t
+      
       auth-source-save-behavior nil
 
       c-default-style '((other . "user"))
@@ -90,7 +47,7 @@ If PREFIX is non-nil, unstow dotfiles."
       display-line-numbers-grow-only t
       display-line-numbers-type 'relative
 
-      backup-directory-alist `(("." . ,(expand-cache-file "backups/")))
+      backup-directory-alist `(("." . ,(rc/expand-cache-file "backups/")))
       delete-old-versions t
       kept-old-versions 0
       kept-new-versions 5
@@ -104,10 +61,12 @@ If PREFIX is non-nil, unstow dotfiles."
                                           :foldingRangeProvider
                                           :inlayHintProvider)
 
-      package-user-dir (expand-cache-file "packages/")
+      package-user-dir (rc/expand-cache-file "packages/")
       package-gnupghome-dir (expand-file-name "gnupg/" package-user-dir)
+
       use-package-always-ensure t
-      use-package-always-defer (not (daemonp)))
+      use-package-always-defer (not (daemonp))
+      use-package-verbose t)
 
 (setq-default tab-width 4
               indent-tabs-mode nil)
@@ -120,14 +79,10 @@ If PREFIX is non-nil, unstow dotfiles."
 (use-package no-littering
   :demand
   :preface
-  (setq no-littering-var-directory (expand-cache-file))
+  (setq no-littering-var-directory (rc/expand-cache-file))
   :custom
-  (custom-file (expand-cache-file "custom.el"))
-  (server-auth-dir (expand-cache-file "server/")))
-
-(use-package gruber-darker-theme
-  :init
-  (load-theme 'gruber-darker t))
+  (custom-file (rc/expand-cache-lisp-file "custom.el"))
+  (server-auth-dir (rc/expand-cache-file "server/")))
 
 (use-package orderless
   :init
@@ -148,8 +103,8 @@ If PREFIX is non-nil, unstow dotfiles."
 
 (use-package embark
   :bind
-  (("C-," . embark-act)
-   :map minibuffer-local-map
+  (:map minibuffer-local-map
+   ("C-," . embark-act)
    ("C-." . embark-export)))
 
 (use-package consult
@@ -170,6 +125,8 @@ If PREFIX is non-nil, unstow dotfiles."
    :map minibuffer-local-map
    ("M-s" . consult-history)
    ("M-r" . consult-history))
+  :config
+  (add-to-list 'consult-preview-allowed-hooks #'rc/line-numbers-here)
   :custom
   (consult-line-start-from-top t)
   (xref-show-xrefs-function #'consult-xref)
@@ -183,8 +140,7 @@ If PREFIX is non-nil, unstow dotfiles."
 (use-package consult-eglot
   :after consult
   :bind
-  (("C-c l s" . eglot)
-   :map eglot-mode-map
+  (:map eglot-mode-map
    ("C-c l i" . flymake-show-project-diagnostics)
    ("C-c l I" . flymake-show-buffer-diagnostics)
    ("C-c l S" . elgot-shutdown)
@@ -200,15 +156,16 @@ If PREFIX is non-nil, unstow dotfiles."
   (consult-eglot-embark-mode 1))
 
 (use-package company
+  :hook
+  ((emacs-lisp-mode eglot-mode) . company-mode)
   :bind
-  (("M-<tab>" . company-complete)
+  (:map company-mode-map
+   ("M-<tab>" . #'company-complete)
    :map company-active-map
    ("<return>" . nil)
    ("RET" . nil)
    ("<tab>" . #'company-complete-selection)
    ("TAB" . #'company-complete-selection))
-  :init
-  (global-company-mode 1)
   :custom
   (company-idle-delay 0)
   (company-frontends '(company-pseudo-tooltip-frontend))
@@ -220,26 +177,11 @@ If PREFIX is non-nil, unstow dotfiles."
 (use-package treesit-auto
   :demand
   :config 
-  (defun treesit-install-all-grammars ()
-    "Install all tree-sitter language grammmars."
-    (interactive)
-    (dolist (source (treesit-auto--build-treesit-source-alist))
-      (let ((grammar (nth 0 source)))
-        (unless (or (treesit-ready-p grammar t)
-                    (member grammar '(janet latex markdown)))
-          (message "Installing tree-sitter language grammer: %s" grammar)
-          (let ((inhibit-message t)
-                (outdir (nth 0 treesit-extra-load-path)))
-            (apply #'treesit--install-language-grammar-1 outdir source))))))
-
-  (add-to-list 'treesit-extra-load-path (expand-cache-file "treesit/"))
-  (treesit-auto-add-to-auto-mode-alist 'all)
   (global-treesit-auto-mode 1))
 
 (use-package vterm
   :bind
-  (("C-c t" . vterm)
-   :map vterm-mode-map
+  (:map vterm-mode-map
    ("C-j" . (lambda ()
               (interactive)
               (vterm-send "C-c"))))
@@ -262,6 +204,17 @@ If PREFIX is non-nil, unstow dotfiles."
   (("M-p" . move-text-up)
    ("M-n" . move-text-down)))
 
+(use-package multiple-cursors
+  :bind
+  (("C->" . mc/mark-next-like-this)
+   ("C-<" . mc/mark-previous-like-this)
+   ("C-c ." . mc/unmark-next-like-this)
+   ("C-c ," . mc/unmark-next-previous-this)
+   ("C-c >" . mc/skip-to-next-like-this)
+   ("C-c <" . mc/skip-to-previous-like-this)
+   ("C-c C->" . mc/edit-lines)
+   ("C-c C-<" . mc/mark-all-like-this)))
+
 (use-package switch-window
   :bind
   ("C-x o" . switch-window)
@@ -272,24 +225,22 @@ If PREFIX is non-nil, unstow dotfiles."
 
 (use-package meson-mode)
 
+(add-to-list 'after-change-major-mode-hook #'rc/line-numbers-here)
+
+(bind-key "C-x C-b" #'ibuffer)
+(bind-key "C-z" #'duplicate-line)
+
 (column-number-mode 1)
-(global-display-line-numbers-mode 1)
+(editorconfig-mode 1)
 
 (ffap-bindings)
 (electric-pair-mode 1)
-(editorconfig-mode 1)
 
-(savehist-mode 1)
-(save-place-mode 1)
-(recentf-mode 1)
+(when (daemonp)
+  (mapcar #'load-file (nthcdr 2 (directory-files (rc/expand-lisp-file) t))))
 
-(let ((file (locate-user-emacs-file "app-launcher.el")))
-  (if (daemonp)
-      (load-file file)
-    (autoload #'app-launcher file t)))
-
-(when (file-exists-p custom-file)
-  (load-file custom-file))
+(when (file-exists-p (rc/expand-cache-lisp-file))
+  (mapcar #'load-file (nthcdr 2 (directory-files (rc/expand-cache-lisp-file) t))))
 
 (unless (or (daemonp)
             (server-running-p))

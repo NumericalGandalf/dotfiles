@@ -158,6 +158,7 @@ This function always returns its elements in a stable order."
               default-directory)))
     (call-process-shell-command command nil 0 nil)))
 
+;;;###autoload
 (defun app-launcher-run-app (&optional prefix)
   "Launch an application installed on your machine.
 When PREFIX is non-nil, ignore NoDisplay property in *.desktop files."
@@ -180,6 +181,7 @@ When PREFIX is non-nil, ignore NoDisplay property in *.desktop files."
 		          t nil 'app-launcher nil nil)))
     (funcall app-launcher--action-function result)))
 
+;;;###autoload
 (defun app-launcher (&optional prefix)
   "Appropriately run `app-launcher-run-app'.
 When PREFIX is non-nil, ignore NoDisplay property in *.desktop files."
@@ -195,3 +197,5 @@ When PREFIX is non-nil, ignore NoDisplay property in *.desktop files."
         (unwind-protect
             (app-launcher-run-app prefix)
           (delete-frame))))))
+
+(provide 'app-launcher)
