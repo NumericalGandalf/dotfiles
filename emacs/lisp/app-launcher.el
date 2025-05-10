@@ -189,6 +189,7 @@ When PREFIX is non-nil, ignore NoDisplay property in *.desktop files."
   (if (frame-focus-state)
       (app-launcher-run-app prefix)
     (let* ((height 21)
+           ;; Vertico really is a huge eye candy.
            (vertico-count (1- height)))
       (with-selected-frame (make-frame `((name . "app-launcher.el")
                                          (height . ,height)

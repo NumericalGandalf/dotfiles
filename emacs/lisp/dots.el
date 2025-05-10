@@ -1,3 +1,7 @@
+(defgroup dots nil
+  "Dotfiles management."
+  :prefix "dots/")
+
 ;;;###autoload
 (defun dots/expand-file (&optional file)
   "Expand FILE from dotfiles `dots' directory."
@@ -11,6 +15,7 @@
   (interactive)
   (let ((target (directory-file-name user-emacs-directory))
         (link-name (expand-file-name "~/.config/emacs")))
+    ;; Hoping `link-name' and `user-emacs-directory' are not the same.
     (when (file-exists-p link-name)
       (cond ((file-symlink-p link-name)
              (delete-file link-name))
@@ -29,6 +34,7 @@ If PREFIX is non-nil, unstow dotfiles."
   (dolist (target (nthcdr 2 (directory-files (dots/expand-file (or dir "./")) t)))
     (if (or (file-regular-p target)
             (cl-dolist (parent '(".config/"))
+              ;; Directories below `parent' should be sym-linked as is.
               (let ((parent (dots/expand-file parent)))
                 (when (and (file-in-directory-p target parent)
                            (not (file-equal-p target parent)))
@@ -37,6 +43,7 @@ If PREFIX is non-nil, unstow dotfiles."
                                              (dots/expand-file "./")))
                (link-name (expand-file-name rel-name "~/")))
           (when (file-exists-p link-name)
+            ;; Dirty... but it saves the 'file already exists' trouble.
             (cond ((file-symlink-p link-name)
                    (delete-file link-name))
                   ((file-directory-p link-name)
@@ -47,6 +54,7 @@ If PREFIX is non-nil, unstow dotfiles."
           (unless prefix
             (make-symbolic-link target link-name)
             (message "Link: %s -> %s" target link-name)))
+      ;; Stowing is recursive.
       (dots/stow-files prefix target))))
 
 (provide 'dots)

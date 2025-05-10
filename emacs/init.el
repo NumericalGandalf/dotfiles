@@ -2,6 +2,21 @@
 (require 'package)
 (require 'use-package)
 
+(defun rc/generate-autoloads ()
+  "Generate and load autoloads of `lisp' directory."
+  (interactive)
+  (let ((file (rc/expand-cache-lisp-file "autoloads.el")))
+    (make-directory (file-name-parent-directory file) t)
+    (when (file-exists-p file)
+      (delete-file file))
+    (loaddefs-generate (rc/expand-lisp-file) file)
+    (load-file file)))
+
+(defun rc/line-numbers-here ()
+  "Maybe enable numbers in current major mode."
+  (when (derived-mode-p 'prog-mode 'conf-mode)
+    (display-line-numbers-mode 1)))
+
 (setq use-short-answers t
       use-dialog-box nil
       use-file-dialog nil

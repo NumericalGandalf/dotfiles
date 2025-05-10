@@ -51,14 +51,11 @@
    `(font-latex-warning-face ((t (:foreground ,gruber-darker-red))))
 
    ;; Basic Coloring (or Uncategorized)
-   `(border ((t ,(list :background gruber-darker-bg-1
-                       :foreground gruber-darker-bg+2))))
+   `(border ((t (:background ,gruber-darker-bg-1 :foreground ,gruber-darker-bg+2))))
    `(cursor ((t (:background ,gruber-darker-yellow))))
-   `(default ((t ,(list :foreground gruber-darker-fg
-                        :background gruber-darker-bg))))
-   `(fringe ((t ,(list :background gruber-darker-bg
-                       :foreground gruber-darker-bg+2))))
-   `(vertical-border ((t ,(list :foreground gruber-darker-bg+2))))
+   `(default ((t (:foreground ,gruber-darker-fg :background ,gruber-darker-bg))))
+   `(fringe ((t (:background ,gruber-darker-bg :foreground ,gruber-darker-bg+2))))
+   `(vertical-border ((t (:foreground ,gruber-darker-bg+2))))
    `(link ((t (:foreground ,gruber-darker-niagara :underline t))))
    `(link-visited ((t (:foreground ,gruber-darker-wisteria :underline t))))
    `(match ((t (:background ,gruber-darker-bg+4))))
@@ -66,10 +63,8 @@
    `(minibuffer-prompt ((t (:foreground ,gruber-darker-niagara))))
    `(region ((t (:background ,gruber-darker-bg+3 :foreground unspecified))))
    `(secondary-selection ((t (:background ,gruber-darker-bg+3 :foreground unspecified))))
-   `(trailing-whitespace ((t ,(list :foreground gruber-darker-black
-                                    :background gruber-darker-red))))
-   `(tooltip ((t ,(list :background gruber-darker-bg+4
-                        :foreground gruber-darker-white))))
+   `(trailing-whitespace ((t (:foreground ,gruber-darker-black :background ,gruber-darker-red))))
+   `(tooltip ((t (:background ,gruber-darker-bg+4 :foreground ,gruber-darker-white))))
 
    ;; Calendar
    `(holiday-face ((t (:foreground ,gruber-darker-red))))
@@ -175,23 +170,15 @@
       (t (:foreground ,gruber-darker-yellow :weight bold :underline t))))
 
    ;; Helm
-   `(helm-candidate-number ((t ,(list :background gruber-darker-bg+2
-                                      :foreground gruber-darker-yellow
-                                      :bold t))))
-   `(helm-ff-directory ((t ,(list :foreground gruber-darker-niagara
-                                  :background gruber-darker-bg
-                                  :bold t))))
+   `(helm-candidate-number ((t (:background ,gruber-darker-bg+2 :foreground ,gruber-darker-yellow :bold t))))
+   `(helm-ff-directory ((t (:foreground ,gruber-darker-niagara :background ,gruber-darker-bg :bold t))))
    `(helm-ff-executable ((t (:foreground ,gruber-darker-green))))
    `(helm-ff-file ((t (:foreground ,gruber-darker-fg :inherit unspecified))))
-   `(helm-ff-invalid-symlink ((t ,(list :foreground gruber-darker-bg
-                                        :background gruber-darker-red))))
+   `(helm-ff-invalid-symlink ((t (:foreground ,gruber-darker-bg :background ,gruber-darker-red))))
    `(helm-ff-symlink ((t (:foreground ,gruber-darker-yellow :bold t))))
    `(helm-selection-line ((t (:background ,gruber-darker-bg+1))))
    `(helm-selection ((t (:background ,gruber-darker-bg+1 :underline nil))))
-   `(helm-source-header ((t ,(list :foreground gruber-darker-yellow
-                                   :background gruber-darker-bg
-                                   :box (list :line-width -1
-                                              :style 'released-button)))))
+   `(helm-source-header ((t (:foreground ,gruber-darker-yellow :background ,gruber-darker-bg))))
 
    ;; Ido
    `(ido-first-match ((t (:foreground ,gruber-darker-yellow :bold nil))))
